@@ -1,8 +1,8 @@
 <!-- UNITY CODE ASSIST INSTRUCTIONS START -->
 - Project name: The Waiting Game
-- Unity version: Unity 6000.0.58f2
+- Unity version: Unity 6000.4.0f1
 - Active game object:
-  - Name: Main Camera
-  - Tag: MainCamera
+  - Name: ActivityDetector
+  - Tag: Untagged
   - Layer: Default
 <!-- UNITY CODE ASSIST INSTRUCTIONS END -->
