@@ -38,6 +38,7 @@ public class DesktopActivityManager : MonoBehaviour
         Gaming,
         Watching,
         Browsing,
+        Music,
         Idle,
         Gooning,
         Unknown
@@ -104,7 +105,7 @@ public class DesktopActivityManager : MonoBehaviour
         checkTimer += Time.deltaTime;
         activityTimer += Time.deltaTime;
 
-        // Only check activity every 5 seconds
+        // Only check activity every 10 seconds
         // so we're not constantly polling Windows
         if (checkTimer >= 10f)
         {
