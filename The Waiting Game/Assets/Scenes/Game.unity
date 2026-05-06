@@ -1214,7 +1214,7 @@ GameObject:
   - component: {fileID: 25856203}
   m_Layer: 0
   m_Name: Bathroom Door
-  m_TagString: Untagged
+  m_TagString: Targets
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1238,7 +1238,7 @@ MeshCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 5
-  m_Convex: 0
+  m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 837025145}
 --- !u!33 &25856204
@@ -8782,7 +8782,7 @@ MeshCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 5
-  m_Convex: 0
+  m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 189602118}
 --- !u!33 &635030804
@@ -11092,7 +11092,7 @@ MeshCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 5
-  m_Convex: 0
+  m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 424836628}
 --- !u!33 &983115962
@@ -13095,7 +13095,7 @@ GameObject:
   - component: {fileID: 1279848409}
   m_Layer: 0
   m_Name: Booth (1)
-  m_TagString: Untagged
+  m_TagString: Targets
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -13119,7 +13119,7 @@ MeshCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 5
-  m_Convex: 0
+  m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 236852446}
 --- !u!33 &1279848410
@@ -13774,7 +13774,7 @@ GameObject:
   - component: {fileID: 1319816599}
   m_Layer: 0
   m_Name: Stove
-  m_TagString: Untagged
+  m_TagString: Targets
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -13798,7 +13798,7 @@ MeshCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 5
-  m_Convex: 0
+  m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 1794712337}
 --- !u!33 &1319816600
@@ -14154,7 +14154,7 @@ MeshCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 5
-  m_Convex: 0
+  m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 465677972}
 --- !u!33 &1375868749
@@ -15152,7 +15152,7 @@ GameObject:
   - component: {fileID: 1475357374}
   m_Layer: 0
   m_Name: Front Door
-  m_TagString: Untagged
+  m_TagString: Targets
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -15176,7 +15176,7 @@ MeshCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 5
-  m_Convex: 0
+  m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 1499317081}
 --- !u!33 &1475357375
@@ -16481,7 +16481,7 @@ MonoBehaviour:
           m_Value0: 10941624885729981663
           m_Value1: 13864523379907648414
         Name: New Activities
-        m_Value: 4
+        m_Value: 3
 --- !u!43 &1794712337
 Mesh:
   m_ObjectHideFlags: 0
