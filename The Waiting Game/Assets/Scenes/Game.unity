@@ -1018,7 +1018,7 @@ MonoBehaviour:
   m_OverrideVoxelSize: 0
   m_VoxelSize: 0.16666667
   m_MinRegionArea: 2
-  m_NavMeshData: {fileID: 0}
+  m_NavMeshData: {fileID: 23800000, guid: a8ac6c9d28e74104f8ef6036664a5ae4, type: 2}
   m_BuildHeightMesh: 0
 --- !u!43 &25301501
 Mesh:
@@ -5932,7 +5932,7 @@ MonoBehaviour:
   m_OverrideVoxelSize: 0
   m_VoxelSize: 0.16666667
   m_MinRegionArea: 2
-  m_NavMeshData: {fileID: 0}
+  m_NavMeshData: {fileID: 23800000, guid: 4f9f2e17bfbe08a4e9677ef0cc4cb9e6, type: 2}
   m_BuildHeightMesh: 0
 --- !u!65 &304931672
 BoxCollider:
@@ -11640,6 +11640,7 @@ GameObject:
   - component: {fileID: 1126777120}
   - component: {fileID: 1126777119}
   - component: {fileID: 1126777125}
+  - component: {fileID: 1126777126}
   m_Layer: 0
   m_Name: Ladder
   m_TagString: Untagged
@@ -12826,6 +12827,38 @@ MonoBehaviour:
   m_Bidirectional: 1
   m_AutoUpdatePosition: 0
   m_Area: 0
+--- !u!114 &1126777126
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1126777118}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a5ac11cc976e418e8d13136b07e1f52, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.AI.Navigation::Unity.AI.Navigation.NavMeshSurface
+  m_SerializedVersion: 0
+  m_AgentTypeID: 0
+  m_CollectObjects: 0
+  m_Size: {x: 10, y: 10, z: 10}
+  m_Center: {x: 0, y: 2, z: 0}
+  m_LayerMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_UseGeometry: 0
+  m_DefaultArea: 0
+  m_GenerateLinks: 0
+  m_IgnoreNavMeshAgent: 1
+  m_IgnoreNavMeshObstacle: 1
+  m_OverrideTileSize: 0
+  m_TileSize: 256
+  m_OverrideVoxelSize: 0
+  m_VoxelSize: 0.16666667
+  m_MinRegionArea: 2
+  m_NavMeshData: {fileID: 23800000, guid: bf677e0b82ed8b8408dfbc6ccfc4c4e8, type: 2}
+  m_BuildHeightMesh: 0
 --- !u!43 &1204939071
 Mesh:
   m_ObjectHideFlags: 0
@@ -13094,7 +13127,7 @@ GameObject:
   - component: {fileID: 1279848410}
   - component: {fileID: 1279848409}
   m_Layer: 0
-  m_Name: Booth (1)
+  m_Name: Bed
   m_TagString: Targets
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -16302,6 +16335,8 @@ GameObject:
   - component: {fileID: 1714348407}
   - component: {fileID: 1714348411}
   - component: {fileID: 1714348412}
+  - component: {fileID: 1714348414}
+  - component: {fileID: 1714348413}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -16417,6 +16452,33 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player
   activityManager: {fileID: 647997290}
+  agent: {fileID: 1714348414}
+  animator: {fileID: 1714348413}
+  activities:
+  - activity: 0
+    targetLocation: {fileID: 129947780}
+    animationName: 
+  - activity: 1
+    targetLocation: {fileID: 280048569}
+    animationName: 
+  - activity: 2
+    targetLocation: {fileID: 280048569}
+    animationName: 
+  - activity: 3
+    targetLocation: {fileID: 129947780}
+    animationName: 
+  - activity: 4
+    targetLocation: {fileID: 0}
+    animationName: 
+  - activity: 5
+    targetLocation: {fileID: 0}
+    animationName: 
+  - activity: 6
+    targetLocation: {fileID: 1279848414}
+    animationName: 
+  - activity: 7
+    targetLocation: {fileID: 0}
+    animationName: 
 --- !u!114 &1714348412
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16424,7 +16486,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1714348406}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f0038c16c34866b4f9e25c9c0dc0f7e6, type: 3}
   m_Name: 
@@ -16482,6 +16544,50 @@ MonoBehaviour:
           m_Value1: 13864523379907648414
         Name: New Activities
         m_Value: 3
+--- !u!95 &1714348413
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1714348406}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 0}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
+--- !u!195 &1714348414
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1714348406}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.5
+  m_Speed: 3.5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 2
+  m_BaseOffset: 1
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
 --- !u!43 &1794712337
 Mesh:
   m_ObjectHideFlags: 0

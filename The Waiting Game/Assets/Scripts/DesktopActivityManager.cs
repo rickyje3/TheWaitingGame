@@ -198,7 +198,7 @@ public class DesktopActivityManager : MonoBehaviour
             }
 
             if (processName.Contains("steam") ||
-                processName.Contains("minecraft"))
+                processName.Contains("minecraft") ||
             {
                 return ActivityType.Gaming;
             }
@@ -217,6 +217,11 @@ public class DesktopActivityManager : MonoBehaviour
                     windowTitle.Contains("twitch"))
                 {
                     return ActivityType.Watching;
+                }
+
+                if (windowTitle.Contains("roblox"))
+                {
+                    return ActivityType.Gaming;
                 }
 
                 // Work-related tabs
