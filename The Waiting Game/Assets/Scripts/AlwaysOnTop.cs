@@ -116,6 +116,8 @@ public class AlwaysOnTop : MonoBehaviour
     {
         if(isOnTop)
         AssignTopmostWindow("The Waiting Game", true);
+        else
+            AssignTopmostWindow("The Waiting Game", false);
     }
 
     public bool AssignTopmostWindow(string WindowTitle, bool MakeTopmost)

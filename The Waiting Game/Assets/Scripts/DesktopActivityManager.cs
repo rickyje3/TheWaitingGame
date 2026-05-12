@@ -198,7 +198,7 @@ public class DesktopActivityManager : MonoBehaviour
             }
 
             if (processName.Contains("steam") ||
-                processName.Contains("minecraft") ||
+                processName.Contains("minecraft"))
             {
                 return ActivityType.Gaming;
             }
@@ -240,6 +240,7 @@ public class DesktopActivityManager : MonoBehaviour
                     windowTitle.Contains("pornhub") ||
                     windowTitle.Contains("redtube") ||
                     windowTitle.Contains("youporn") ||
+                    windowTitle.Contains("artstation") ||
                     windowTitle.Contains("rule34"))
                 {
                     return ActivityType.Gooning;
