@@ -3,9 +3,13 @@ using UnityEngine.Device;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class DragAcrossScreen : MonoBehaviour, IBeginDragHandler, IDragHandler
+
+public class DragAcrossScreen :
+    MonoBehaviour,
+    IBeginDragHandler,
+    IDragHandler
 {
-    public Transform target; // usually Camera OR a "SceneRoot"
+    public Transform target;
     public Camera cam;
 
     private Vector3 lastWorldPoint;
@@ -23,22 +27,30 @@ public class DragAcrossScreen : MonoBehaviour, IBeginDragHandler, IDragHandler
 
     public void OnDrag(PointerEventData eventData)
     {
-        Vector3 currentWorldPoint = GetWorldPoint(eventData.position);
-        Vector3 delta = currentWorldPoint - lastWorldPoint;
+        Vector3 currentWorldPoint =
+            GetWorldPoint(eventData.position);
 
-        target.position += new Vector3(delta.x, delta.y, 0f);
+        Vector3 delta =
+            currentWorldPoint - lastWorldPoint;
+
+        // invert for natural panning
+        target.position -= new Vector3(
+            delta.x,
+            delta.y,
+            0f
+        );
 
         lastWorldPoint = currentWorldPoint;
     }
 
     Vector3 GetWorldPoint(Vector2 screenPos)
     {
-        Vector3 world = cam.ScreenToWorldPoint(new Vector3(
-            screenPos.x,
-            screenPos.y,
-            Mathf.Abs(cam.transform.position.z)
-        ));
-
-        return world;
+        return cam.ScreenToWorldPoint(
+            new Vector3(
+                screenPos.x,
+                screenPos.y,
+                Mathf.Abs(cam.transform.position.z)
+            )
+        );
     }
 }

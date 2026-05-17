@@ -5,7 +5,7 @@ public class ScaleSize : MonoBehaviour, IDragHandler
 {
     //scaled resolution, that created mirror effect. Scaled island size but it didnt scale ui proportionally .
 
-    public Camera islandCamera;
+    public Camera cam;
 
     public float zoomSpeed = 0.01f;
 
@@ -14,14 +14,14 @@ public class ScaleSize : MonoBehaviour, IDragHandler
 
     public void OnDrag(PointerEventData eventData)
     {
-        islandCamera.orthographicSize -=
+        cam.orthographicSize -=
             eventData.delta.x * zoomSpeed;
 
-        islandCamera.orthographicSize =
-            Mathf.Clamp(
-                islandCamera.orthographicSize,
-                minZoom,
-                maxZoom
-            );
+        cam.orthographicSize = Mathf.Clamp(
+            cam.orthographicSize,
+            minZoom,
+            maxZoom
+        );
     }
 }
+
