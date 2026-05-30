@@ -9,6 +9,8 @@ public class DesktopActivityManager : MonoBehaviour
 {
     public TextMeshProUGUI activityDebugText;
 
+    public int playTime;
+
     // -----------------------------
     // WINDOWS API IMPORTS
     // -----------------------------
@@ -105,9 +107,9 @@ public class DesktopActivityManager : MonoBehaviour
         checkTimer += Time.deltaTime;
         activityTimer += Time.deltaTime;
 
-        // Only check activity every 10 seconds
+        // Only check activity every 5 seconds
         // so we're not constantly polling Windows
-        if (checkTimer >= 10f)
+        if (checkTimer >= 5f)
         {
             checkTimer = 0f;
 
@@ -138,6 +140,12 @@ public class DesktopActivityManager : MonoBehaviour
                 }
             }
         }
+    }
+
+    //Record play time and increase wage based on time played
+    private void FixedUpdate()
+    {
+
     }
 
     // DETECT CURRENT PLAYER ACTIVITY
@@ -198,6 +206,7 @@ public class DesktopActivityManager : MonoBehaviour
             }
 
             if (processName.Contains("steam") ||
+                processName.Contains("roblox") ||
                 processName.Contains("minecraft"))
             {
                 return ActivityType.Gaming;
@@ -212,8 +221,6 @@ public class DesktopActivityManager : MonoBehaviour
                 // Watching tabs
                 if (windowTitle.Contains("youtube") ||
                     windowTitle.Contains("netflix") ||
-                    windowTitle.Contains("istreameast") ||
-                    windowTitle.Contains("fmovies") ||
                     windowTitle.Contains("twitch"))
                 {
                     return ActivityType.Watching;
