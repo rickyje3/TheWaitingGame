@@ -4,12 +4,11 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using TMPro;
 using UnityEngine;
+using UnityEngine.ProBuilder.Shapes;
 
 public class DesktopActivityManager : MonoBehaviour
 {
     public TextMeshProUGUI activityDebugText;
-
-    public int playTime;
 
     // -----------------------------
     // WINDOWS API IMPORTS
@@ -84,6 +83,12 @@ public class DesktopActivityManager : MonoBehaviour
     // has been active
     float activityTimer;
 
+    [HideInInspector] public float playTimer; // Checks playtime
+    public TextMeshProUGUI playTimeText; // Displays playtime
+
+    [HideInInspector] public float workTimer; // Checks amount of time spent working
+    public TextMeshProUGUI workTimeText; // Displays work time
+
     // -----------------------------
     // START
     // -----------------------------
@@ -95,6 +100,8 @@ public class DesktopActivityManager : MonoBehaviour
         {
             Trends[type] = new ActivityTrend();
         }
+
+        LoadPlayTime();
     }
 
     // -----------------------------
@@ -106,6 +113,10 @@ public class DesktopActivityManager : MonoBehaviour
         // Increase timers every frame
         checkTimer += Time.deltaTime;
         activityTimer += Time.deltaTime;
+        playTimer += Time.deltaTime;
+
+        checkPlayTime();
+        checkWorkTime();
 
         // Only check activity every 5 seconds
         // so we're not constantly polling Windows
@@ -142,11 +153,45 @@ public class DesktopActivityManager : MonoBehaviour
         }
     }
 
-    //Record play time and increase wage based on time played
-    private void FixedUpdate()
+    public void checkPlayTime()
     {
+        //Convert playTimer to an int but let it update as a float
+        int totalSeconds = Mathf.FloorToInt(playTimer);
 
+        int seconds = totalSeconds % 60;
+        int minutes = (totalSeconds / 60) % 60;
+        int hours = totalSeconds / 3600;
+
+        playTimeText.text = "Playtime: " + hours + " hours " + minutes + " minutes " + seconds + " seconds ";
+
+        //UnityEngine.Debug.Log("Playtime: " + hours + " hours " + minutes + " minutes " + seconds + " seconds ");
     }
+
+    public void checkWorkTime()
+    {
+        //Convert workTimer to an int but let it update as a float
+        int totalSeconds = Mathf.FloorToInt(workTimer);
+
+        int seconds = totalSeconds % 60;
+        int minutes = (totalSeconds / 60) % 60;
+        int hours = totalSeconds / 3600;
+
+        workTimeText.text = "Work Time: " + hours + " hours " + minutes + " minutes " + seconds + " seconds ";
+    }
+
+    public void SavePlayTime()
+    {
+        PlayerPrefs.SetInt("PlayTime", Mathf.FloorToInt(playTimer));
+        PlayerPrefs.SetInt("WorkTime", Mathf.FloorToInt(workTimer));
+        PlayerPrefs.Save();
+    }
+
+    public void LoadPlayTime()
+    {
+        playTimer = PlayerPrefs.GetInt("PlayTime", 0);
+        workTimer = PlayerPrefs.GetInt("WorkTime", 0);
+    }
+
 
     // DETECT CURRENT PLAYER ACTIVITY
 

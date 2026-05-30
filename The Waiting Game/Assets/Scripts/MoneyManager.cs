@@ -28,6 +28,7 @@ public class MoneyManager : MonoBehaviour
         if (activityManager.CurrentActivity == DesktopActivityManager.ActivityType.Working)
         {
             money += Time.fixedUnscaledDeltaTime * wageMultiplier; // Increase money based on time spent working
+            activityManager.workTimer += Time.deltaTime;
             UpdateMoneyText();
         }
     }
