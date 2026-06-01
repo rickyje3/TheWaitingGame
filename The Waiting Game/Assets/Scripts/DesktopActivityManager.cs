@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using TMPro;
 using UnityEngine;
 using UnityEngine.ProBuilder.Shapes;
+using UnityEngine.UI;
 
 public class DesktopActivityManager : MonoBehaviour
 {
@@ -83,6 +84,8 @@ public class DesktopActivityManager : MonoBehaviour
     // has been active
     float activityTimer;
 
+    public MainMenu mainMenu;
+
     [HideInInspector] public float playTimer; // Checks playtime
     public TextMeshProUGUI playTimeText; // Displays playtime
 
@@ -150,6 +153,15 @@ public class DesktopActivityManager : MonoBehaviour
                     UnityEngine.Debug.LogWarning("activityDebugText is not assigned in the Inspector.");
                 }
             }
+        }
+
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if (mainMenu.gameObject.activeSelf)
+                mainMenu.CloseMenu();
+            else
+                mainMenu.OpenMenu();
         }
     }
 

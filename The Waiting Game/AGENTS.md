@@ -2,7 +2,7 @@
 - Project name: The Waiting Game
 - Unity version: Unity 6000.4.0f1
 - Active game object:
-  - Name: PlaytimeText (1)
+  - Name: ActivityDetector
   - Tag: Untagged
-  - Layer: UIWindow
+  - Layer: Default
 <!-- UNITY CODE ASSIST INSTRUCTIONS END -->
