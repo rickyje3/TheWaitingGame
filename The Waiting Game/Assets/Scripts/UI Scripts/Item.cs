@@ -1,8 +1,14 @@
 using UnityEngine;
 
-
-public class Item
+[CreateAssetMenu(menuName = "Shop/Item")]
+public class Item : ScriptableObject
 {
+    public string itemName;
+    public Sprite icon;
+    public int price;
+
+    [TextArea] public string description;
+
     public enum ItemType
     { 
         Hat,
@@ -17,7 +23,9 @@ public class Item
         Lighting
     }
 
-    public static int GetCost(ItemType itemType)
+    public ItemType itemType;
+
+    /*public static int GetCost(ItemType itemType)
     {
         switch (itemType)
         {
@@ -51,5 +59,5 @@ public class Item
             case ItemType.Decorations:  return GameAssets.Instance.s_decorations;
             case ItemType.Lighting:     return GameAssets.Instance.s_lighting;
         }
-    }
+    }*/
 }
