@@ -13243,8 +13243,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d85165cdc273d0488049fa388880ba2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI_Shop
-  itemWidth: 160
-  itemHeight: 180
+  itemWidth: 120
+  itemHeight: 120
   itemsPerRow: 3
 --- !u!1 &1314036682
 GameObject:

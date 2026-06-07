@@ -7,9 +7,9 @@ public class UI_Shop : MonoBehaviour
     private Transform container;
     private Transform shopItemTemplate;
 
-    [Header("Grid Settings")]
-    public float itemWidth = 160f;
-    public float itemHeight = 180f;
+    [Header("Grid Settings")] // the way the items are displayed in the shop
+    public float itemWidth = 100f;
+    public float itemHeight = 100f;
     public int itemsPerRow = 3;
 
     private void Awake()
@@ -58,7 +58,7 @@ public class UI_Shop : MonoBehaviour
         shopItemTransform
             .Find("priceText")
             .GetComponent<TextMeshProUGUI>()
-            .SetText(item.price.ToString());
+            .SetText("$" + item.price.ToString());
 
         shopItemTransform
             .Find("itemImage")
