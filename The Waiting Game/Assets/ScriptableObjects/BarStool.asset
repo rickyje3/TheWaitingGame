@@ -15,5 +15,6 @@ MonoBehaviour:
   itemName: Barstool
   icon: {fileID: 0}
   price: 100
+  isPurchased: 0
   description: A backless chair perfect for a bar or countertop
   itemType: 5

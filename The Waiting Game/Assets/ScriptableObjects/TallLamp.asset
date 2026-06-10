@@ -15,5 +15,6 @@ MonoBehaviour:
   itemName: Tall Lamp
   icon: {fileID: 0}
   price: 125
+  isPurchased: 0
   description: A tall lamp that lights up the room vibrantly
   itemType: 9

@@ -15,5 +15,6 @@ MonoBehaviour:
   itemName: Joggers
   icon: {fileID: 0}
   price: 25
+  isPurchased: 0
   description: A loose flowy pair of joggers
   itemType: 2

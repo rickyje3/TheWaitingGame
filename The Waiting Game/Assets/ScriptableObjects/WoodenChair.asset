@@ -15,5 +15,6 @@ MonoBehaviour:
   itemName: Wooden Chair
   icon: {fileID: 0}
   price: 125
+  isPurchased: 0
   description: A nice stable wooden dining chair
   itemType: 5

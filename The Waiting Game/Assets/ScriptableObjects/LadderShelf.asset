@@ -15,5 +15,6 @@ MonoBehaviour:
   itemName: Ladder Shelf
   icon: {fileID: 0}
   price: 175
+  isPurchased: 0
   description: A Ladder style shelf with 6 layers
   itemType: 6

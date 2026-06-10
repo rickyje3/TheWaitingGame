@@ -15,5 +15,6 @@ MonoBehaviour:
   itemName: Flip Flops
   icon: {fileID: 0}
   price: 20
+  isPurchased: 0
   description: Who let the dawgs out?!
   itemType: 3

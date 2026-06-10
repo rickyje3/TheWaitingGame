@@ -15,5 +15,6 @@ MonoBehaviour:
   itemName: Boots
   icon: {fileID: 0}
   price: 75
+  isPurchased: 0
   description: Warm, snuggly, and stylish!
   itemType: 3

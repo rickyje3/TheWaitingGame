@@ -33,7 +33,7 @@ public class MoneyManager : MonoBehaviour
         }
     }
 
-    private void UpdateMoneyText()
+    public void UpdateMoneyText()
     {
         moneyText.text = "$ " + money.ToString("F2"); // update the money text up to 2 decimal places
     }

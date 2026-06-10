@@ -15,5 +15,6 @@ MonoBehaviour:
   itemName: TV Stand
   icon: {fileID: 0}
   price: 250
+  isPurchased: 0
   description: A stand for your TV with room for storage/display pieces
   itemType: 6

@@ -15,5 +15,6 @@ MonoBehaviour:
   itemName: Ripped Jeans
   icon: {fileID: 0}
   price: 50
+  isPurchased: 0
   description: For people who like buying half a pair of pants I guess
   itemType: 2

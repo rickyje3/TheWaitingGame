@@ -15,5 +15,6 @@ MonoBehaviour:
   itemName: 5 Layer Shelf
   icon: {fileID: 0}
   price: 200
+  isPurchased: 0
   description: A shelf with 5 slots for display pieces
   itemType: 6

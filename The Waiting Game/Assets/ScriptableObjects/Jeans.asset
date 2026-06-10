@@ -15,5 +15,6 @@ MonoBehaviour:
   itemName: Jeans
   icon: {fileID: 0}
   price: 65
+  isPurchased: 0
   description: An untouched pair of jeans
   itemType: 2

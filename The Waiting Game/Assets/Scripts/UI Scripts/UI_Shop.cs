@@ -43,6 +43,7 @@ public class UI_Shop : MonoBehaviour
             item.isPurchased = true;
             PlayerPrefs.SetInt(item.itemName, 1); // Save purchase state
             Debug.Log(item.itemName + " was purchased for $" + item.price);
+            moneyManager.UpdateMoneyText();
         }
     }
 

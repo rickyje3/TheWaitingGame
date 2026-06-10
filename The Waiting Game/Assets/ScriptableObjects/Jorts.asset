@@ -15,5 +15,6 @@ MonoBehaviour:
   itemName: Jorts
   icon: {fileID: 0}
   price: 45
+  isPurchased: 0
   description: A stylish pair of jorts
   itemType: 2

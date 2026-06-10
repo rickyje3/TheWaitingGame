@@ -15,5 +15,6 @@ MonoBehaviour:
   itemName: Basketball Shoes
   icon: {fileID: 0}
   price: 150
+  isPurchased: 0
   description: My favorite basketball player is Anthony Edwards
   itemType: 3

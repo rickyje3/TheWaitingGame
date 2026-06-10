@@ -15,5 +15,6 @@ MonoBehaviour:
   itemName: Tennis Shoes
   icon: {fileID: 0}
   price: 50
+  isPurchased: 0
   description: A basic pair of tennis shoes
   itemType: 3

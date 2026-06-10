@@ -15,5 +15,6 @@ MonoBehaviour:
   itemName: Blank Shirt
   icon: {fileID: 0}
   price: 15
+  isPurchased: 0
   description: A blank T-Shirt
   itemType: 1

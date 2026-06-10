@@ -15,5 +15,6 @@ MonoBehaviour:
   itemName: Beanie
   icon: {fileID: 0}
   price: 20
+  isPurchased: 0
   description: A nice snug warm beanie
   itemType: 0

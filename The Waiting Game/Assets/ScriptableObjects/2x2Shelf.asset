@@ -15,5 +15,6 @@ MonoBehaviour:
   itemName: 2x2 Shelf
   icon: {fileID: 0}
   price: 125
+  isPurchased: 0
   description: A shelf with 4 smaller slots for display pieces
   itemType: 6

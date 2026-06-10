@@ -15,5 +15,6 @@ MonoBehaviour:
   itemName: Wood Short Table
   icon: {fileID: 0}
   price: 250
+  isPurchased: 0
   description: A square wood table
   itemType: 7

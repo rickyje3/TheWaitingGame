@@ -15,5 +15,6 @@ MonoBehaviour:
   itemName: 3x3Shelf
   icon: {fileID: 0}
   price: 200
+  isPurchased: 0
   description: A shelf with 6 smaller slots for display pieces
   itemType: 6

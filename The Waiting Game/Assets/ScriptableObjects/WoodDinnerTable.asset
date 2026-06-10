@@ -15,5 +15,6 @@ MonoBehaviour:
   itemName: Wood Dinner Table
   icon: {fileID: 0}
   price: 350
+  isPurchased: 0
   description: A rectangular wood dinner table
   itemType: 7
