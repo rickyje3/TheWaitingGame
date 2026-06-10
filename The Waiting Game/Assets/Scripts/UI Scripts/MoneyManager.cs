@@ -4,7 +4,7 @@ using UnityEngine;
 public class MoneyManager : MonoBehaviour
 {
     public DesktopActivityManager activityManager;
-    private float money;
+    [HideInInspector] public float money;
     private float wageMultiplier; // Multiplier that determines player wage
     public TextMeshProUGUI moneyText; 
 
