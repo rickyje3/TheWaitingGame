@@ -5,21 +5,28 @@ using UnityEngine.EventSystems;
 
 public class UI_Shop : MonoBehaviour
 {
-    private Transform container;
-    private Transform shopItemTemplate;
-
-    [Header("Grid Settings")] // the way the items are displayed in the shop
-    public float itemWidth = 100f;
-    public float itemHeight = 100f;
-    public int itemsPerRow = 3;
+    [SerializeField] private Transform container;
+    public Transform shopItemTemplate;
 
     public MoneyManager moneyManager;
     [HideInInspector] public Button buyButton;
 
+    [Header("Grid Settings")]
+    public float itemWidth = 120f;
+    public float itemHeight = 120f;
+    public int itemsPerRow = 2;
+
+    [SerializeField] private TextMeshProUGUI itemNameText;
+    [SerializeField] private TextMeshProUGUI priceText;
+    [SerializeField] private TextMeshProUGUI descriptionText;
+    [SerializeField] private Image itemImage;
+
+    public ShopItemUI shopItemUI;
+
     private void Awake()
     {
-        container = transform.Find("Container");
-        shopItemTemplate = container.Find("ShopItemTemplate");
+        //container = transform.Find("Container");
+        if(shopItemTemplate == null) shopItemTemplate = container.Find("ShopItemTemplate");
 
         if(moneyManager == null)
         moneyManager = FindAnyObjectByType<MoneyManager>();
@@ -31,6 +38,8 @@ public class UI_Shop : MonoBehaviour
         {
             CreateItemButton(GameAssets.instance.shopItems[i], i);
         }
+
+        Debug.Log("Container is: " + container?.name);
     }
 
     public void Purchase(Item item)
@@ -45,19 +54,33 @@ public class UI_Shop : MonoBehaviour
             Debug.Log(item.itemName + " was purchased for $" + item.price);
             moneyManager.UpdateMoneyText();
         }
+        else if (!item.isPurchased && moneyManager.money < item.price)
+        {
+            Debug.Log("Insufficient funds");
+        }
+        else if (item.isPurchased)
+        {
+            Debug.Log("You already own this item");
+        }
     }
 
+
+    public void DisplayItemInfo(Item item)
+    {
+        itemNameText.text = item.itemName;
+        priceText.text = "$" + item.price;
+        descriptionText.text = item.description;
+        itemImage.sprite = item.icon;
+    }
 
     private void CreateItemButton(Item item,  /*Sprite itemSprite, string itemName, int itemPrice*/ int positionIndex)
     {
         Transform shopItemTransform =
-            Instantiate(shopItemTemplate, container);
+                Instantiate(shopItemTemplate, container);
 
         shopItemTransform.gameObject.SetActive(true);
 
-        RectTransform shopItemRectTransform =
-            shopItemTransform.GetComponent<RectTransform>();
-
+        RectTransform shopItemRectTransform = shopItemTransform.GetComponent<RectTransform>();
 
         // Calculate row and column
         int column = positionIndex % itemsPerRow;
@@ -65,39 +88,32 @@ public class UI_Shop : MonoBehaviour
 
         // Position item in grid
         shopItemRectTransform.anchoredPosition =
-            new Vector2(
+          new Vector2(
                 column * itemWidth,
                 -row * itemHeight
-            );
+          );
 
-        // Set item information
-        shopItemTransform
-            .Find("itemName")
-            .GetComponent<TextMeshProUGUI>()
-            .SetText(item.itemName);
+        ShopItemUI shopItemUI =
+            shopItemTransform.GetComponentInChildren<ShopItemUI>();
 
-        shopItemTransform
-            .Find("priceText")
-            .GetComponent<TextMeshProUGUI>()
-            .SetText("$" + item.price.ToString());
+        shopItemUI.item = item;
+        shopItemUI.shop = this;
 
         shopItemTransform
             .Find("itemImage")
             .GetComponent<Image>()
             .sprite = item.icon;
 
-        // Grab the Buy button from this specific shop item
-        buyButton = shopItemTransform
-            .Find("BuyButton")
-            .GetComponentInChildren<Button>();
+        Button buyButton =
+            shopItemTransform
+                .Find("BuyButton")
+                .GetComponent<Button>();
 
-        // Remove old listeners just in case
         buyButton.onClick.RemoveAllListeners();
-
-        // Pass this specific Item SO when clicked
         buyButton.onClick.AddListener(() => Purchase(item));
+    
 
-        /* shopItemTransform = Instantiate(shopItemTemplate, container);
+        /*shopItemTransform = Instantiate(shopItemTemplate, container);
         RectTransform shopItemRectTransform = shopItemTransform.GetComponent<RectTransform>();
 
         float shopItemHeight = 120f;
