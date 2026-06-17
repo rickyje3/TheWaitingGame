@@ -16,7 +16,7 @@ public class Player : MonoBehaviour
     public DesktopActivityManager activityManager;
 
     public NavMeshAgent agent;
-    public Animator animator;
+    //public Animator animator;
 
     public ActivityData[] activities;
 
@@ -54,7 +54,7 @@ public class Player : MonoBehaviour
                 }
 
                 // Play animation
-                animator.CrossFade(data.animationName, 0.2f);
+                //animator.CrossFade(data.animationName, 0.2f);
 
                 break;
             }

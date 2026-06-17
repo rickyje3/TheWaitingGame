@@ -21,7 +21,9 @@ public class UI_Shop : MonoBehaviour
     [SerializeField] private TextMeshProUGUI descriptionText;
     [SerializeField] private Image itemImage;
 
-    public ShopItemUI shopItemUI;
+    [HideInInspector] public ShopItemUI shopItemUI;
+
+    [SerializeField] private Item.ItemType categoryToDisplay;
 
     private void Awake()
     {
@@ -34,12 +36,35 @@ public class UI_Shop : MonoBehaviour
 
     private void Start()
     {
-        for (int i = 0; i < GameAssets.instance.shopItems.Length; i++)
-        {
-            CreateItemButton(GameAssets.instance.shopItems[i], i);
-        }
+
+        // Open to chairs by default
+        // Open to chairs by default
+        ShowCategory(Item.ItemType.Hat);
 
         Debug.Log("Container is: " + container?.name);
+    }
+
+    public void ShowCategory(Item.ItemType itemType)
+    {
+        // Remove old buttons
+        foreach (Transform child in container)
+        {
+            if (child == shopItemTemplate)
+                continue;
+
+            Destroy(child.gameObject);
+        }
+
+        int positionIndex = 0;
+
+        foreach (Item item in GameAssets.instance.shopItems)
+        {
+            if (item.itemType == itemType)
+            {
+                CreateItemButton(item, positionIndex);
+                positionIndex++;
+            }
+        }
     }
 
     public void Purchase(Item item)
@@ -123,5 +148,76 @@ public class UI_Shop : MonoBehaviour
         shopItemTransform.Find("itemName").GetComponent<TextMeshProUGUI>().SetText(itemName); // finds the name in the parent object then sets the value
         shopItemTransform.Find("priceText").GetComponent<TextMeshProUGUI>().SetText(itemPrice.ToString());
         shopItemTransform.Find("itemImage").GetComponent<Image>().sprite = itemSprite;*/
+    }
+
+
+    public void ShowHats()
+    {
+        ShowCategory(Item.ItemType.Hat);
+    }
+
+    public void ShowShirts()
+    {
+        ShowCategory(Item.ItemType.Shirt);
+    }
+
+    public void ShowPants()
+    {
+        ShowCategory(Item.ItemType.Pants);
+    }
+
+    public void ShowShoes()
+    {
+        ShowCategory(Item.ItemType.Shoes);
+    }
+
+    public void ShowAccessories()
+    {
+        ShowCategory(Item.ItemType.Accessories);
+    }
+
+    public void ShowChairs()
+    {
+        ShowCategory(Item.ItemType.Chair);
+    }
+
+    public void ShowBeds()
+    {
+        ShowCategory(Item.ItemType.Beds);
+    }
+
+    public void ShowTables()
+    {
+        ShowCategory(Item.ItemType.Table);
+    }
+
+    public void ShowShelves()
+    {
+        ShowCategory(Item.ItemType.Shelf);
+    }
+
+    public void ShowDecorations()
+    {
+        ShowCategory(Item.ItemType.Decorations);
+    }
+
+    public void ShowLighting()
+    {
+        ShowCategory(Item.ItemType.Lighting);
+    }
+
+    public void ShowPets()
+    {
+        ShowCategory(Item.ItemType.Pets);
+    }
+
+    public void ShowWallpaper()
+    {
+        ShowCategory(Item.ItemType.Wallpaper);
+    }
+
+    public void ShowFlooring()
+    {
+        ShowCategory(Item.ItemType.Flooring);
     }
 }
