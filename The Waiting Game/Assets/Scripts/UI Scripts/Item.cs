@@ -25,7 +25,8 @@ public class Item : ScriptableObject
         Beds,
         Pets,
         Wallpaper,
-        Flooring
+        Flooring,
+        Appliances
     }
 
     public ItemType itemType;

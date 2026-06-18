@@ -129,6 +129,14 @@ public class UI_Shop : MonoBehaviour
             .GetComponent<Image>()
             .sprite = item.icon;
 
+        Image purchasedIcon =
+        shopItemTransform
+            .Find("PurchasedIcon")
+            .GetComponent<Image>();
+
+        purchasedIcon.enabled = item.isPurchased;
+
+
         Button buyButton =
             shopItemTransform
                 .Find("BuyButton")
@@ -199,6 +207,11 @@ public class UI_Shop : MonoBehaviour
     public void ShowDecorations()
     {
         ShowCategory(Item.ItemType.Decorations);
+    }
+
+    public void ShowAppliances()
+    {
+        ShowCategory(Item.ItemType.Appliances);
     }
 
     public void ShowLighting()
