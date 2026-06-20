@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Item
   itemName: Basketball Shorts
   icon: {fileID: 0}
+  prefab: {fileID: 0}
   price: 25
   isPurchased: 0
   description: A big baggy pair of basketball shorts

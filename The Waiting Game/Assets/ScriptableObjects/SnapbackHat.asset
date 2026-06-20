@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Item
   itemName: Snapback Hat
   icon: {fileID: 0}
+  prefab: {fileID: 0}
   price: 20
   isPurchased: 0
   description: A blank snapback hat

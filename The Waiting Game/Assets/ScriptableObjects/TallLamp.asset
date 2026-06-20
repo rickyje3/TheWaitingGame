@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Item
   itemName: Tall Lamp
   icon: {fileID: 0}
+  prefab: {fileID: 0}
   price: 125
   isPurchased: 0
   description: A tall lamp that lights up the room vibrantly

@@ -5,6 +5,7 @@ public class Item : ScriptableObject
 {
     public string itemName;
     public Sprite icon;
+    public GameObject prefab;
     public int price;
     public bool isPurchased = false;
 

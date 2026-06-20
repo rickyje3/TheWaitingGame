@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Item
   itemName: CRT TV
   icon: {fileID: 0}
+  prefab: {fileID: 0}
   price: 250
   isPurchased: 0
   description: My little brother once spam pressed the power button on our CRT TV

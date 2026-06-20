@@ -11,6 +11,7 @@ public class DragAcrossScreen :
 
     public void OnDrag(PointerEventData eventData)
     {
+
         Vector3 move = new Vector3(
             -eventData.delta.x * dragSpeed,
             -eventData.delta.y * dragSpeed,

@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Item
   itemName: Beanie
   icon: {fileID: 0}
+  prefab: {fileID: 0}
   price: 20
   isPurchased: 0
   description: A nice snug warm beanie

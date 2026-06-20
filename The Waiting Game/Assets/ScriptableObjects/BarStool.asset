@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Item
   itemName: Barstool
   icon: {fileID: 0}
+  prefab: {fileID: 0}
   price: 100
   isPurchased: 0
   description: A backless chair perfect for a bar or countertop

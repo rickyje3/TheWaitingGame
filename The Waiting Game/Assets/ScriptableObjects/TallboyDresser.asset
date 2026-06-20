@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Item
   itemName: Tallboy Dresser
   icon: {fileID: 0}
+  prefab: {fileID: 0}
   price: 750
   isPurchased: 0
   description: A couple drawers, a couple doors, what more could you ask for?

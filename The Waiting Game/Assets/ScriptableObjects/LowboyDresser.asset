@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Item
   itemName: Lowboy Dresser
   icon: {fileID: 0}
+  prefab: {fileID: 0}
   price: 350
   isPurchased: 0
   description: A shorter dresser perfect for a TV stand

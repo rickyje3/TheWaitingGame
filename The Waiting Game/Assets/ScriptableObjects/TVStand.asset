@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Item
   itemName: TV Stand
   icon: {fileID: 0}
+  prefab: {fileID: 0}
   price: 250
   isPurchased: 0
   description: A stand for your TV with room for storage/display pieces

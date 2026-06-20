@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Item
   itemName: Coffee Table
   icon: {fileID: 0}
+  prefab: {fileID: 0}
   price: 200
   isPurchased: 0
   description: Fun fact coffee and caffeine has no effect on me

@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Item
   itemName: Wall Lamp
   icon: {fileID: 0}
+  prefab: {fileID: 0}
   price: 75
   isPurchased: 0
   description: A lamp you can attach to your wall

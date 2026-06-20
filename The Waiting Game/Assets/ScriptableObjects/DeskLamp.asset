@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Item
   itemName: Desk Lamp
   icon: {fileID: 0}
+  prefab: {fileID: 0}
   price: 50
   isPurchased: 0
   description: A soothing warm desk lamp

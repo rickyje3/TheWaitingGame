@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Item
   itemName: Upholstered Bed
   icon: {fileID: 0}
+  prefab: {fileID: 0}
   price: 800
   isPurchased: 0
   description: How fancy of you

@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Item
   itemName: FloatingBed
   icon: {fileID: 0}
+  prefab: {fileID: 0}
   price: 850
   isPurchased: 0
   description: Brings a touch of Japanese minimalist elegance to your bedroom

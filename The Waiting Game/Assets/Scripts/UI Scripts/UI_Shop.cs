@@ -85,6 +85,7 @@ public class UI_Shop : MonoBehaviour
         }
         else if (item.isPurchased)
         {
+            //take the prefab and then drag it to wherever
             Debug.Log("You already own this item");
         }
     }

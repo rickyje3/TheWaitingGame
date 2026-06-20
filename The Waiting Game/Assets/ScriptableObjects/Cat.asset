@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Item
   itemName: Cat
   icon: {fileID: 0}
+  prefab: {fileID: 0}
   price: 3000
   isPurchased: 0
   description: My apartment won't let me have a cat but at least I have a virtual
