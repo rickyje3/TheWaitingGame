@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Unity.AppUI.UI;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -6,7 +7,7 @@ using UnityEngine.InputSystem;
 public class GridSystem : MonoBehaviour
 {
     public GameObject objectToPlace;
-    public float gridSize = 10f;
+    public float gridSize = 10f; // The higher this is the less smooth it is (more grid like)
     private GameObject ghostObject; // The object that shows where the position of the placed object would be
     private HashSet<Vector3> occupiedPositions = new HashSet<Vector3>();
 
@@ -26,6 +27,16 @@ public class GridSystem : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0))
             PlaceObject();
+
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            RotateGhostObjectCounterClockwise();
+        }
+
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            RotateGhostObjectClockwise();
+        }
     }
 
 
@@ -59,6 +70,8 @@ public class GridSystem : MonoBehaviour
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
+        //ghostObject.transform.rotation = Quaternion.Euler(RotationX, RotationY, 0);
+
         if (Physics.Raycast(ray, out RaycastHit hit))
         {
             Vector3 point = hit.point;
@@ -78,7 +91,17 @@ public class GridSystem : MonoBehaviour
                 SetGhostColor(new Color(1f, 1f, 1f, 0.2f)); // Keep transparent unless occupied
         }
     }
-        
+
+    public void RotateGhostObjectCounterClockwise()
+    {
+        ghostObject.transform.Rotate(0, 90, 0);
+    }
+
+    public void RotateGhostObjectClockwise()
+    {
+        ghostObject.transform.Rotate(0, -90, 0);
+    }
+
     void SetGhostColor(Color color)
     {
         Renderer[] renderers = ghostObject.GetComponentsInChildren<Renderer>();
@@ -95,7 +118,7 @@ public class GridSystem : MonoBehaviour
 
         if (!occupiedPositions.Contains(placementPosition))
         {
-            Instantiate(objectToPlace, placementPosition, Quaternion.Euler(RotationX, RotationY, 0)); // Place the object at the ghosts position
+            Instantiate(objectToPlace, placementPosition, ghostObject.transform.rotation); // Place the object at the ghosts position
 
             occupiedPositions.Add(placementPosition); // Mark this position as occupied
         }

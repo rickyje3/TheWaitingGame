@@ -2,7 +2,7 @@
 - Project name: The Waiting Game
 - Unity version: Unity 6000.4.0f1
 - Active game object:
-  - Name: Floor
+  - Name: Canvas
   - Tag: Untagged
-  - Layer: Default
+  - Layer: UIWindow
 <!-- UNITY CODE ASSIST INSTRUCTIONS END -->
