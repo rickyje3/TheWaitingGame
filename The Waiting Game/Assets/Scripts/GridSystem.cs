@@ -14,6 +14,10 @@ public class GridSystem : MonoBehaviour
     public int RotationX;
     public int RotationY;
 
+    [SerializeField] private LayerMask floorMask;
+
+    private bool canPlace;
+
 
     private void Start()
     {
@@ -25,7 +29,7 @@ public class GridSystem : MonoBehaviour
     {
         UpdateGhostPosition();
 
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && canPlace)
             PlaceObject();
 
         if (Input.GetKeyDown(KeyCode.E))
@@ -42,27 +46,27 @@ public class GridSystem : MonoBehaviour
 
     void CreateGhostObject()
     {
-        ghostObject = Instantiate(objectToPlace, Input.mousePosition, Quaternion.Euler(RotationX, RotationY, 0));
-        //only instantiates at the beginning so when we change the rotation it's not currently updating
-        ghostObject.GetComponent<Collider>().enabled = false;
+        ghostObject = Instantiate(
+            objectToPlace,
+            Vector3.zero,
+            Quaternion.Euler(RotationX, RotationY, 0)
+        );
 
-        Renderer[] renderers = ghostObject.GetComponentsInChildren<Renderer>();
+        Collider col = ghostObject.GetComponent<Collider>();
+
+        if (col != null)
+            col.enabled = false;
+
+        Renderer[] renderers =
+            ghostObject.GetComponentsInChildren<Renderer>();
 
         foreach (Renderer renderer in renderers)
         {
             Material mat = renderer.material;
-            Color color = mat.color;
-            color.a = 0.5f; // Set transparency
-            mat.color = color;
 
-            mat.SetFloat("_Mode", 2); // Set rendering mode to transparent 
-            mat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha); // Set blending mode for transparency
-            mat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha); // Set blending mode for transparency
-            mat.SetInt("_ZWrite", 0); // Disable depth writing
-            mat.DisableKeyword("_ALPHATEST_ON"); // Disable alpha testing
-            mat.EnableKeyword("_ALPHABLEND_ON"); // Enable alpha blending
-            mat.DisableKeyword("_ALPHAPREMULTIPLY_ON"); // Disable premultiplied alpha
-            mat.renderQueue = 3000; // Set render queue for transparent objects
+            Color color = mat.color;
+            color.a = 0.5f;
+            mat.color = color;
         }
     }
 
@@ -74,22 +78,67 @@ public class GridSystem : MonoBehaviour
 
         if (Physics.Raycast(ray, out RaycastHit hit))
         {
-            Vector3 point = hit.point;
-
             Vector3 snappedPosition = new Vector3(
-                Mathf.Round(point.x / gridSize) * gridSize,
-                Mathf.Round(point.y / gridSize) * gridSize,
-                Mathf.Round(point.z / gridSize) * gridSize);
+                Mathf.Round(hit.point.x / gridSize) * gridSize,
+                0f,
+                Mathf.Round(hit.point.z / gridSize) * gridSize
+            );
 
-            ghostObject.transform.position = snappedPosition;
+            Collider ghostCollider =
+                ghostObject.GetComponent<Collider>();
 
-            if (occupiedPositions.Contains(snappedPosition)) // and isn't an object u can place on top of
+            if (ghostCollider != null)
             {
-                SetGhostColor(Color.red);
+                snappedPosition.y =
+                    hit.point.y +
+                    ghostCollider.bounds.size.y;
             }
-            else 
-                SetGhostColor(new Color(1f, 1f, 1f, 0.2f)); // Keep transparent unless occupied
+            else
+            {
+                snappedPosition.y = hit.point.y;
+            }
+
+            ghostObject.transform.position =
+                snappedPosition;
+
+            canPlace = CanPlaceObject();
+
+            if (canPlace)
+            {
+                SetGhostColor(new Color(0f, 1f, 0f, 0.5f));
+            }
+            else
+            {
+                SetGhostColor(new Color(1f, 0f, 0f, 0.5f));
+            }
         }
+    }
+
+
+    bool CanPlaceObject()
+    {
+        Collider ghostCollider =
+            ghostObject.GetComponent<Collider>();
+
+        if (ghostCollider == null)
+            return true;
+
+        Collider[] overlaps =
+            Physics.OverlapBox(
+                ghostCollider.bounds.center,
+                ghostCollider.bounds.extents * 0.95f,
+                ghostObject.transform.rotation
+            );
+
+        foreach (Collider col in overlaps)
+        {
+            if (col.gameObject == ghostObject)
+                continue;
+
+            return false;
+        }
+
+        return true;
     }
 
     public void RotateGhostObjectCounterClockwise()
@@ -108,7 +157,7 @@ public class GridSystem : MonoBehaviour
 
         foreach (Renderer renderer in renderers)
         {
-            Material mat = renderer.material;
+            renderer.material.color = color;
         }
     }
 
