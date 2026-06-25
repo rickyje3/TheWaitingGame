@@ -1484,14 +1484,14 @@
     "m_CustomSlotLabel": "",
     "m_DismissedVersion": 0,
     "m_Precision": 0,
-    "overrideHLSLDeclaration": false,
-    "hlslDeclarationOverride": 0,
+    "overrideHLSLDeclaration": true,
+    "hlslDeclarationOverride": 2,
     "m_Hidden": false,
     "m_PerRendererData": false,
     "m_customAttributes": [],
     "m_Value": {
-        "x": 0.10999999940395355,
-        "y": 0.10999999940395355,
+        "x": 0.2199999988079071,
+        "y": 0.2199999988079071,
         "z": 0.0,
         "w": 0.0
     }

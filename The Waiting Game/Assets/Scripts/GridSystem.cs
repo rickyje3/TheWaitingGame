@@ -4,6 +4,8 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+// This is deprecated for the meantime
+
 public class GridSystem : MonoBehaviour
 {
     public GameObject objectToPlace;
