@@ -926,10 +926,10 @@
         "m_Expanded": true,
         "m_Position": {
             "serializedVersion": "2",
-            "x": -377.0,
-            "y": -117.0,
-            "width": 108.0,
-            "height": 34.00000762939453
+            "x": -346.00006103515627,
+            "y": 374.00006103515627,
+            "width": 108.00004577636719,
+            "height": 33.999969482421878
         }
     },
     "m_Slots": [
@@ -1440,10 +1440,10 @@
         "m_Expanded": true,
         "m_Position": {
             "serializedVersion": "2",
-            "x": -1075.0001220703125,
-            "y": -21.000022888183595,
-            "width": 160.00006103515626,
-            "height": 33.99999237060547
+            "x": -1027.0,
+            "y": -15.99996566772461,
+            "width": 160.0,
+            "height": 33.99998474121094
         }
     },
     "m_Slots": [
@@ -1697,10 +1697,10 @@
         "m_Expanded": true,
         "m_Position": {
             "serializedVersion": "2",
-            "x": -221.0,
-            "y": -185.99998474121095,
+            "x": -166.00001525878907,
+            "y": 309.9999694824219,
             "width": 208.00003051757813,
-            "height": 302.0
+            "height": 302.0000915527344
         }
     },
     "m_Slots": [
@@ -2042,11 +2042,11 @@
     "m_PerRendererData": false,
     "m_customAttributes": [],
     "m_Value": 0.800000011920929,
-    "m_FloatType": 0,
+    "m_FloatType": 1,
     "m_LiteralFloatMode": false,
     "m_RangeValues": {
-        "x": 0.0,
-        "y": 1.0
+        "x": 0.5,
+        "y": 0.8999999761581421
     },
     "m_SliderType": 0,
     "m_SliderPower": 3.0,
