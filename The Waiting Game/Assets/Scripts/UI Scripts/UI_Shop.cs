@@ -25,13 +25,19 @@ public class UI_Shop : MonoBehaviour
 
     [SerializeField] private Item.ItemType categoryToDisplay;
 
+    [SerializeField] private GridPlacementSystem gridPlacementSystem;
+
+
     private void Awake()
     {
         //container = transform.Find("Container");
         if(shopItemTemplate == null) shopItemTemplate = container.Find("ShopItemTemplate");
 
         if(moneyManager == null)
-        moneyManager = FindAnyObjectByType<MoneyManager>();
+            moneyManager = FindAnyObjectByType<MoneyManager>();
+
+        if (gridPlacementSystem == null)
+            gridPlacementSystem = FindAnyObjectByType<GridPlacementSystem>();
     }
 
     private void Start()
@@ -85,8 +91,7 @@ public class UI_Shop : MonoBehaviour
         }
         else if (item.isPurchased)
         {
-            //take the prefab and then drag it to wherever
-            Debug.Log("You already own this item");
+            gridPlacementSystem.StartPlacement(item);
         }
     }
 

@@ -14,8 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Item
   itemName: Tennis Shoes
   icon: {fileID: 0}
-  prefab: {fileID: 0}
   price: 50
   isPurchased: 0
   description: A basic pair of tennis shoes
+  <ID>k__BackingField: 0
+  <Size>k__BackingField: {x: 1, y: 1}
+  <Prefab>k__BackingField: {fileID: 6645670022071340812, guid: b2ebe076afc54a947be87c1d6d100411, type: 3}
   itemType: 3

@@ -1,4 +1,6 @@
+using System;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class GridInputManager : MonoBehaviour
 {
@@ -8,6 +10,24 @@ public class GridInputManager : MonoBehaviour
 
     [SerializeField] private LayerMask placementLayermask;
 
+    public event Action OnClicked, OnExit;
+
+    private void Update()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            OnClicked?.Invoke();
+            Debug.Log("Mouse Click from " + GetEntityId());
+        }
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            OnExit?.Invoke();
+            Debug.Log("Exiting edit mode");
+        }
+    }
+
+    public bool IsPointerOverUI()
+        => EventSystem.current.IsPointerOverGameObject();
 
     public Vector3 GetSelectedMousePosition()
     {
@@ -17,11 +37,11 @@ public class GridInputManager : MonoBehaviour
 
         if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, placementLayermask))
         {
-            Debug.Log("HIT: " + hit.collider.name);
+            //Debug.Log("HIT: " + hit.collider.name);
             return hit.point;
         }
 
-        Debug.Log("MISS");
+        //Debug.Log("MISS");
 
         return Vector3.zero;
     }

@@ -1,3 +1,6 @@
+using NUnit.Framework;
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class GameAssets : MonoBehaviour
@@ -10,6 +13,5 @@ public class GameAssets : MonoBehaviour
         instance = this;
     }
 
-    public Item[] shopItems;
-
+    public List<Item> shopItems;
 }
