@@ -1,17 +1,20 @@
 using Unity.AppUI.Core;
 using UnityEngine;
-using static UnityEditor.Progress;
 
 public class GridPlacementSystem : MonoBehaviour
 {
-    [SerializeField] private GameObject mouseIndicator, cursorIndicator; // attach the parent here
+    [SerializeField] private GameObject mouseIndicator, cursorIndicator; 
     [SerializeField] private GridInputManager gridInputManager;
-    [SerializeField] private Grid grid;
+    [SerializeField] private Grid floorGrid;
+    [SerializeField] private Grid loftGrid;
 
-    [SerializeField] private GameObject gridVisualization;
+    [SerializeField] private GameObject gridVisualizationFloor;
+    [SerializeField] private GameObject gridVisualizationLoft;
     [SerializeField] private GameAssets gameAssets;
 
-    public Item selectedItem;
+    private Item selectedItem;
+    private Grid activeGrid;
+    private GameObject activeGridVisualization;
 
 
     private void Start()
@@ -25,30 +28,38 @@ public class GridPlacementSystem : MonoBehaviour
 
     private void PlaceStructure()
     {
-        Debug.Log("Calling placestructure");
-
         if (selectedItem == null)
         {
             Debug.Log("No selected item");
             return;
         }
 
-       /* if (gridInputManager.IsPointerOverUI())
-        {
-            Debug.Log("Pointer is over ui, blocking placement");
-            return;
-        }*/
-
-        Debug.Log("Passed UI check");
+        /* if (gridInputManager.IsPointerOverUI())
+         {
+             Debug.Log("Pointer is over ui, blocking placement");
+             return;
+         }*/
 
         Vector3 mousePosition =
             gridInputManager.GetSelectedMousePosition();
 
+        if (mousePosition == Vector3.zero)
+        {
+            Debug.Log("Invalid mouse position (raycast miss)");
+            return;
+        }
+
+        if (activeGrid == null)
+        {
+            Debug.Log("No active grid set");
+            return;
+        }
+
         Vector3Int gridPosition =
-            grid.WorldToCell(mousePosition);
+            floorGrid.WorldToCell(mousePosition);
 
         Vector3 spawnPosition =
-            grid.CellToWorld(gridPosition);
+            floorGrid.CellToWorld(gridPosition);
 
         Debug.Log("Prefab is: " + selectedItem.Prefab);
 
@@ -66,7 +77,8 @@ public class GridPlacementSystem : MonoBehaviour
 
         selectedItem = null;
 
-        gridVisualization.SetActive(false);
+        gridVisualizationFloor.SetActive(false);
+        gridVisualizationLoft.SetActive(false);
         cursorIndicator.SetActive(false);
         gridInputManager.OnClicked -= PlaceStructure;
         gridInputManager.OnExit -= StopPlacement;
@@ -79,25 +91,52 @@ public class GridPlacementSystem : MonoBehaviour
 
         selectedItem = item;
 
-        gridVisualization.SetActive(true);
+        SetActiveGrid(floorGrid, gridVisualizationFloor);
+
         cursorIndicator.SetActive(true);
+        mouseIndicator.SetActive(true);
 
         gridInputManager.OnClicked += PlaceStructure;
-        Debug.Log("Subscribed");
         gridInputManager.OnExit += StopPlacement;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (selectedItem == null)
+        if (selectedItem == null || activeGrid == null)
             return;
 
         Vector3 mousePosition = gridInputManager.GetSelectedMousePosition();
-        Vector3Int gridPosition = grid.WorldToCell(mousePosition);
+
+        if (mousePosition == Vector3.zero)
+            return;
+
+        Vector3Int gridPosition = activeGrid.WorldToCell(mousePosition);
         mouseIndicator.transform.position =
             mousePosition + Vector3.up * 0.5f;
 
-        cursorIndicator.transform.position = grid.CellToWorld(gridPosition);
+        cursorIndicator.transform.position = activeGrid.CellToWorld(gridPosition);
+    }
+
+    private void SetActiveGrid(Grid grid, GameObject visualization)
+    {
+        activeGrid = grid;
+
+        gridVisualizationFloor.SetActive(false);
+        gridVisualizationLoft.SetActive(false);
+
+        activeGridVisualization = visualization;
+        activeGridVisualization.SetActive(true);
+    }
+
+    // Optional manual switch (you can call this from a button or keybind)
+    public void SwitchToLoft()
+    {
+        SetActiveGrid(loftGrid, gridVisualizationLoft);
+    }
+
+    public void SwitchToFloor()
+    {
+        SetActiveGrid(floorGrid, gridVisualizationFloor);
     }
 }

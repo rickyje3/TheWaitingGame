@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class GridInputManager : MonoBehaviour
 {
@@ -12,6 +13,10 @@ public class GridInputManager : MonoBehaviour
 
     public event Action OnClicked, OnExit;
 
+    public MainMenu mainMenu;
+    public Image mainMenuImage;
+    public LayoutGroup layoutGroup;
+
     private void Update()
     {
         if (Input.GetMouseButtonDown(0))
@@ -22,6 +27,9 @@ public class GridInputManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             OnExit?.Invoke();
+            mainMenu.CloseMenu();
+            mainMenuImage.enabled = true;
+            layoutGroup.gameObject.SetActive(true);
             Debug.Log("Exiting edit mode");
         }
     }
