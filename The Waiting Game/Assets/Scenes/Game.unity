@@ -15310,8 +15310,8 @@ MonoBehaviour:
   cam: {fileID: 330585545}
   uiRoot: {fileID: 1216016943}
   zoomSpeed: 0.4
-  minZoom: 50
-  maxZoom: 200
+  minZoom: 25
+  maxZoom: 100
   maxUiRootScale: 1.2
   minUiRootScale: 0.3
 --- !u!1 &1043265198

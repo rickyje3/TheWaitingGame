@@ -34,11 +34,11 @@ public class GridPlacementSystem : MonoBehaviour
             return;
         }
 
-        /* if (gridInputManager.IsPointerOverUI())
-         {
+        if (gridInputManager.IsPointerOverUI())
+        {
              Debug.Log("Pointer is over ui, blocking placement");
              return;
-         }*/
+        }
 
         Vector3 mousePosition =
             gridInputManager.GetSelectedMousePosition();
