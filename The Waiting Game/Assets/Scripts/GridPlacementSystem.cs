@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using Unity.AppUI.Core;
 using UnityEngine;
 
@@ -12,9 +14,15 @@ public class GridPlacementSystem : MonoBehaviour
     [SerializeField] private GameObject gridVisualizationLoft;
     [SerializeField] private GameAssets gameAssets;
 
-    private Item selectedItem;
+    public Item selectedItem;
     private Grid activeGrid;
     private GameObject activeGridVisualization;
+
+    private GridData floorData, furnitureData;
+
+    private Renderer previewRenderer;
+
+    private List<GameObject> placedGameObjects = new();
 
 
     private void Start()
@@ -23,6 +31,9 @@ public class GridPlacementSystem : MonoBehaviour
             gameAssets = FindAnyObjectByType<GameAssets>();
 
         StopPlacement();
+        floorData = new();
+        furnitureData = new();
+        previewRenderer = cursorIndicator.GetComponentInChildren<Renderer>();
     }
 
 
@@ -34,11 +45,11 @@ public class GridPlacementSystem : MonoBehaviour
             return;
         }
 
-        if (gridInputManager.IsPointerOverUI())
+        /*if (gridInputManager.IsPointerOverUI())
         {
              Debug.Log("Pointer is over ui, blocking placement");
              return;
-        }
+        }*/
 
         Vector3 mousePosition =
             gridInputManager.GetSelectedMousePosition();
@@ -56,19 +67,51 @@ public class GridPlacementSystem : MonoBehaviour
         }
 
         Vector3Int gridPosition =
-            floorGrid.WorldToCell(mousePosition);
+            activeGrid.WorldToCell(mousePosition);
 
         Vector3 spawnPosition =
-            floorGrid.CellToWorld(gridPosition);
+            activeGrid.CellToWorld(gridPosition);
+
+        bool placementValidity = CheckPlacementValidity(gridPosition, selectedItem);
+
+        if (placementValidity == false)
+            return;
 
         Debug.Log("Prefab is: " + selectedItem.Prefab);
 
-        Instantiate(
+        GameObject obj = Instantiate(
             selectedItem.Prefab,
             spawnPosition,
             Quaternion.identity
         );
+
+        placedGameObjects.Add(obj);
+
+        GridData selectedData = selectedItem.isFloorObject ? floorData : furnitureData;
+        selectedData.AddObjectAt(
+            gridPosition,
+            selectedItem.Size,
+            selectedItem,
+            placedGameObjects.Count - 1);
+
+        Debug.Log($"ADDING {selectedData.GetHashCode()}");
         Debug.Log("Placing " + selectedItem.ToString());
+    }
+
+    private GridData GetSelectedData()
+    {
+        return selectedItem.isFloorObject
+            ? floorData
+            : furnitureData;
+    }
+
+    private bool CheckPlacementValidity(Vector3Int gridPosition, Item selectedItem)
+    {
+        //GridData selectedData = selectedItem.isFloorObject ? floorData : furnitureData;
+        //Debug.Log($"CHECKING {selectedData.GetHashCode()}");
+        return GetSelectedData().CanPlaceObjectAt(
+            gridPosition,
+            selectedItem.Size);
     }
 
     public void StopPlacement()
@@ -112,6 +155,10 @@ public class GridPlacementSystem : MonoBehaviour
             return;
 
         Vector3Int gridPosition = activeGrid.WorldToCell(mousePosition);
+
+        bool placementValidity = CheckPlacementValidity(gridPosition, selectedItem);
+        previewRenderer.material.color = placementValidity ? Color.green : Color.red;
+
         mouseIndicator.transform.position =
             mousePosition + Vector3.up * 0.5f;
 

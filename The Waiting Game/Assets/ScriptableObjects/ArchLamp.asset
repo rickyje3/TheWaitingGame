@@ -10,16 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 291651427e9f22248b6943dcad6721d3, type: 3}
-  m_Name: WoodenChair
+  m_Name: ArchLamp
   m_EditorClassIdentifier: Assembly-CSharp::Item
-  itemName: Wooden Chair
+  itemName: Arch Lamp
   icon: {fileID: 0}
-  price: 125
+  price: 250
   isPurchased: 0
-  description: A nice stable wooden dining chair
+  description: I want one of these irl so badly
   <Size>k__BackingField: {x: 1, y: 1}
   <Prefab>k__BackingField: {fileID: 6645670022071340812, guid: b2ebe076afc54a947be87c1d6d100411, type: 3}
   isCosmetic: 0
   isFloorObject: 1
   isWallObject: 0
-  itemType: 5
+  itemType: 9

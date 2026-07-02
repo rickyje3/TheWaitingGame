@@ -17,6 +17,10 @@ public class Item : ScriptableObject
     [field: SerializeField]
     public GameObject Prefab { get; private set; }
 
+    public bool isCosmetic;
+    public bool isFloorObject;
+    public bool isWallObject;
+
 
     public enum ItemType
     { 
