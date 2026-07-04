@@ -496,7 +496,7 @@ MonoBehaviour:
   m_IsSelectable: 1
   m_SelectedFaces: 
   m_SelectedEdges: []
-  m_SelectedVertices: 05000000
+  m_SelectedVertices: 
 --- !u!114 &3800218191479367609
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -15,9 +15,9 @@ MonoBehaviour:
   itemName: Tatami Bed
   icon: {fileID: 0}
   price: 100
-  isPurchased: 0
+  isPurchased: 1
   description: For those who like feeling close to the Earth
-  <Size>k__BackingField: {x: 2, y: 1}
+  <Size>k__BackingField: {x: 2, y: 2}
   <Prefab>k__BackingField: {fileID: 6645670022071340812, guid: b2ebe076afc54a947be87c1d6d100411, type: 3}
   isCosmetic: 0
   isFloorObject: 1

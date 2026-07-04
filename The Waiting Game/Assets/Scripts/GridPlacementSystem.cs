@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class GridPlacementSystem : MonoBehaviour
 {
-    [SerializeField] private GameObject mouseIndicator, cursorIndicator; 
+    [SerializeField] private GameObject mouseIndicator; 
     [SerializeField] private GridInputManager gridInputManager;
     [SerializeField] private Grid floorGrid;
     [SerializeField] private Grid loftGrid;
@@ -14,15 +14,17 @@ public class GridPlacementSystem : MonoBehaviour
     [SerializeField] private GameObject gridVisualizationLoft;
     [SerializeField] private GameAssets gameAssets;
 
-    public Item selectedItem;
+    [HideInInspector] public Item selectedItem;
     private Grid activeGrid;
     private GameObject activeGridVisualization;
 
     private GridData floorData, furnitureData;
 
-    private Renderer previewRenderer;
-
     private List<GameObject> placedGameObjects = new();
+
+    [SerializeField] private PreviewSystem preview;
+
+    private Vector3Int lastDetectedPosition = Vector3Int.zero;
 
 
     private void Start()
@@ -33,7 +35,6 @@ public class GridPlacementSystem : MonoBehaviour
         StopPlacement();
         floorData = new();
         furnitureData = new();
-        previewRenderer = cursorIndicator.GetComponentInChildren<Renderer>();
     }
 
 
@@ -96,6 +97,8 @@ public class GridPlacementSystem : MonoBehaviour
 
         Debug.Log($"ADDING {selectedData.GetHashCode()}");
         Debug.Log("Placing " + selectedItem.ToString());
+
+        preview.UpdatePosition(activeGrid.CellToWorld(gridPosition), false);
     }
 
     private GridData GetSelectedData()
@@ -122,9 +125,11 @@ public class GridPlacementSystem : MonoBehaviour
 
         gridVisualizationFloor.SetActive(false);
         gridVisualizationLoft.SetActive(false);
-        cursorIndicator.SetActive(false);
+        preview.StopShowingPreview();
         gridInputManager.OnClicked -= PlaceStructure;
         gridInputManager.OnExit -= StopPlacement;
+
+        lastDetectedPosition = Vector3Int.zero;
     }
 
     public void StartPlacement(Item item)
@@ -136,7 +141,7 @@ public class GridPlacementSystem : MonoBehaviour
 
         SetActiveGrid(floorGrid, gridVisualizationFloor);
 
-        cursorIndicator.SetActive(true);
+        preview.StartShowingPlacementPreview(selectedItem.Prefab, selectedItem.Size);
         mouseIndicator.SetActive(true);
 
         gridInputManager.OnClicked += PlaceStructure;
@@ -156,13 +161,17 @@ public class GridPlacementSystem : MonoBehaviour
 
         Vector3Int gridPosition = activeGrid.WorldToCell(mousePosition);
 
-        bool placementValidity = CheckPlacementValidity(gridPosition, selectedItem);
-        previewRenderer.material.color = placementValidity ? Color.green : Color.red;
+        if (lastDetectedPosition != gridPosition)
+        {
+            bool placementValidity = CheckPlacementValidity(gridPosition, selectedItem);
 
-        mouseIndicator.transform.position =
-            mousePosition + Vector3.up * 0.5f;
+            mouseIndicator.transform.position =
+                mousePosition + Vector3.up * 0.5f;
 
-        cursorIndicator.transform.position = activeGrid.CellToWorld(gridPosition);
+            //cursorIndicator.transform.position = activeGrid.CellToWorld(gridPosition);
+            preview.UpdatePosition(activeGrid.CellToWorld(gridPosition), placementValidity);
+            lastDetectedPosition = gridPosition;
+        }
     }
 
     private void SetActiveGrid(Grid grid, GameObject visualization)
