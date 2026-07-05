@@ -20,11 +20,11 @@ public class GridPlacementSystem : MonoBehaviour
 
     private GridData floorData, furnitureData;
 
-    private List<GameObject> placedGameObjects = new();
-
     [SerializeField] private PreviewSystem preview;
 
     private Vector3Int lastDetectedPosition = Vector3Int.zero;
+
+    [SerializeField] private ObjectPlacer objectPlacer;
 
 
     private void Start()
@@ -80,20 +80,15 @@ public class GridPlacementSystem : MonoBehaviour
 
         Debug.Log("Prefab is: " + selectedItem.Prefab);
 
-        GameObject obj = Instantiate(
-            selectedItem.Prefab,
-            spawnPosition,
-            Quaternion.identity
-        );
 
-        placedGameObjects.Add(obj);
+        int index = objectPlacer.PlaceObject(selectedItem.Prefab, activeGrid.CellToWorld(gridPosition));
 
         GridData selectedData = selectedItem.isFloorObject ? floorData : furnitureData;
         selectedData.AddObjectAt(
             gridPosition,
             selectedItem.Size,
             selectedItem,
-            placedGameObjects.Count - 1);
+            objectPlacer.placedGameObjects.Count - 1);
 
         Debug.Log($"ADDING {selectedData.GetHashCode()}");
         Debug.Log("Placing " + selectedItem.ToString());
