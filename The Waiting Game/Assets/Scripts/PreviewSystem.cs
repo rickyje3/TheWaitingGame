@@ -101,6 +101,8 @@ public class PreviewSystem : MonoBehaviour
 
     private void MovePreview(Vector3 position)
     {
+        if (previewObject == null)
+            return;
         previewObject.transform.position = new Vector3(position.x, position.y + previewYOffset, position.z);
     }
 

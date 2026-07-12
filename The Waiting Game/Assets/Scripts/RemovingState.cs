@@ -63,6 +63,6 @@ public class RemovingState : IBuildingState
     {
         bool canRemove = !furnitureData.CanPlaceObjectAt(gridPosition, Vector2Int.one) || !floorData.CanPlaceObjectAt(gridPosition, Vector2Int.one);
 
-        previewSystem.UpdatePosition(grid.CellToWorld(gridPosition), !canRemove);
+        previewSystem.UpdatePosition(grid.CellToWorld(gridPosition), canRemove);
     }
 }
