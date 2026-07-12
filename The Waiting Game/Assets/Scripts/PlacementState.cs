@@ -9,8 +9,9 @@ public class PlacementState : IBuildingState
     private Grid grid;
     private GridData selectedData;
     private readonly ObjectPlacer objectPlacer;
+    private SoundFeedback soundFeedback;
 
-    public PlacementState(Item selectedItem, Grid grid, PreviewSystem previewSystem, GridPlacementSystem placementSystem, GridData floorData, GridData furnitureData, ObjectPlacer objectPlacer)
+    public PlacementState(Item selectedItem, Grid grid, PreviewSystem previewSystem, GridPlacementSystem placementSystem, GridData floorData, GridData furnitureData, ObjectPlacer objectPlacer, SoundFeedback soundFeedback)
     {
         this.selectedItem = selectedItem;
         this.previewSystem = previewSystem;
@@ -18,6 +19,7 @@ public class PlacementState : IBuildingState
         this.grid = grid;
         this.selectedData = placementSystem.GetSelectedData();
         this.objectPlacer = objectPlacer;
+        this.soundFeedback = soundFeedback;
 
         selectedItem = placementSystem.selectedItem;
 
@@ -50,7 +52,12 @@ public class PlacementState : IBuildingState
         bool placementValidity = CheckPlacementValidity(gridPosition, selectedItem);
 
         if (placementValidity == false)
+        {
+            soundFeedback.PlaySound(SoundType.WrongPlacement);
             return;
+        }
+
+        soundFeedback.PlaySound(SoundType.Place);
 
         Debug.Log("Prefab is: " + selectedItem.Prefab);
 

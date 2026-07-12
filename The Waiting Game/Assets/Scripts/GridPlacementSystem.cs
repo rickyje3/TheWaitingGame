@@ -26,6 +26,8 @@ public class GridPlacementSystem : MonoBehaviour
 
     [SerializeField] private ObjectPlacer objectPlacer;
 
+    [SerializeField] private SoundFeedback soundFeedback;
+
     IBuildingState buildingState;
 
 
@@ -129,7 +131,7 @@ public class GridPlacementSystem : MonoBehaviour
 
         selectedItem = item;
 
-        buildingState = new PlacementState(selectedItem, activeGrid, preview, this, floorData, furnitureData, objectPlacer);
+        buildingState = new PlacementState(selectedItem, activeGrid, preview, this, floorData, furnitureData, objectPlacer, soundFeedback);
 
         mouseIndicator.SetActive(true);
 
@@ -141,7 +143,7 @@ public class GridPlacementSystem : MonoBehaviour
     {
         StopPlacement();
         activeGridVisualization.SetActive(true);
-        buildingState = new RemovingState(this, preview, activeGrid, floorData, furnitureData, objectPlacer);
+        buildingState = new RemovingState(this, preview, activeGrid, floorData, furnitureData, objectPlacer, soundFeedback);
 
         Debug.Log("Starting Remove Mode");
         Debug.Log(buildingState);

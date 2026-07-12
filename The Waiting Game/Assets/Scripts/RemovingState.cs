@@ -8,8 +8,9 @@ public class RemovingState : IBuildingState
     private Grid grid;
     private GridData floorData, furnitureData;
     private readonly ObjectPlacer objectPlacer;
+    private SoundFeedback soundFeedback;
 
-    public RemovingState(GridPlacementSystem placementSystem, PreviewSystem previewSystem, Grid grid, GridData floorData, GridData furnitureData, ObjectPlacer objectPlacer)
+    public RemovingState(GridPlacementSystem placementSystem, PreviewSystem previewSystem, Grid grid, GridData floorData, GridData furnitureData, ObjectPlacer objectPlacer, SoundFeedback soundFeedback)
     {
         this.placementSystem = placementSystem;
         this.previewSystem = previewSystem;
@@ -17,6 +18,7 @@ public class RemovingState : IBuildingState
         this.floorData = floorData;
         this.furnitureData = furnitureData;
         this.objectPlacer = objectPlacer;
+        this.soundFeedback = soundFeedback;
 
         previewSystem.StartShowingRemovePreview();
     }
@@ -53,6 +55,8 @@ public class RemovingState : IBuildingState
 
         selectedData.RemoveObjectAt(gridPosition);
         objectPlacer.RemoveObjectAt(gameObjectIndex);
+
+        soundFeedback.PlaySound(SoundType.Remove);
 
         Debug.Log("Removing object at " + gridPosition);
             
