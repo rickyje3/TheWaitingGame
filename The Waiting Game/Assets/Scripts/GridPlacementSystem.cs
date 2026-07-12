@@ -42,38 +42,27 @@ public class GridPlacementSystem : MonoBehaviour
 
     private void PlaceStructure()
     {
-        if (selectedItem == null)
+        Debug.Log("Placing structure");
+
+        if (buildingState == null)
+            return;
+
+        // Only placement requires a selected item
+        if (buildingState is PlacementState && selectedItem == null)
         {
             Debug.Log("No selected item");
             return;
         }
 
-        /*if (gridInputManager.IsPointerOverUI())
-        {
-             Debug.Log("Pointer is over ui, blocking placement");
-             return;
-        }*/
-
-        Vector3 mousePosition =
-            gridInputManager.GetSelectedMousePosition();
+        Vector3 mousePosition = gridInputManager.GetSelectedMousePosition();
 
         if (mousePosition == Vector3.zero)
-        {
-            Debug.Log("Invalid mouse position (raycast miss)");
             return;
-        }
 
         if (activeGrid == null)
-        {
-            Debug.Log("No active grid set");
             return;
-        }
 
-        Vector3Int gridPosition =
-            activeGrid.WorldToCell(mousePosition);
-
-        Vector3 spawnPosition =
-            activeGrid.CellToWorld(gridPosition);
+        Vector3Int gridPosition = activeGrid.WorldToCell(mousePosition);
 
         buildingState.OnAction(gridPosition);
 
@@ -105,18 +94,12 @@ public class GridPlacementSystem : MonoBehaviour
 
     public GridData GetSelectedData()
     {
+        if (selectedItem == null)
+            return null;
+
         return selectedItem.isFloorObject
             ? floorData
             : furnitureData;
-    }
-
-    private bool CheckPlacementValidity(Vector3Int gridPosition, Item selectedItem)
-    {
-        //GridData selectedData = selectedItem.isFloorObject ? floorData : furnitureData;
-        //Debug.Log($"CHECKING {selectedData.GetHashCode()}");
-        return GetSelectedData().CanPlaceObjectAt(
-            gridPosition,
-            selectedItem.Size);
     }
 
     public void StopPlacement()
@@ -149,6 +132,19 @@ public class GridPlacementSystem : MonoBehaviour
         buildingState = new PlacementState(selectedItem, activeGrid, preview, this, floorData, furnitureData, objectPlacer);
 
         mouseIndicator.SetActive(true);
+
+        gridInputManager.OnClicked += PlaceStructure;
+        gridInputManager.OnExit += StopPlacement;
+    }
+
+    public void StartRemoving()
+    {
+        StopPlacement();
+        activeGridVisualization.SetActive(true);
+        buildingState = new RemovingState(this, preview, activeGrid, floorData, furnitureData, objectPlacer);
+
+        Debug.Log("Starting Remove Mode");
+        Debug.Log(buildingState);
 
         gridInputManager.OnClicked += PlaceStructure;
         gridInputManager.OnExit += StopPlacement;
