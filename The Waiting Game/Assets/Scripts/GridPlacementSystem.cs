@@ -18,7 +18,11 @@ public class GridPlacementSystem : MonoBehaviour
     [HideInInspector] public Grid activeGrid;
     private GameObject activeGridVisualization;
 
-    private GridData floorData, furnitureData;
+    private GridData floorData;
+    private GridData furnitureData;
+
+    private GridData loftFloorData;
+    private GridData loftFurnitureData;
 
     [SerializeField] private PreviewSystem preview;
 
@@ -38,6 +42,8 @@ public class GridPlacementSystem : MonoBehaviour
 
         floorData = new();
         furnitureData = new();
+        loftFloorData = new();
+        loftFurnitureData = new();
         StopPlacement();
     }
 
@@ -65,6 +71,17 @@ public class GridPlacementSystem : MonoBehaviour
             return;
 
         Vector3Int gridPosition = activeGrid.WorldToCell(mousePosition);
+        Debug.Log($"Mouse: {mousePosition:F2}  Cell: {gridPosition}");
+
+        Debug.DrawLine(
+            mousePosition,
+            activeGrid.GetCellCenterWorld(gridPosition),
+            Color.red,
+            0.1f);
+
+        /*Debug.Log($"Mouse: {mousePosition}");
+        Debug.Log($"Cell: {gridPosition}");
+        Debug.Log($"Center: {activeGrid.GetCellCenterWorld(gridPosition)}");*/
 
         buildingState.OnAction(gridPosition);
 
@@ -99,9 +116,20 @@ public class GridPlacementSystem : MonoBehaviour
         if (selectedItem == null)
             return null;
 
-        return selectedItem.isFloorObject
-            ? floorData
-            : furnitureData;
+        bool onFloorGrid = activeGrid == floorGrid;
+
+        if (onFloorGrid)
+        {
+            return selectedItem.isFloorObject
+                ? floorData
+                : furnitureData;
+        }
+        else
+        {
+            return selectedItem.isFloorObject
+                ? loftFloorData
+                : loftFurnitureData;
+        }
     }
 
     public void StopPlacement()
@@ -131,7 +159,7 @@ public class GridPlacementSystem : MonoBehaviour
 
         selectedItem = item;
 
-        buildingState = new PlacementState(selectedItem, activeGrid, preview, this, floorData, furnitureData, objectPlacer, soundFeedback);
+        buildingState = new PlacementState(selectedItem, activeGrid, preview, this, objectPlacer, soundFeedback);
 
         mouseIndicator.SetActive(true);
 
@@ -164,6 +192,9 @@ public class GridPlacementSystem : MonoBehaviour
             return;
 
         Vector3Int gridPosition = activeGrid.WorldToCell(mousePosition);
+
+        Debug.Log($"Mouse: {mousePosition}");
+        Debug.Log($"Grid Cell: {gridPosition}");
 
         if (lastDetectedPosition != gridPosition)
         {

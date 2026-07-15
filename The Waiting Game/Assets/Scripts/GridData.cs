@@ -12,12 +12,15 @@ public class GridData
         List<Vector3Int> positionToOccupy = CalculatePositions(gridPosition, objectSize);
         PlacementData data = new PlacementData(positionToOccupy, item, placedObjectIndex);
 
+        Debug.Log($"Adding object at {gridPosition}");
+
         foreach (var position in positionToOccupy)
         {
             if (placedObjects.ContainsKey(position))
             {
                 throw new Exception("Dictionary already contains this cell position {position}");
             }
+            Debug.Log($"Occupying {position}");
             placedObjects[position] = data;
         }
     }
@@ -29,7 +32,7 @@ public class GridData
         {
             for (int y = 0; y < objectSize.y; y++)
             {
-                returnValues.Add(gridPosition + new Vector3Int(x, 0, y));
+                returnValues.Add(gridPosition + new Vector3Int(x, y, 0));
             }
         }
         return returnValues;

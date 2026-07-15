@@ -7,17 +7,15 @@ public class PlacementState : IBuildingState
     private readonly GridPlacementSystem placementSystem;
     private readonly PreviewSystem previewSystem;
     private Grid grid;
-    private GridData selectedData;
     private readonly ObjectPlacer objectPlacer;
     private SoundFeedback soundFeedback;
 
-    public PlacementState(Item selectedItem, Grid grid, PreviewSystem previewSystem, GridPlacementSystem placementSystem, GridData floorData, GridData furnitureData, ObjectPlacer objectPlacer, SoundFeedback soundFeedback)
+    public PlacementState(Item selectedItem, Grid grid, PreviewSystem previewSystem, GridPlacementSystem placementSystem, ObjectPlacer objectPlacer, SoundFeedback soundFeedback)
     {
         this.selectedItem = selectedItem;
         this.previewSystem = previewSystem;
         this.placementSystem = placementSystem;
         this.grid = grid;
-        this.selectedData = placementSystem.GetSelectedData();
         this.objectPlacer = objectPlacer;
         this.soundFeedback = soundFeedback;
 
@@ -28,9 +26,11 @@ public class PlacementState : IBuildingState
             placementSystem.SetActiveGrid(
             placementSystem.floorGrid,
             placementSystem.gridVisualizationFloor);
-
-            previewSystem.StartShowingPlacementPreview(placementSystem.selectedItem.Prefab, placementSystem.selectedItem.Size);
         }
+
+        previewSystem.StartShowingPlacementPreview(
+        placementSystem.selectedItem.Prefab,
+        placementSystem.selectedItem.Size);
     }
 
     public void EndState()
@@ -42,9 +42,15 @@ public class PlacementState : IBuildingState
     {
         //GridData selectedData = selectedItem.isFloorObject ? floorData : furnitureData;
         //Debug.Log($"CHECKING {selectedData.GetHashCode()}");
-        return placementSystem.GetSelectedData().CanPlaceObjectAt(
+        //Debug.Log($"Checking {gridPosition}");
+
+        bool valid = placementSystem.GetSelectedData().CanPlaceObjectAt(
             gridPosition,
             selectedItem.Size);
+
+        //Debug.Log($"Can place: {valid}");
+
+        return valid;
     }
 
     public void OnAction(Vector3Int gridPosition)
@@ -63,6 +69,8 @@ public class PlacementState : IBuildingState
 
 
         int index = objectPlacer.PlaceObject(selectedItem.Prefab, placementSystem.activeGrid.CellToWorld(gridPosition));
+
+        GridData selectedData = placementSystem.GetSelectedData();
 
         selectedData.AddObjectAt(
             gridPosition,

@@ -23,6 +23,7 @@ public class PreviewSystem : MonoBehaviour
 
     public void StartShowingPlacementPreview(GameObject prefab, Vector2Int size)
     {
+        StopShowingPreview();
         previewObject = Instantiate(prefab, Vector3.zero, Quaternion.identity);
         PreparePreview(previewObject);
         PrepareCursor(size);
