@@ -69,7 +69,6 @@ public class PreviewSystem : MonoBehaviour
             ApplyFeedbackToPreview(validity);
         }
 
-        MovePreview(position);
         MoveCursor(position);
         ApplyFeedbackToCursor(validity);
     }

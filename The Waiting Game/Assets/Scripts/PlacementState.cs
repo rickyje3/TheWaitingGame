@@ -55,6 +55,8 @@ public class PlacementState : IBuildingState
 
     public void OnAction(Vector3Int gridPosition)
     {
+        Debug.Log($"OnAction called at {gridPosition} Frame: {Time.frameCount}");
+
         bool placementValidity = CheckPlacementValidity(gridPosition, selectedItem);
 
         if (placementValidity == false)
@@ -72,11 +74,19 @@ public class PlacementState : IBuildingState
 
         GridData selectedData = placementSystem.GetSelectedData();
 
+        Vector3Int origin = gridPosition;
+
+        if (selectedItem.Size.x % 2 == 0)
+            origin.x--;
+
+        if (selectedItem.Size.y % 2 == 0)
+            origin.y--;
+
         selectedData.AddObjectAt(
-            gridPosition,
+            origin,
             selectedItem.Size,
             selectedItem,
-            objectPlacer.placedGameObjects.Count - 1);
+            index);
 
         Debug.Log($"ADDING {selectedData.GetHashCode()}");
         Debug.Log("Placing " + selectedItem.ToString());

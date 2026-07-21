@@ -6,7 +6,6 @@ public class GridData
 {
     Dictionary<Vector3Int, PlacementData> placedObjects = new();
 
-
     public void AddObjectAt(Vector3Int gridPosition, Vector2Int objectSize, Item item, int placedObjectIndex)
     {
         List<Vector3Int> positionToOccupy = CalculatePositions(gridPosition, objectSize);
@@ -20,7 +19,9 @@ public class GridData
             {
                 throw new Exception("Dictionary already contains this cell position {position}");
             }
+
             Debug.Log($"Occupying {position}");
+
             placedObjects[position] = data;
         }
     }

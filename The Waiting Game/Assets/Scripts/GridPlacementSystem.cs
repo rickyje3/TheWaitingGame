@@ -157,13 +157,19 @@ public class GridPlacementSystem : MonoBehaviour
         Debug.Log("Started placement of " + item.itemName);
         Debug.Log("Subscribed to " + gridInputManager.GetEntityId());
 
+        StopPlacement();
+
         selectedItem = item;
 
         buildingState = new PlacementState(selectedItem, activeGrid, preview, this, objectPlacer, soundFeedback);
 
         mouseIndicator.SetActive(true);
 
+        // Prevent duplicate subscriptions
+        gridInputManager.OnClicked -= PlaceStructure;
         gridInputManager.OnClicked += PlaceStructure;
+
+        gridInputManager.OnExit -= StopPlacement;
         gridInputManager.OnExit += StopPlacement;
     }
 
@@ -176,7 +182,10 @@ public class GridPlacementSystem : MonoBehaviour
         Debug.Log("Starting Remove Mode");
         Debug.Log(buildingState);
 
+        gridInputManager.OnClicked -= PlaceStructure;
         gridInputManager.OnClicked += PlaceStructure;
+
+        gridInputManager.OnExit -= StopPlacement;
         gridInputManager.OnExit += StopPlacement;
     }
 
@@ -193,8 +202,8 @@ public class GridPlacementSystem : MonoBehaviour
 
         Vector3Int gridPosition = activeGrid.WorldToCell(mousePosition);
 
-        Debug.Log($"Mouse: {mousePosition}");
-        Debug.Log($"Grid Cell: {gridPosition}");
+        //Debug.Log($"Mouse: {mousePosition}");
+        //Debug.Log($"Grid Cell: {gridPosition}");
 
         if (lastDetectedPosition != gridPosition)
         {

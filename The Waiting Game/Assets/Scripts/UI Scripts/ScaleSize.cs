@@ -11,8 +11,8 @@ public class ScaleSize : MonoBehaviour, IBeginDragHandler, IDragHandler
 
     public float zoomSpeed = 0.4f;
 
-    public float minZoom = 25f; // Max amount the zoom will scale up
-    public float maxZoom = 80f; // max amount the zoom will scale down
+    public float minZoom = 7f; // Max amount the zoom will scale up
+    public float maxZoom = 25f; // max amount the zoom will scale down
 
     public float maxUiRootScale = 1.2f; //Max scale that the ui root will go to
     public float minUiRootScale = 0.3f; //Min scale that the ui root will will go to

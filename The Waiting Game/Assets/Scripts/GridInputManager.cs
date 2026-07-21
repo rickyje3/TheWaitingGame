@@ -41,11 +41,10 @@ public class GridInputManager : MonoBehaviour
     {
         Ray ray = sceneCamera.ScreenPointToRay(Input.mousePosition);
 
-        Debug.DrawRay(ray.origin, ray.direction * 100f, Color.red);
+        Debug.DrawRay(ray.origin, ray.direction * 1000f, Color.red);
 
         if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, placementLayermask))
         {
-            //Debug.Log("HIT: " + hit.collider.name);
             return hit.point;
         }
 
