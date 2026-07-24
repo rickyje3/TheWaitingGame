@@ -69,8 +69,12 @@ public class PlacementState : IBuildingState
 
         Debug.Log("Prefab is: " + selectedItem.Prefab);
 
+        Vector3 placementPosition =
+            placementSystem.activeGrid.GetCellCenterWorld(gridPosition);
 
-        int index = objectPlacer.PlaceObject(selectedItem.Prefab, placementSystem.activeGrid.CellToWorld(gridPosition));
+        int index = objectPlacer.PlaceObject(
+            selectedItem.Prefab,
+            placementPosition);
 
         GridData selectedData = placementSystem.GetSelectedData();
 
@@ -91,14 +95,15 @@ public class PlacementState : IBuildingState
         Debug.Log($"ADDING {selectedData.GetHashCode()}");
         Debug.Log("Placing " + selectedItem.ToString());
 
-        previewSystem.UpdatePosition(placementSystem.activeGrid.CellToWorld(gridPosition), false);
+        previewSystem.UpdatePosition(placementSystem.activeGrid.GetCellCenterWorld(gridPosition), false);
     }
 
-    public void UpdateState(Vector3Int gridPosition)
+    public void UpdateState(Vector3Int gridPosition, Vector3 mousePosition)
     {
         bool placementValidity = CheckPlacementValidity(gridPosition, selectedItem);
 
-        //cursorIndicator.transform.position = activeGrid.CellToWorld(gridPosition);
-        previewSystem.UpdatePosition(placementSystem.activeGrid.CellToWorld(gridPosition), placementValidity);
+        Vector3 position = placementSystem.activeGrid.GetCellCenterWorld(gridPosition);
+
+        previewSystem.UpdatePosition(position, placementValidity);
     }
 }

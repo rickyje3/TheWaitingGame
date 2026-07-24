@@ -2,13 +2,18 @@ using System;
 using System.Collections.Generic;
 using Unity.AppUI.Core;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GridPlacementSystem : MonoBehaviour
 {
-    [SerializeField] private GameObject mouseIndicator; 
+    [SerializeField] private GameObject mouseIndicator, cellIndicator; 
     [SerializeField] private GridInputManager gridInputManager;
     public Grid floorGrid;
     public Grid loftGrid;
+    public Collider floorCollider; //grid
+    public Collider loftCollider; // grid
+    public LayerMask floorLayer;
+    public LayerMask loftLayer;
 
     public GameObject gridVisualizationFloor;
     public GameObject gridVisualizationLoft;
@@ -32,6 +37,9 @@ public class GridPlacementSystem : MonoBehaviour
 
     [SerializeField] private SoundFeedback soundFeedback;
 
+    private Vector3 currentPlacementPosition;
+    public Vector3 CurrentPlacementPosition => currentPlacementPosition;
+
     IBuildingState buildingState;
 
 
@@ -40,10 +48,30 @@ public class GridPlacementSystem : MonoBehaviour
         if (gameAssets == null)
             gameAssets = FindAnyObjectByType<GameAssets>();
 
-        floorData = new();
-        furnitureData = new();
-        loftFloorData = new();
-        loftFurnitureData = new();
+        floorData = new GridData(
+            floorGrid,
+            floorCollider,
+            floorLayer
+        );
+
+        furnitureData = new GridData(
+            floorGrid,
+            floorCollider,
+            floorLayer
+        );
+
+        loftFloorData = new GridData(
+            loftGrid,
+            loftCollider,
+            loftLayer
+        );
+
+        loftFurnitureData = new GridData(
+            loftGrid,
+            loftCollider,
+            loftLayer
+        );
+
         StopPlacement();
     }
 
@@ -75,7 +103,7 @@ public class GridPlacementSystem : MonoBehaviour
 
         Debug.DrawLine(
             mousePosition,
-            activeGrid.GetCellCenterWorld(gridPosition),
+            activeGrid.CellToWorld(gridPosition),
             Color.red,
             0.1f);
 
@@ -202,12 +230,31 @@ public class GridPlacementSystem : MonoBehaviour
 
         Vector3Int gridPosition = activeGrid.WorldToCell(mousePosition);
 
+        mouseIndicator.transform.position = mousePosition;
+
+        cellIndicator.transform.position = activeGrid.GetCellCenterWorld(gridPosition);
+
+        Vector3 cellCenter = activeGrid.GetCellCenterWorld(gridPosition);
+
+        Debug.DrawLine(
+            mousePosition,
+            cellCenter,
+            Color.yellow
+        );
+
+        Debug.DrawLine(
+            cellCenter + Vector3.up * 0.5f,
+            cellCenter + Vector3.down * 0.5f,
+            Color.blue
+        );
+
+
         //Debug.Log($"Mouse: {mousePosition}");
         //Debug.Log($"Grid Cell: {gridPosition}");
 
         if (lastDetectedPosition != gridPosition)
         {
-            buildingState.UpdateState(gridPosition);
+            buildingState.UpdateState(gridPosition, mousePosition);
             /*bool placementValidity = CheckPlacementValidity(gridPosition, selectedItem);
 
             mouseIndicator.transform.position =

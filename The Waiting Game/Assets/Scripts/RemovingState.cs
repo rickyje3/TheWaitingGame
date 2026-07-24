@@ -60,13 +60,13 @@ public class RemovingState : IBuildingState
 
         Debug.Log("Removing object at " + gridPosition);
             
-        previewSystem.UpdatePosition(grid.CellToWorld(gridPosition), false);
+        previewSystem.UpdatePosition(grid.GetCellCenterWorld(gridPosition), false);
     }
 
-    public void UpdateState(Vector3Int gridPosition)
+    public void UpdateState(Vector3Int gridPosition, Vector3 mousePosition)
     {
         bool canRemove = !furnitureData.CanPlaceObjectAt(gridPosition, Vector2Int.one) || !floorData.CanPlaceObjectAt(gridPosition, Vector2Int.one);
 
-        previewSystem.UpdatePosition(grid.CellToWorld(gridPosition), canRemove);
+        previewSystem.UpdatePosition(grid.GetCellCenterWorld(gridPosition), canRemove);
     }
 }

@@ -6,6 +6,18 @@ public class GridData
 {
     Dictionary<Vector3Int, PlacementData> placedObjects = new();
 
+    private Grid grid;
+    private Collider floorBounds;
+    private LayerMask floorLayer;
+
+
+    public GridData(Grid grid, Collider floorBounds, LayerMask floorLayer)
+    {
+        this.grid = grid;
+        this.floorBounds = floorBounds;
+        this.floorLayer = floorLayer;
+    }
+
     public void AddObjectAt(Vector3Int gridPosition, Vector2Int objectSize, Item item, int placedObjectIndex)
     {
         List<Vector3Int> positionToOccupy = CalculatePositions(gridPosition, objectSize);
@@ -29,27 +41,51 @@ public class GridData
     private List<Vector3Int> CalculatePositions(Vector3Int gridPosition, Vector2Int objectSize)
     {
         List<Vector3Int> returnValues = new();
+
         for (int x = 0; x < objectSize.x; x++)
         {
             for (int y = 0; y < objectSize.y; y++)
             {
-                returnValues.Add(gridPosition + new Vector3Int(x, y, 0));
+                returnValues.Add(
+                    gridPosition + new Vector3Int(x, y, 0)
+                );
             }
         }
+
         return returnValues;
     }
 
     public bool CanPlaceObjectAt(Vector3Int gridPosition, Vector2Int objectSize)
     {
-        List<Vector3Int> positionToOccupy = CalculatePositions(gridPosition, objectSize);
-        foreach (var position in positionToOccupy)
+        List<Vector3Int> positionsToOccupy = CalculatePositions(gridPosition, objectSize);
+
+        foreach (var position in positionsToOccupy)
         {
+            if (position.x < -10 || position.x > -1 ||
+                position.z < -10 || position.z > -1)
+            {
+                return false;
+            }
+
             if (placedObjects.ContainsKey(position))
             {
                 return false;
             }
         }
+
         return true;
+    }
+
+    private bool IsInsideFloor(Vector3 worldPosition)
+    {
+        Ray ray = new Ray(worldPosition + Vector3.up * 5f, Vector3.down);
+
+        if (Physics.Raycast(ray, out RaycastHit hit, 10f, floorLayer))
+        {
+            return hit.collider == floorBounds;
+        }
+
+        return false;
     }
 
     internal int GetRepresentationIndex(Vector3Int gridPosition)

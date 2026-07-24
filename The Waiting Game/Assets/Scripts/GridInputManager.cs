@@ -39,17 +39,20 @@ public class GridInputManager : MonoBehaviour
 
     public Vector3 GetSelectedMousePosition()
     {
-        Ray ray = sceneCamera.ScreenPointToRay(Input.mousePosition);
+        Vector3 mousePos = Input.mousePosition;
+        mousePos.z = sceneCamera.nearClipPlane;
+        Ray ray = sceneCamera.ScreenPointToRay(mousePos);
+        RaycastHit hit;
 
         Debug.DrawRay(ray.origin, ray.direction * 1000f, Color.red);
 
-        if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, placementLayermask))
+        if (Physics.Raycast(ray, out hit, Mathf.Infinity, placementLayermask))
         {
-            return hit.point;
+            lastPosition = hit.point;
         }
 
         //Debug.Log("MISS");
 
-        return Vector3.zero;
+        return lastPosition;
     }
 }
