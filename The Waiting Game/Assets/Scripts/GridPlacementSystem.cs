@@ -182,23 +182,26 @@ public class GridPlacementSystem : MonoBehaviour
 
     public void StartPlacement(Item item)
     {
-        Debug.Log("Started placement of " + item.itemName);
+        //Debug.Log("Started placement of " + item.itemName);
         Debug.Log("Subscribed to " + gridInputManager.GetEntityId());
 
         StopPlacement();
 
         selectedItem = item;
 
-        buildingState = new PlacementState(selectedItem, activeGrid, preview, this, objectPlacer, soundFeedback);
+        if (!selectedItem.isCosmetic)
+        {
+            buildingState = new PlacementState(selectedItem, activeGrid, preview, this, objectPlacer, soundFeedback);
 
-        mouseIndicator.SetActive(true);
+            mouseIndicator.SetActive(true);
 
-        // Prevent duplicate subscriptions
-        gridInputManager.OnClicked -= PlaceStructure;
-        gridInputManager.OnClicked += PlaceStructure;
+            // Prevent duplicate subscriptions
+            gridInputManager.OnClicked -= PlaceStructure;
+            gridInputManager.OnClicked += PlaceStructure;
 
-        gridInputManager.OnExit -= StopPlacement;
-        gridInputManager.OnExit += StopPlacement;
+            gridInputManager.OnExit -= StopPlacement;
+            gridInputManager.OnExit += StopPlacement;
+        }
     }
 
     public void StartRemoving()
