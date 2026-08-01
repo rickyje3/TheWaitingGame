@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Unity.AppUI.Core;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class GridPlacementSystem : MonoBehaviour
@@ -94,6 +95,12 @@ public class GridPlacementSystem : MonoBehaviour
 
         if (mousePosition == Vector3.zero)
             return;
+
+        if (EventSystem.current.IsPointerOverGameObject())
+        {
+            Debug.Log("Clicked on UI, not placing object");
+            return;
+        }
 
         if (activeGrid == null)
             return;
@@ -266,6 +273,11 @@ public class GridPlacementSystem : MonoBehaviour
             //cursorIndicator.transform.position = activeGrid.CellToWorld(gridPosition);
             preview.UpdatePosition(activeGrid.CellToWorld(gridPosition), placementValidity);*/
             lastDetectedPosition = gridPosition;
+        }
+
+        if (Input.GetKeyDown(KeyCode.Mouse1))
+        {
+            StopPlacement();
         }
     }
 

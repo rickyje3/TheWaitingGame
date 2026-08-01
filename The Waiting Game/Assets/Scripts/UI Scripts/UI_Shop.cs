@@ -27,6 +27,8 @@ public class UI_Shop : MonoBehaviour
 
     [SerializeField] private GridPlacementSystem gridPlacementSystem;
 
+    [SerializeField] private SoundFeedback soundFeedback;
+
 
     private void Awake()
     {
@@ -84,13 +86,16 @@ public class UI_Shop : MonoBehaviour
             PlayerPrefs.SetInt(item.itemName, 1); // Save purchase state
             Debug.Log(item.itemName + " was purchased for $" + item.price);
             moneyManager.UpdateMoneyText();
+            soundFeedback.PlaySound(SoundType.Purchase);
         }
         else if (!item.isPurchased && moneyManager.money < item.price)
         {
+            soundFeedback.PlaySound(SoundType.WrongPlacement);
             Debug.Log("Insufficient funds");
         }
-        else if (item.isPurchased)
+        else if (item.isPurchased && !item.isCosmetic)
         {
+            soundFeedback.PlaySound(SoundType.Click);
             gridPlacementSystem.StartPlacement(item);
         }
     }

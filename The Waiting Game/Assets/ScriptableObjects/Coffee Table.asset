@@ -15,9 +15,9 @@ MonoBehaviour:
   itemName: Coffee Table
   icon: {fileID: 0}
   price: 200
-  isPurchased: 0
+  isPurchased: 1
   description: Fun fact coffee and caffeine has no effect on me
-  <Size>k__BackingField: {x: 2, y: 1}
+  <Size>k__BackingField: {x: 2, y: 2}
   <Prefab>k__BackingField: {fileID: 6645670022071340812, guid: b2ebe076afc54a947be87c1d6d100411, type: 3}
   isCosmetic: 0
   isFloorObject: 1
