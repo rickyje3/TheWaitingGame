@@ -6,6 +6,7 @@ public class MoneyManager : MonoBehaviour
     public DesktopActivityManager activityManager;
     /*[HideInInspector]*/ public float money;
     private float wageMultiplier; // Multiplier that determines player wage
+    private float inputMoneyMultiplier;
     public TextMeshProUGUI moneyText; 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -17,8 +18,10 @@ public class MoneyManager : MonoBehaviour
 
         money = PlayerPrefs.GetFloat("Money", 0f); // Load saved money or start at 0 if not found
         wageMultiplier = PlayerPrefs.GetFloat("WageMultiplier", 0.1f); // Load saved wage multiplier or start at 0.1 if not found
+        inputMoneyMultiplier = PlayerPrefs.GetFloat("InputMoneyMultiplier", 0.1f); // Load saved wage multiplier or start at 0.1 if not found
         Debug.Log("Loaded money: " + money);
         Debug.Log("Loaded wage mult: " + wageMultiplier);
+        Debug.Log("Loaded input money mult: " + inputMoneyMultiplier);
         UpdateMoneyText();
     }
 
@@ -29,6 +32,12 @@ public class MoneyManager : MonoBehaviour
         {
             money += Time.fixedUnscaledDeltaTime * wageMultiplier; // Increase money based on time spent working
             activityManager.workTimer += Time.deltaTime;
+            UpdateMoneyText();
+        }
+
+        if (Input.anyKeyDown)
+        {
+            money += inputMoneyMultiplier;
             UpdateMoneyText();
         }
     }
