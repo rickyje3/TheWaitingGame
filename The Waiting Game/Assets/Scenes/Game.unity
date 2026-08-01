@@ -18539,6 +18539,7 @@ MonoBehaviour:
   maxZoom: 25
   maxUiRootScale: 1.2
   minUiRootScale: 0.3
+  startZoom: 0
 --- !u!1 &1043265198
 GameObject:
   m_ObjectHideFlags: 0

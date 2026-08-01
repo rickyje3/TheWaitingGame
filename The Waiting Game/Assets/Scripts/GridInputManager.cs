@@ -32,6 +32,11 @@ public class GridInputManager : MonoBehaviour
             layoutGroup.gameObject.SetActive(true);
             Debug.Log("Exiting edit mode");
         }
+        if (Input.GetKeyDown(KeyCode.F8))
+        {
+            mainMenu.RecenterGame();
+            Debug.Log("Recentering");
+        }
     }
 
     public bool IsPointerOverUI()
