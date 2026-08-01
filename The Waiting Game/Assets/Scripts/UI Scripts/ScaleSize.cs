@@ -11,13 +11,13 @@ public class ScaleSize : MonoBehaviour, IBeginDragHandler, IDragHandler
 
     public float zoomSpeed = 0.4f;
 
-    public float minZoom = 7f; // Max amount the zoom will scale up
+    public float minZoom = 8f; // Max amount the zoom will scale up
     public float maxZoom = 25f; // max amount the zoom will scale down
 
     public float maxUiRootScale = 1.2f; //Max scale that the ui root will go to
     public float minUiRootScale = 0.3f; //Min scale that the ui root will will go to
 
-    private float startZoom; // Stores the camera zoom at the moment dragging begins
+    [HideInInspector] public float startZoom; // Stores the camera zoom at the moment dragging begins
     private Vector2 startMouse; // Stores the mouse position when dragging begins
     private float startUiScale;  // Stores the UI scale before resizing starts. This prevents the UI from snapping instantly
 
@@ -66,7 +66,7 @@ public class ScaleSize : MonoBehaviour, IBeginDragHandler, IDragHandler
     }
 
 
-    void UpdateUIScale(float newZoom)
+    public void UpdateUIScale(float newZoom)
     {
         // Compare old zoom to new zoom
         // This creates proportional scaling
