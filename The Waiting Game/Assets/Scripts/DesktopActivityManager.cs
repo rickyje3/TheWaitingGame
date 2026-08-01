@@ -1,7 +1,9 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using System.Text;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -11,6 +13,19 @@ using UnityEngine.UI;
 public class DesktopActivityManager : MonoBehaviour
 {
     public TextMeshProUGUI activityDebugText;
+
+    // Reuse the same StringBuilder instead of allocating one every check
+    private readonly StringBuilder windowTitleBuffer = new StringBuilder(256);
+
+    // Cache our own process name
+    private string gameProcessName;
+
+    // Cache the last foreground process
+    private uint lastPID;
+    private string lastProcessName = "";
+
+    // Timer for updating UI once per second
+    private float uiTimer;
 
     // -----------------------------
     // WINDOWS API IMPORTS
@@ -32,6 +47,28 @@ public class DesktopActivityManager : MonoBehaviour
     IntPtr hWnd,
     System.Text.StringBuilder text,
     int count);
+
+    [StructLayout(LayoutKind.Sequential)]
+    struct LASTINPUTINFO
+    {
+        public uint cbSize;
+        public uint dwTime;
+    }
+
+    [DllImport("user32.dll")]
+    static extern bool GetLastInputInfo(ref LASTINPUTINFO plii);
+
+    float GetIdleTime()
+    {
+        LASTINPUTINFO info = new LASTINPUTINFO();
+        info.cbSize = (uint)Marshal.SizeOf(info);
+
+        if (!GetLastInputInfo(ref info))
+            return 0f;
+
+        uint idleTicks = (uint)Environment.TickCount - info.dwTime;
+        return idleTicks / 1000f;
+    }
 
 
     // ACTIVITY TYPES
@@ -94,9 +131,15 @@ public class DesktopActivityManager : MonoBehaviour
     [HideInInspector] public float workTimer; // Checks amount of time spent working
     public TextMeshProUGUI workTimeText; // Displays work time
 
+
     // -----------------------------
     // START
     // -----------------------------
+
+    void Awake()
+    {
+        gameProcessName = Application.productName.ToLowerInvariant();
+    }
 
     void Start()
     {
@@ -107,6 +150,34 @@ public class DesktopActivityManager : MonoBehaviour
         }
 
         LoadPlayTime();
+
+        // Start background activity loop instead of using checkTimer
+        StartCoroutine(ActivityLoop());
+    }
+
+    IEnumerator ActivityLoop()
+    {
+        while (true)
+        {
+            ActivityType newActivity = DetectActivity();
+
+            if (newActivity != CurrentActivity)
+            {
+                SaveActivityData(CurrentActivity, activityTimer);
+
+                activityTimer = 0f;
+                CurrentActivity = newActivity;
+
+            #if UNITY_EDITOR
+                UnityEngine.Debug.Log("New Activity: " + CurrentActivity);
+            #endif
+
+                if (activityDebugText != null)
+                    activityDebugText.text = CurrentActivity.ToString();
+            }
+
+            yield return new WaitForSeconds(5f);
+        }
     }
 
     // -----------------------------
@@ -116,57 +187,30 @@ public class DesktopActivityManager : MonoBehaviour
     void Update()
     {
         // Increase timers every frame
-        checkTimer += Time.deltaTime;
-        activityTimer += Time.deltaTime;
-        playTimer += Time.deltaTime;
+        // Only keep timers that truly need frame updates
+    activityTimer += Time.deltaTime;
+    playTimer += Time.deltaTime;
+
+    // ===== REVISION 5 =====
+    // Update UI only once per second
+    uiTimer += Time.deltaTime;
+    if (uiTimer >= 1f)
+    {
+        uiTimer = 0f;
 
         checkPlayTime();
         checkWorkTime();
+    }
 
-        // Only check activity every 5 seconds
-        // so we're not constantly polling Windows
-        if (checkTimer >= 5f)
-        {
-            checkTimer = 0f;
-
-            // Detect what the player is currently doing
-            ActivityType newActivity = DetectActivity();
-
-            // If activity changed...
-            if (newActivity != CurrentActivity)
-            {
-                // Save data from previous activity
-                SaveActivityData(CurrentActivity, activityTimer);
-
-                // Reset timer for new activity
-                activityTimer = 0f;
-
-                // Update current activity
-                CurrentActivity = newActivity;
-
-                UnityEngine.Debug.Log("New Activity: " + CurrentActivity);
-
-                if (activityDebugText != null)
-                {
-                    activityDebugText.text = CurrentActivity.ToString();
-                }
-                else
-                {
-                    UnityEngine.Debug.LogWarning("activityDebugText is not assigned in the Inspector.");
-                }
-            }
-        }
-
-
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            if (mainMenu.gameObject.activeSelf && !shop.gameObject.activeSelf)
-                mainMenu.CloseMenu();
-            else if (shop.gameObject.activeSelf)
-                shop.gameObject.SetActive(false);
-            else
-                mainMenu.OpenMenu();
-        }
+    if (Input.GetKeyDown(KeyCode.Escape))
+    {
+        if (mainMenu.gameObject.activeSelf && !shop.gameObject.activeSelf)
+            mainMenu.CloseMenu();
+        else if (shop.gameObject.activeSelf)
+            shop.gameObject.SetActive(false);
+        else
+            mainMenu.OpenMenu();
+    }
     }
 
     public void checkPlayTime()
@@ -213,125 +257,162 @@ public class DesktopActivityManager : MonoBehaviour
 
     ActivityType DetectActivity()
     {
-        // Get the currently focused window
         IntPtr hwnd = GetForegroundWindow();
 
-        // Get process ID from that window
+        if (hwnd == IntPtr.Zero)
+            return ActivityType.Unknown;
+
         GetWindowThreadProcessId(hwnd, out uint pid);
 
-        System.Text.StringBuilder buffer =
-        new System.Text.StringBuilder(256);
+        // Reuse StringBuilder
+        windowTitleBuffer.Clear();
+        GetWindowText(hwnd, windowTitleBuffer, windowTitleBuffer.Capacity);
 
-        GetWindowText(hwnd, buffer, 256);
+        string windowTitle = windowTitleBuffer.ToString().ToLowerInvariant();
 
-        string windowTitle = buffer.ToString().ToLower();
+        #if UNITY_EDITOR
+            UnityEngine.Debug.Log(windowTitle);
+        #endif
 
-        UnityEngine.Debug.Log(windowTitle);
+        if (pid == 0)
+            return ActivityType.Unknown;
 
-        try
+        string processName;
+
+        // ===== REVISION 7 =====
+        // Cache process lookup if foreground app didn't change
+        if (pid == lastPID)
         {
-            // Get process info
-            Process process = Process.GetProcessById((int)pid);
-
-            // Convert process name to lowercase
-            string processName = process.ProcessName.ToLower();
-
-
-
-            // Ignore the companion itself
-            if (processName.Contains(Application.productName.ToLower()))
+            processName = lastProcessName;
+        }
+        else
+        {
+            try
             {
-                return CurrentActivity;
-            }
+                Process process = Process.GetProcessById((int)pid);
 
+                processName = process.ProcessName.ToLowerInvariant();
+
+                lastPID = pid;
+                lastProcessName = processName;
+            }
+            catch
+            {
+                return ActivityType.Unknown;
+            }
+        }
+
+        // ===== REVISION 8 =====
+        // Ignore our own game
+        if (processName.Contains(gameProcessName))
+            return CurrentActivity;
+
+        #if UNITY_EDITOR
             UnityEngine.Debug.Log("Detected Process: " + processName);
+        #endif
 
-            if (processName.Contains("unity") ||
-                processName.Contains("code") ||
-                processName.Contains("visual studio") ||
-                processName.Contains("sln") ||
-                processName.Contains("code") ||
-                processName.Contains("github") ||
-                processName.Contains("photoshop") ||
-                processName.Contains("unreal") ||
-                processName.Contains("maya") ||
-                processName.Contains("adobe") ||
-                processName.Contains("word") ||
-                processName.Contains("excel") ||
-                processName.Contains("powerpoint") ||
-                processName.Contains("zoom") ||
-                processName.Contains("teams") ||
-                processName.Contains("blender"))
-            {
-                return ActivityType.Working;
-            }
-
-            if (processName.Contains("steam") ||
-                processName.Contains("roblox") ||
-                processName.Contains("minecraft"))
-            {
-                return ActivityType.Gaming;
-            }
-
-            if (processName.Contains("chrome") ||
-                processName.Contains("firefox") ||
-                processName.Contains("edge") ||
-                processName.Contains("brave") ||
-                processName.Contains("opera"))
-            {
-                // Watching tabs
-                if (windowTitle.Contains("youtube") ||
-                    windowTitle.Contains("netflix") ||
-                    windowTitle.Contains("twitch"))
-                {
-                    return ActivityType.Watching;
-                }
-
-                if (windowTitle.Contains("roblox"))
-                {
-                    return ActivityType.Gaming;
-                }
-
-                // Work-related tabs
-                if (windowTitle.Contains("docs") ||
-                    windowTitle.Contains("sheets") ||
-                    windowTitle.Contains("trello") ||
-                    windowTitle.Contains("clickup") ||
-                    windowTitle.Contains("microsoft") ||
-                    windowTitle.Contains("github") ||
-                    windowTitle.Contains("notion"))
-                {
-                    return ActivityType.Working;
-                }
-
-                if (windowTitle.Contains("xvideos") ||
-                    windowTitle.Contains("pornhub") ||
-                    windowTitle.Contains("redtube") ||
-                    windowTitle.Contains("youporn") ||
-                    windowTitle.Contains("artstation") ||
-                    windowTitle.Contains("rule34"))
-                {
-                    return ActivityType.Gooning;
-                }
-
-                // Generic browsing
-                return ActivityType.Browsing;
-            }
-
-            return ActivityType.Unknown;
-        }
-        catch
+        // ===== REVISION 9 =====
+        // Use helper instead of giant OR chains
+        if (ContainsAny(processName,
+            "unity",
+            "code",
+            "visual studio",
+            "github",
+            "photoshop",
+            "unreal",
+            "maya",
+            "adobe",
+            "word",
+            "excel",
+            "powerpoint",
+            "zoom",
+            "teams",
+            "blender"))
         {
-            return ActivityType.Unknown;
+            return ActivityType.Working;
         }
+
+        if (ContainsAny(processName,
+            "steam",
+            "roblox",
+            "minecraft"))
+        {
+            return ActivityType.Gaming;
+        }
+
+        if (ContainsAny(processName,
+            "chrome",
+            "firefox",
+            "edge",
+            "brave",
+            "opera"))
+        {
+            return DetectBrowserActivity(windowTitle);
+        }
+
+        return ActivityType.Unknown;
+    }
+
+    // ===== REVISION 9 =====
+    bool ContainsAny(string value, params string[] keywords)
+    {
+        foreach (string keyword in keywords)
+        {
+            if (value.Contains(keyword))
+                return true;
+        }
+
+        return false;
+    }
+
+    // ===== REVISION 10 =====
+    ActivityType DetectBrowserActivity(string windowTitle)
+    {
+        if (ContainsAny(windowTitle,
+            "youtube",
+            "netflix",
+            "twitch",
+            "hulu",
+            "disney+"))
+        {
+            return ActivityType.Watching;
+        }
+
+        if (windowTitle.Contains("roblox"))
+            return ActivityType.Gaming;
+
+        if (ContainsAny(windowTitle,
+            "docs",
+            "sheets",
+            "trello",
+            "clickup",
+            "microsoft",
+            "github",
+            "notion"))
+        {
+            return ActivityType.Working;
+        }
+
+        if (ContainsAny(windowTitle,
+            "xvideos",
+            "pornhub",
+            "redtube",
+            "youporn",
+            "rule34"))
+        {
+            return ActivityType.Gooning;
+        }
+
+        return ActivityType.Browsing;
     }
 
 
-// -----------------------------
-// SAVE TREND DATA
-// -----------------------------
 
-void SaveActivityData(ActivityType type, float duration)
+    // -----------------------------
+    // SAVE TREND DATA
+    // -----------------------------
+
+    void SaveActivityData(ActivityType type, float duration)
     {
         // Make sure this activity exists
         if (Trends.ContainsKey(type))
