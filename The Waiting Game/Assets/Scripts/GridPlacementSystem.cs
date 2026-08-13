@@ -96,11 +96,11 @@ public class GridPlacementSystem : MonoBehaviour
         if (mousePosition == Vector3.zero)
             return;
 
-        if (EventSystem.current.IsPointerOverGameObject())
+        /*if (EventSystem.current.IsPointerOverGameObject())
         {
             Debug.Log("Clicked on UI, not placing object");
             return;
-        }
+        }*/
 
         if (activeGrid == null)
             return;

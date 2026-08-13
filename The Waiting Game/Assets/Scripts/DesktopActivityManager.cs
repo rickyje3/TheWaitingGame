@@ -78,7 +78,7 @@ public class DesktopActivityManager : MonoBehaviour
         Gaming,
         Watching,
         Browsing,
-        Music,
+        Jamming,
         Idle,
         Gooning,
         Unknown
@@ -311,7 +311,6 @@ public class DesktopActivityManager : MonoBehaviour
             UnityEngine.Debug.Log("Detected Process: " + processName);
         #endif
 
-        // ===== REVISION 9 =====
         // Use helper instead of giant OR chains
         if (ContainsAny(processName,
             "unity",
@@ -338,6 +337,14 @@ public class DesktopActivityManager : MonoBehaviour
             "minecraft"))
         {
             return ActivityType.Gaming;
+        }
+
+        if (ContainsAny(processName,
+            "spotify",
+            "applemusic",
+            "pandora"))
+        {
+            return ActivityType.Jamming;
         }
 
         if (ContainsAny(processName,
