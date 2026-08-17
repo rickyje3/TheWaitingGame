@@ -17,6 +17,7 @@ public class GridInputManager : MonoBehaviour
     public Image mainMenuImage;
     public LayoutGroup layoutGroup;
 
+
     private void Update()
     {
         if (Input.GetMouseButtonDown(0))
@@ -24,13 +25,12 @@ public class GridInputManager : MonoBehaviour
             OnClicked?.Invoke();
             Debug.Log("Mouse Click from " + GetEntityId());
         }
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.Escape) && mainMenu.isShopOpen)
         {
             OnExit?.Invoke();
             mainMenu.CloseMenu();
             mainMenuImage.enabled = true;
             layoutGroup.gameObject.SetActive(true);
-            Debug.Log("Exiting edit mode");
         }
         if (Input.GetKeyDown(KeyCode.F8))
         {
