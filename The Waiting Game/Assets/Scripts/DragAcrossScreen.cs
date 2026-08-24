@@ -6,22 +6,27 @@ public class DragAcrossScreen :
     IDragHandler
 {
     public Transform cameraRig;
+
     public RectTransform uiRoot;
+
     public Camera mainCamera;
+
+    public Transform cameraCenter;
 
     public float dragSpeed = 0.01f;
 
     private Vector3 previousCameraPosition;
 
+
     private void Start()
     {
-        if (uiRoot == null)
-        {
-            uiRoot = GetComponentInParent<RectTransform>();
-        }
-
-        previousCameraPosition = cameraRig.position;
+        ResetCameraTracking();
     }
+
+
+    // ---------------------------------------------------------
+    // DRAG
+    // ---------------------------------------------------------
 
     public void OnDrag(PointerEventData eventData)
     {
@@ -33,6 +38,11 @@ public class DragAcrossScreen :
 
         cameraRig.position += move;
 
+
+        // -----------------------------------------------------
+        // Calculate actual camera movement on screen
+        // -----------------------------------------------------
+
         Vector3 oldScreenPosition =
             mainCamera.WorldToScreenPoint(previousCameraPosition);
 
@@ -42,17 +52,88 @@ public class DragAcrossScreen :
         Vector3 screenMovement =
             newScreenPosition - oldScreenPosition;
 
+
+        // -----------------------------------------------------
+        // Move UI opposite the camera movement
+        // -----------------------------------------------------
+
         uiRoot.position += new Vector3(
             -screenMovement.x,
             -screenMovement.y,
             0f
         );
 
-        previousCameraPosition = cameraRig.position;
+
+        previousCameraPosition =
+            cameraRig.position;
     }
+
+
+    // ---------------------------------------------------------
+    // RESET CAMERA TRACKING
+    // ---------------------------------------------------------
 
     public void ResetCameraTracking()
     {
-        previousCameraPosition = cameraRig.position;
+        previousCameraPosition =
+            cameraRig.position;
+    }
+
+
+    // ---------------------------------------------------------
+    // RECENTER
+    // ---------------------------------------------------------
+
+    public void Recenter()
+    {
+        // -----------------------------------------------------
+        // RECENTER CAMERA
+        // -----------------------------------------------------
+
+        if (cameraCenter != null)
+        {
+            cameraRig.position =
+                cameraCenter.position;
+        }
+        else
+        {
+            cameraRig.position =
+                Vector3.zero;
+        }
+
+
+        // -----------------------------------------------------
+        // RECENTER UI
+        // -----------------------------------------------------
+
+        Canvas canvas =
+            uiRoot.GetComponentInParent<Canvas>();
+
+        if (canvas != null)
+        {
+            RectTransform canvasRect =
+                canvas.GetComponent<RectTransform>();
+
+            uiRoot.anchoredPosition =
+                canvasRect.rect.center;
+        }
+        else
+        {
+            uiRoot.position =
+                new Vector3(
+                    Screen.width * 0.5f,
+                    Screen.height * 0.5f,
+                    uiRoot.position.z
+                );
+        }
+
+
+        // -----------------------------------------------------
+        // IMPORTANT
+        // -----------------------------------------------------
+
+        // The camera has been manually repositioned, so the
+        // next drag must treat THIS as the starting position.
+        ResetCameraTracking();
     }
 }

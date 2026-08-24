@@ -17571,9 +17571,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2039679448}
-        m_TargetAssemblyTypeName: DesktopWindowManager, Assembly-CSharp
-        m_MethodName: CenterWindowOnCurrentMonitor
+      - m_Target: {fileID: 997200270}
+        m_TargetAssemblyTypeName: DragAcrossScreen, Assembly-CSharp
+        m_MethodName: Recenter
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -18511,6 +18511,7 @@ MonoBehaviour:
   cameraRig: {fileID: 1675480380}
   uiRoot: {fileID: 1216016943}
   mainCamera: {fileID: 330585545}
+  cameraCenter: {fileID: 1708945397}
   dragSpeed: 0.01
 --- !u!1 &1010578256
 GameObject:
@@ -18606,8 +18607,6 @@ MonoBehaviour:
   zoomSpeed: 0.05
   minZoom: 8
   maxZoom: 25
-  maxUiRootScale: 1.2
-  minUiRootScale: 0.3
   startZoom: 0
 --- !u!1 &1043265198
 GameObject:
@@ -24494,6 +24493,14 @@ PrefabInstance:
     - target: {fileID: 9167954367673589909, guid: d7dcf50428b152040847878685fe0746, type: 3}
       propertyPath: m_PresetInfoIsWorld
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9167954367673589909, guid: d7dcf50428b152040847878685fe0746, type: 3}
+      propertyPath: m_ReferenceResolution.x
+      value: 1000
+      objectReference: {fileID: 0}
+    - target: {fileID: 9167954367673589909, guid: d7dcf50428b152040847878685fe0746, type: 3}
+      propertyPath: m_ReferenceResolution.y
+      value: 800
       objectReference: {fileID: 0}
     - target: {fileID: 9167954367673589911, guid: d7dcf50428b152040847878685fe0746, type: 3}
       propertyPath: m_Name

@@ -32,11 +32,6 @@ public class GridInputManager : MonoBehaviour
             mainMenuImage.enabled = true;
             layoutGroup.gameObject.SetActive(true);
         }
-        if (Input.GetKeyDown(KeyCode.F8))
-        {
-            mainMenu.RecenterGame();
-            Debug.Log("Recentering");
-        }
     }
 
     public bool IsPointerOverUI()
