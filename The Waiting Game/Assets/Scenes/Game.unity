@@ -18509,6 +18509,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ScaleWorldObject
   cameraRig: {fileID: 1675480380}
+  uiRoot: {fileID: 1216016943}
+  mainCamera: {fileID: 330585545}
   dragSpeed: 0.01
 --- !u!1 &1010578256
 GameObject:
@@ -18600,6 +18602,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ScaleSize
   cam: {fileID: 330585545}
   uiRoot: {fileID: 1216016943}
+  dragAcrossScreen: {fileID: 997200270}
   zoomSpeed: 0.05
   minZoom: 8
   maxZoom: 25
@@ -19998,7 +20001,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 13, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 600, y: 600}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1216016944
@@ -23195,7 +23198,7 @@ PrefabInstance:
       objectReference: {fileID: 330585545}
     - target: {fileID: 2416199871598626845, guid: e893aefd93740714b999573b02916984, type: 3}
       propertyPath: forceWindowed
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2416199871598626845, guid: e893aefd93740714b999573b02916984, type: 3}
       propertyPath: keyColor.rgba
@@ -23211,7 +23214,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2416199871598626845, guid: e893aefd93740714b999573b02916984, type: 3}
       propertyPath: _shouldFitMonitor
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2416199871598626845, guid: e893aefd93740714b999573b02916984, type: 3}
       propertyPath: _isFreePositioningEnabled
@@ -24465,8 +24468,16 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9167954367673589908, guid: d7dcf50428b152040847878685fe0746, type: 3}
+      propertyPath: m_Camera
+      value: 
+      objectReference: {fileID: 330585545}
+    - target: {fileID: 9167954367673589908, guid: d7dcf50428b152040847878685fe0746, type: 3}
       propertyPath: m_RenderMode
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9167954367673589908, guid: d7dcf50428b152040847878685fe0746, type: 3}
+      propertyPath: m_PlaneDistance
+      value: 52
       objectReference: {fileID: 0}
     - target: {fileID: 9167954367673589908, guid: d7dcf50428b152040847878685fe0746, type: 3}
       propertyPath: m_VertexColorAlwaysGammaSpace
@@ -24475,6 +24486,14 @@ PrefabInstance:
     - target: {fileID: 9167954367673589908, guid: d7dcf50428b152040847878685fe0746, type: 3}
       propertyPath: m_AdditionalShaderChannelsFlag
       value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: 9167954367673589909, guid: d7dcf50428b152040847878685fe0746, type: 3}
+      propertyPath: m_UiScaleMode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9167954367673589909, guid: d7dcf50428b152040847878685fe0746, type: 3}
+      propertyPath: m_PresetInfoIsWorld
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9167954367673589911, guid: d7dcf50428b152040847878685fe0746, type: 3}
       propertyPath: m_Name
@@ -24518,6 +24537,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9167954367673589915, guid: d7dcf50428b152040847878685fe0746, type: 3}
       propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9167954367673589915, guid: d7dcf50428b152040847878685fe0746, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9167954367673589915, guid: d7dcf50428b152040847878685fe0746, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9167954367673589915, guid: d7dcf50428b152040847878685fe0746, type: 3}
+      propertyPath: m_LocalScale.z
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9167954367673589915, guid: d7dcf50428b152040847878685fe0746, type: 3}
@@ -39503,28 +39534,8 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 2686007274087489078, guid: 027ea6cc1d308564e9af77af831cca8a, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 7016645843575144957}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 027ea6cc1d308564e9af77af831cca8a, type: 3}
---- !u!1 &7016645843575144956 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2686007274087489078, guid: 027ea6cc1d308564e9af77af831cca8a, type: 3}
-  m_PrefabInstance: {fileID: 7016645843575144955}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &7016645843575144957
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7016645843575144956}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 18acfc743498ecd459c6d131fa416a39, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: '::'
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

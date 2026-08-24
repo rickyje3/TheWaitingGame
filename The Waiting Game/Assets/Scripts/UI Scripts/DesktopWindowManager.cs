@@ -10,8 +10,6 @@ public class DesktopWindowManager : MonoBehaviour
     // The monitor the window is currently locked to.
     public int currentMonitor = 0;
 
-    private bool initialized = false;
-
 
     // =========================================================
     // FIND CURRENT MONITOR
