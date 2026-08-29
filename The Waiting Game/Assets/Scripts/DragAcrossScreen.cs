@@ -11,25 +11,46 @@ public class DragAcrossScreen :
 
     public Camera mainCamera;
 
-    public Transform cameraCenter;
-
     public float dragSpeed = 0.01f;
 
+
     private Vector3 previousCameraPosition;
+
+    private Vector2 previousScreenSize;
 
 
     private void Start()
     {
         ResetCameraTracking();
+
+        previousScreenSize =
+            new Vector2(
+                Screen.width,
+                Screen.height
+            );
     }
 
 
-    // ---------------------------------------------------------
+    private void Update()
+    {
+        HandleWindowResize();
+    }
+
+
+    // =========================================================
     // DRAG
-    // ---------------------------------------------------------
+    // =========================================================
 
     public void OnDrag(PointerEventData eventData)
     {
+        Vector3 oldCameraPosition =
+            cameraRig.position;
+
+
+        // -----------------------------------------------------
+        // Move camera
+        // -----------------------------------------------------
+
         Vector3 move = new Vector3(
             -eventData.delta.x * dragSpeed,
             -eventData.delta.y * dragSpeed,
@@ -40,28 +61,65 @@ public class DragAcrossScreen :
 
 
         // -----------------------------------------------------
-        // Calculate actual camera movement on screen
+        // Calculate camera screen movement
         // -----------------------------------------------------
 
         Vector3 oldScreenPosition =
-            mainCamera.WorldToScreenPoint(previousCameraPosition);
+            mainCamera.WorldToScreenPoint(
+                oldCameraPosition
+            );
 
         Vector3 newScreenPosition =
-            mainCamera.WorldToScreenPoint(cameraRig.position);
-
-        Vector3 screenMovement =
-            newScreenPosition - oldScreenPosition;
+            mainCamera.WorldToScreenPoint(
+                cameraRig.position
+            );
 
 
         // -----------------------------------------------------
-        // Move UI opposite the camera movement
+        // Get Canvas
         // -----------------------------------------------------
 
-        uiRoot.position += new Vector3(
-            -screenMovement.x,
-            -screenMovement.y,
-            0f
+        Canvas canvas =
+            uiRoot.GetComponentInParent<Canvas>();
+
+        if (canvas == null)
+            return;
+
+
+        RectTransform canvasRect =
+            canvas.GetComponent<RectTransform>();
+
+
+        Vector2 oldCanvasPosition;
+        Vector2 newCanvasPosition;
+
+
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(
+            canvasRect,
+            oldScreenPosition,
+            canvas.worldCamera,
+            out oldCanvasPosition
         );
+
+
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(
+            canvasRect,
+            newScreenPosition,
+            canvas.worldCamera,
+            out newCanvasPosition
+        );
+
+
+        Vector2 canvasDelta =
+            newCanvasPosition -
+            oldCanvasPosition;
+
+
+        // -----------------------------------------------------
+        // Keep the direction that works
+        // -----------------------------------------------------
+
+        uiRoot.anchoredPosition -= canvasDelta;
 
 
         previousCameraPosition =
@@ -69,9 +127,93 @@ public class DragAcrossScreen :
     }
 
 
-    // ---------------------------------------------------------
+    // =========================================================
+    // WINDOW RESIZE
+    // =========================================================
+
+    private void HandleWindowResize()
+    {
+        Vector2 currentScreenSize =
+            new Vector2(
+                Screen.width,
+                Screen.height
+            );
+
+
+        if (currentScreenSize == previousScreenSize)
+            return;
+
+
+        // -----------------------------------------------------
+        // Calculate change in the camera's viewport center
+        // -----------------------------------------------------
+
+        Vector2 oldCenter =
+            previousScreenSize * 0.5f;
+
+        Vector2 newCenter =
+            currentScreenSize * 0.5f;
+
+
+        Vector2 centerDelta =
+            newCenter -
+            oldCenter;
+
+
+        // -----------------------------------------------------
+        // Move UI with the camera's new viewport
+        //
+        // This does NOT scale the UI.
+        // -----------------------------------------------------
+
+        Canvas canvas =
+            uiRoot.GetComponentInParent<Canvas>();
+
+
+        if (canvas != null)
+        {
+            RectTransform canvasRect =
+                canvas.GetComponent<RectTransform>();
+
+
+            Vector2 oldCanvasPosition;
+            Vector2 newCanvasPosition;
+
+
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                canvasRect,
+                Vector2.zero,
+                canvas.worldCamera,
+                out oldCanvasPosition
+            );
+
+
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                canvasRect,
+                centerDelta,
+                canvas.worldCamera,
+                out newCanvasPosition
+            );
+
+
+            Vector2 canvasDelta =
+                newCanvasPosition -
+                oldCanvasPosition;
+
+
+            uiRoot.anchoredPosition +=
+                canvasDelta;
+        }
+
+
+        previousScreenSize =
+            currentScreenSize;
+    }
+
+
+    // =========================================================
     // RESET CAMERA TRACKING
-    // ---------------------------------------------------------
+    // =========================================================
 
     public void ResetCameraTracking()
     {
@@ -80,60 +222,34 @@ public class DragAcrossScreen :
     }
 
 
-    // ---------------------------------------------------------
+    // =========================================================
     // RECENTER
-    // ---------------------------------------------------------
+    // =========================================================
 
     public void Recenter()
     {
-        // -----------------------------------------------------
-        // RECENTER CAMERA
-        // -----------------------------------------------------
+        cameraRig.position =
+            Vector3.zero;
 
-        if (cameraCenter != null)
-        {
-            cameraRig.position =
-                cameraCenter.position;
-        }
-        else
-        {
-            cameraRig.position =
-                Vector3.zero;
-        }
-
-
-        // -----------------------------------------------------
-        // RECENTER UI
-        // -----------------------------------------------------
 
         Canvas canvas =
             uiRoot.GetComponentInParent<Canvas>();
 
+
         if (canvas != null)
         {
-            RectTransform canvasRect =
-                canvas.GetComponent<RectTransform>();
-
             uiRoot.anchoredPosition =
-                canvasRect.rect.center;
-        }
-        else
-        {
-            uiRoot.position =
-                new Vector3(
-                    Screen.width * 0.5f,
-                    Screen.height * 0.5f,
-                    uiRoot.position.z
-                );
+                Vector2.zero;
         }
 
 
-        // -----------------------------------------------------
-        // IMPORTANT
-        // -----------------------------------------------------
+        previousScreenSize =
+            new Vector2(
+                Screen.width,
+                Screen.height
+            );
 
-        // The camera has been manually repositioned, so the
-        // next drag must treat THIS as the starting position.
+
         ResetCameraTracking();
     }
 }
