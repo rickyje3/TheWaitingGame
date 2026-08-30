@@ -105,6 +105,13 @@ public class GridPlacementSystem : MonoBehaviour
         if (activeGrid == null)
             return;
 
+        if (EventSystem.current.IsPointerOverGameObject())
+        { 
+            Debug.Log("Clicked on UI, not placing object");
+            return;
+        }
+    
+
         Vector3Int gridPosition = activeGrid.WorldToCell(mousePosition);
         Debug.Log($"Mouse: {mousePosition:F2}  Cell: {gridPosition}");
 

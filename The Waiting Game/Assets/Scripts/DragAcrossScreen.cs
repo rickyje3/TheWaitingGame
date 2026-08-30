@@ -3,7 +3,8 @@ using UnityEngine.EventSystems;
 
 public class DragAcrossScreen :
     MonoBehaviour,
-    IDragHandler
+    IDragHandler,
+    IEndDragHandler
 {
     public Transform cameraRig;
 
@@ -13,21 +14,33 @@ public class DragAcrossScreen :
 
     public float dragSpeed = 0.01f;
 
-
     private Vector3 previousCameraPosition;
 
     private Vector2 previousScreenSize;
 
+    public Canvas canvas;
+
+    public RectTransform topLeftAnchor;
+
+    public RectTransform topRightAnchor;
+
+    public RectTransform bottomRightAnchor;
+
+    public bool isMoveDragging { get; private set; } = false;
+
 
     private void Start()
     {
-        ResetCameraTracking();
+        //ResetCameraTracking();
 
         previousScreenSize =
             new Vector2(
                 Screen.width,
                 Screen.height
             );
+
+        if(canvas == null)
+        uiRoot.GetComponentInParent<Canvas>();
     }
 
 
@@ -43,6 +56,8 @@ public class DragAcrossScreen :
 
     public void OnDrag(PointerEventData eventData)
     {
+        isMoveDragging = true;
+
         Vector3 oldCameraPosition =
             cameraRig.position;
 
@@ -127,6 +142,12 @@ public class DragAcrossScreen :
     }
 
 
+    public void OnEndDrag(PointerEventData eventData)
+    {
+        isMoveDragging = false;
+    }
+
+
     // =========================================================
     // WINDOW RESIZE
     // =========================================================
@@ -165,9 +186,6 @@ public class DragAcrossScreen :
         //
         // This does NOT scale the UI.
         // -----------------------------------------------------
-
-        Canvas canvas =
-            uiRoot.GetComponentInParent<Canvas>();
 
 
         if (canvas != null)
@@ -232,15 +250,7 @@ public class DragAcrossScreen :
             Vector3.zero;
 
 
-        Canvas canvas =
-            uiRoot.GetComponentInParent<Canvas>();
-
-
-        if (canvas != null)
-        {
-            uiRoot.anchoredPosition =
-                Vector2.zero;
-        }
+        RecenterUI();
 
 
         previousScreenSize =
@@ -251,5 +261,12 @@ public class DragAcrossScreen :
 
 
         ResetCameraTracking();
+    }
+
+    public void RecenterUI()
+    {
+        topRightAnchor.anchoredPosition = new Vector2(-300, -300);
+        topLeftAnchor.anchoredPosition = new Vector2(300, -300);
+        bottomRightAnchor.anchoredPosition = new Vector2(-300, 300);
     }
 }
