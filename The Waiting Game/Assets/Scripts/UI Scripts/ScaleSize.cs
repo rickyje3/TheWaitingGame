@@ -9,16 +9,13 @@ public class ScaleSize : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
 
     public RectTransform uiRoot; // ONLY the UI that should scale with the world
 
-    public DragAcrossScreen dragAcrossScreen;
-
     public float zoomSpeed = 0.4f;
 
     public float minZoom = 8f; // Max amount the zoom will scale up
     public float maxZoom = 25f; // max amount the zoom will scale down
 
-    public float maxUiRootScale = 1.2f;
-    public float minUiRootScale = 0.3f;
-
+    public float maxUiRootScale = 1.2f; //Max scale that the ui root will go to
+    public float minUiRootScale = 0.3f; //Min scale that the ui root will will go to
 
     [HideInInspector] public float startZoom; // Stores the camera zoom at the moment dragging begins
     private Vector2 startMouse; // Stores the mouse position when dragging begins
@@ -27,15 +24,9 @@ public class ScaleSize : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
     public bool isScaleDragging { get; private set; } = false;
 
 
-    // ---------------------------------------------------------
-    // BEGIN DRAG
-    // ---------------------------------------------------------
-
     // Called once when the resize drag begins
     public void OnBeginDrag(PointerEventData eventData)
     {
-        isScaleDragging = true;
-
         // Save the current zoom level
         startZoom = cam.orthographicSize;
 
@@ -49,12 +40,10 @@ public class ScaleSize : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
 
 
     // Called continuously while dragging
-    // ---------------------------------------------------------
-    // DRAG
-    // ---------------------------------------------------------
-
     public void OnDrag(PointerEventData eventData)
     {
+        isScaleDragging = true;
+
         // Calculate horizontal mouse movement
         float dragAmount =
             eventData.position.x - startMouse.x;
@@ -63,12 +52,10 @@ public class ScaleSize : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
         // Subtracting gives:
         // drag right = zoom in
         // drag left = zoom out
-
         float newZoom =
             startZoom - dragAmount * zoomSpeed;
 
         // Prevent zoom from going too far in/out
-
         newZoom = Mathf.Clamp(
             newZoom,
             minZoom,
@@ -76,37 +63,18 @@ public class ScaleSize : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
         );
 
         // Apply zoom to camera
-
-        // -----------------------------------------------------
-        // Change camera zoom
-        // -----------------------------------------------------
-
         cam.orthographicSize = newZoom;
 
         // Scale world UI proportionally
-
-        // -----------------------------------------------------
-        // Scale UI
-        // -----------------------------------------------------
-
         UpdateUIScale(newZoom);
-
-
-        // -----------------------------------------------------
-        // Tell DragAcrossScreen that the camera projection
-        // changed but the camera itself did NOT move.
-        // -----------------------------------------------------
-
-        if (dragAcrossScreen != null)
-        {
-            dragAcrossScreen.ResetCameraTracking();
-        }
     }
 
 
-    // ---------------------------------------------------------
-    // UI SCALE
-    // ---------------------------------------------------------
+    public void OnEndDrag(PointerEventData eventData)
+    {
+        isScaleDragging = false;
+    }
+
 
     public void UpdateUIScale(float newZoom)
     {
@@ -122,12 +90,10 @@ public class ScaleSize : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
         // - snapping
         // - incorrect starting scale
         // - drifting scale values
-
         float newScale =
             startUiScale * zoomRatio;
 
         // Prevent UI from becoming too large/small
-
         newScale = Mathf.Clamp(
             newScale,
             minUiRootScale,
@@ -135,13 +101,9 @@ public class ScaleSize : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
         );
 
         // Apply final scale
-
         uiRoot.localScale =
             Vector3.one * newScale;
     }
-
-    public void OnEndDrag(PointerEventData eventData)
-    {
-        isScaleDragging = false;
-    }
 }
+
+

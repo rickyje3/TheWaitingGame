@@ -1,7 +1,4 @@
-using JetBrains.Annotations;
 using System;
-using System.Collections.Generic;
-using Unity.AppUI.UI;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -13,7 +10,6 @@ public class GridInputManager : MonoBehaviour
     private Vector3 lastPosition;
 
     [SerializeField] private LayerMask placementLayermask;
-
     [SerializeField] private LayerMask hoverableLayermask;
 
     public event Action OnClicked, OnExit;
@@ -29,31 +25,23 @@ public class GridInputManager : MonoBehaviour
 
 
     private void Update()
-    {
-        // =========================================================
-        // CLICK
-        // =========================================================
-
+    { 
         if (Input.GetMouseButtonDown(0))
         {
             OnClicked?.Invoke();
             Debug.Log("Mouse Click from " + GetEntityId());
         }
-
-
-        // =========================================================
-        // ESCAPE
-        // =========================================================
-
         if (Input.GetKeyDown(KeyCode.Escape) && mainMenu.isShopOpen)
         {
             OnExit?.Invoke();
-
             mainMenu.CloseMenu();
-
             mainMenuImage.enabled = true;
-
             layoutGroup.gameObject.SetActive(true);
+        }
+        if (Input.GetKeyDown(KeyCode.F8))
+        {
+            mainMenu.RecenterGame();
+            Debug.Log("Recentering");
         }
 
 
@@ -88,19 +76,18 @@ public class GridInputManager : MonoBehaviour
             dragAcrossScreen.isMoveDragging ||
             scaleSize.isScaleDragging)
         {
-            uiRoot.SetActive(true);
+            scaleSize.gameObject.SetActive(true);
+            dragAcrossScreen.gameObject.SetActive(true);
         }
         else
         {
-            uiRoot.SetActive(false);
+            scaleSize.gameObject.SetActive(false);
+            dragAcrossScreen.gameObject.SetActive(false);
         }
     }
 
-
     public bool IsPointerOverUI()
         => EventSystem.current.IsPointerOverGameObject();
-
-
 
     public Vector3 GetSelectedMousePosition()
     {
@@ -115,8 +102,6 @@ public class GridInputManager : MonoBehaviour
         {
             lastPosition = hit.point;
         }
-
-       
 
         //Debug.Log("MISS");
 
