@@ -9,6 +9,7 @@ public class MainMenu : MonoBehaviour
     public Camera gameCamera;
     public ScaleSize scaleSize;
     public bool isShopOpen = false;
+    public bool isMenuOpen = false;
 
     //private int currentMonitor = 0;
 
@@ -35,6 +36,7 @@ public class MainMenu : MonoBehaviour
         windowManager.CenterWindowOnCurrentMonitor();
         this.gameObject.SetActive(true);
         Time.timeScale = 0f;
+        isMenuOpen = true;
     }
 
     public void CloseMenu()
@@ -42,6 +44,7 @@ public class MainMenu : MonoBehaviour
         Debug.Log("Closing menu");
         this.gameObject.SetActive(false);
         Time.timeScale = 1f;
+        isMenuOpen = false;
     }
 
     public void RecenterGame()

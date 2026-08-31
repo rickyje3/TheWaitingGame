@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class ScaleSize : MonoBehaviour, IBeginDragHandler, IDragHandler
+public class ScaleSize : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
     //scaled resolution, that created mirror effect. Scaled island size but it didnt scale ui proportionally .
 
@@ -20,6 +20,8 @@ public class ScaleSize : MonoBehaviour, IBeginDragHandler, IDragHandler
     [HideInInspector] public float startZoom; // Stores the camera zoom at the moment dragging begins
     private Vector2 startMouse; // Stores the mouse position when dragging begins
     private float startUiScale;  // Stores the UI scale before resizing starts. This prevents the UI from snapping instantly
+
+    public bool isScaleDragging { get; private set; } = false;
 
 
     // Called once when the resize drag begins
@@ -40,6 +42,8 @@ public class ScaleSize : MonoBehaviour, IBeginDragHandler, IDragHandler
     // Called continuously while dragging
     public void OnDrag(PointerEventData eventData)
     {
+        isScaleDragging = true;
+
         // Calculate horizontal mouse movement
         float dragAmount =
             eventData.position.x - startMouse.x;
@@ -63,6 +67,12 @@ public class ScaleSize : MonoBehaviour, IBeginDragHandler, IDragHandler
 
         // Scale world UI proportionally
         UpdateUIScale(newZoom);
+    }
+
+
+    public void OnEndDrag(PointerEventData eventData)
+    {
+        isScaleDragging = false;
     }
 
 

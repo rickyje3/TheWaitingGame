@@ -206,11 +206,6 @@ public class DesktopActivityManager : MonoBehaviour
     {
         if (mainMenu.gameObject.activeSelf && !shop.gameObject.activeSelf)
             mainMenu.CloseMenu();
-        else if (shop.gameObject.activeSelf)
-            { 
-                shop.gameObject.SetActive(false);
-                mainMenu.ShopIsClosed();
-            }
         else if (!mainMenu.gameObject.activeSelf)
             mainMenu.OpenMenu();
         else if (mainMenu.gameObject.activeSelf && shop.gameObject.activeSelf)

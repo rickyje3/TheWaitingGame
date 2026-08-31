@@ -10,6 +10,7 @@ public class GridInputManager : MonoBehaviour
     private Vector3 lastPosition;
 
     [SerializeField] private LayerMask placementLayermask;
+    [SerializeField] private LayerMask hoverableLayermask;
 
     public event Action OnClicked, OnExit;
 
@@ -17,9 +18,14 @@ public class GridInputManager : MonoBehaviour
     public Image mainMenuImage;
     public LayoutGroup layoutGroup;
 
+    public GameObject uiRoot;
+
+    public DragAcrossScreen dragAcrossScreen;
+    public ScaleSize scaleSize;
+
 
     private void Update()
-    {
+    { 
         if (Input.GetMouseButtonDown(0))
         {
             OnClicked?.Invoke();
@@ -36,6 +42,47 @@ public class GridInputManager : MonoBehaviour
         {
             mainMenu.RecenterGame();
             Debug.Log("Recentering");
+        }
+
+
+        // =========================================================
+        // RAYCAST DETECTION
+        // =========================================================
+
+        Vector3 mousePos =
+            Input.mousePosition;
+
+        Ray ray =
+            sceneCamera.ScreenPointToRay(mousePos);
+
+        RaycastHit hit;
+
+
+        bool hitHoverable =
+            Physics.Raycast(
+                ray,
+                out hit,
+                Mathf.Infinity,
+                hoverableLayermask
+            );
+
+
+        // =========================================================
+        // UI VISIBILITY
+        // =========================================================
+
+        if (hitHoverable &&
+            !mainMenu.isShopOpen ||
+            dragAcrossScreen.isMoveDragging ||
+            scaleSize.isScaleDragging)
+        {
+            scaleSize.gameObject.SetActive(true);
+            dragAcrossScreen.gameObject.SetActive(true);
+        }
+        else
+        {
+            scaleSize.gameObject.SetActive(false);
+            dragAcrossScreen.gameObject.SetActive(false);
         }
     }
 

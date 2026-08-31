@@ -7,7 +7,8 @@ public class MoneyManager : MonoBehaviour
     /*[HideInInspector]*/ public float money;
     private float wageMultiplier; // Multiplier that determines player wage
     private float inputMoneyMultiplier;
-    public TextMeshProUGUI moneyText; 
+    public TextMeshProUGUI moneyText;
+    public MainMenu mainMenu;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -28,7 +29,7 @@ public class MoneyManager : MonoBehaviour
     void FixedUpdate()
     {
         //Check if working
-        if (activityManager.CurrentActivity == DesktopActivityManager.ActivityType.Working)
+        if (activityManager.CurrentActivity == DesktopActivityManager.ActivityType.Working && !mainMenu.isShopOpen && !mainMenu.isMenuOpen)
         {
             money += Time.fixedUnscaledDeltaTime * wageMultiplier; // Increase money based on time spent working
             activityManager.workTimer += Time.deltaTime;
