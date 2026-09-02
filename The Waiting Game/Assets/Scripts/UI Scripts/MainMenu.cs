@@ -10,6 +10,7 @@ public class MainMenu : MonoBehaviour
     public ScaleSize scaleSize;
     public bool isShopOpen = false;
     public bool isMenuOpen = false;
+    public UI_Shop shop;
 
     //private int currentMonitor = 0;
 
@@ -23,17 +24,18 @@ public class MainMenu : MonoBehaviour
     public void ShopIsOpen()
     {
         isShopOpen = true;
+        isMenuOpen = false;
     }
 
     public void ShopIsClosed()
     {
         isShopOpen = false;
+        shop.gameObject.SetActive(false);
     }
 
     public void OpenMenu()
     {
-        //windowManager.MoveWindowToMonitor(windowManager.currentMonitor);
-        //windowManager.CenterWindowOnCurrentMonitor();
+        windowManager.CenterWindowOnCurrentMonitor();
         this.gameObject.SetActive(true);
         Time.timeScale = 0f;
         isMenuOpen = true;

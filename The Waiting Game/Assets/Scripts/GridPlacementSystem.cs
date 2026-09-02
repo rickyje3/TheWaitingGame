@@ -34,7 +34,7 @@ public class GridPlacementSystem : MonoBehaviour
 
     private Vector3Int lastDetectedPosition = Vector3Int.zero;
 
-    [SerializeField] private ObjectPlacer objectPlacer;
+    [SerializeField] private ObjectPlacer objectPlacer;// The part that places the object down
 
     [SerializeField] private SoundFeedback soundFeedback;
 
@@ -106,7 +106,8 @@ public class GridPlacementSystem : MonoBehaviour
             return;
 
         if (EventSystem.current.IsPointerOverGameObject())
-        { 
+        {
+            StopPlacement();
             Debug.Log("Clicked on UI, not placing object");
             return;
         }
@@ -287,6 +288,7 @@ public class GridPlacementSystem : MonoBehaviour
             StopPlacement();
         }
     }
+
 
     public void SetActiveGrid(Grid grid, GameObject visualization)
     {

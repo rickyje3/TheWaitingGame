@@ -6,12 +6,14 @@ public class PreviewSystem : MonoBehaviour
     [SerializeField] private float previewYOffset = 0.06f;
 
     [SerializeField] private GameObject cursorIndicator;
-    private GameObject previewObject;
+    [HideInInspector] public GameObject previewObject;
 
     [SerializeField] private Material previewMaterialPrefab;
     private Material previewMaterialInstance;
 
     private Renderer cursorIndicatorRenderer;
+
+    public SoundFeedback soundFeedback;
 
 
     private void Start()
@@ -20,6 +22,56 @@ public class PreviewSystem : MonoBehaviour
         cursorIndicator.SetActive(false);
         cursorIndicatorRenderer = cursorIndicator.GetComponentInChildren<Renderer>();
     }
+
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            StopShowingPreview();
+        }
+        else if (Input.GetKeyDown(KeyCode.Q))
+        {
+            RotatePreviewObjectCounterClockwise();
+        }
+        else if (Input.GetKeyDown(KeyCode.E))
+        {
+            RotatePreviewObjectClockwise();
+        }
+    }
+
+
+    public void RotatePreviewObjectCounterClockwise()
+    {
+        if (previewObject != null)
+        {
+            previewObject.transform.Rotate(0, -90, 0);
+            soundFeedback.PlaySound(SoundType.Rotate);
+        }
+    }
+
+
+    public void RotatePreviewObjectClockwise()
+    {
+        if (previewObject != null)
+        {
+            previewObject.transform.Rotate(0, 90, 0);
+            soundFeedback.PlaySound(SoundType.Rotate);
+        }
+    }
+
+
+    public Quaternion PreviewRotation
+    {
+        get
+        {
+            if (previewObject != null)
+                return previewObject.transform.rotation;
+
+            return Quaternion.identity;
+        }
+    }
+
 
     public void StartShowingPlacementPreview(GameObject prefab, Vector2Int size)
     {

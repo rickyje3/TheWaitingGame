@@ -47,7 +47,7 @@ public class UI_Shop : MonoBehaviour
 
         // Open to chairs by default
         // Open to chairs by default
-        ShowCategory(Item.ItemType.Hat);
+        ShowCategory(Item.ItemType.Beds);
 
         Debug.Log("Container is: " + container?.name);
     }
@@ -87,6 +87,7 @@ public class UI_Shop : MonoBehaviour
             Debug.Log(item.itemName + " was purchased for $" + item.price);
             moneyManager.UpdateMoneyText();
             soundFeedback.PlaySound(SoundType.Purchase);
+            ShowCategory(categoryToDisplay); // Refresh the shop UI to show the purchased state
         }
         else if (!item.isPurchased && moneyManager.money < item.price)
         {
@@ -170,78 +171,99 @@ public class UI_Shop : MonoBehaviour
     }
 
 
+    public void ShowSelectedItemGroup()
+    {
+        ShowCategory(categoryToDisplay);
+    }
+
+
     public void ShowHats()
     {
         ShowCategory(Item.ItemType.Hat);
+        categoryToDisplay = Item.ItemType.Hat;
     }
 
     public void ShowShirts()
     {
         ShowCategory(Item.ItemType.Shirt);
+        categoryToDisplay = Item.ItemType.Shirt;
     }
 
     public void ShowPants()
     {
         ShowCategory(Item.ItemType.Pants);
+        categoryToDisplay = Item.ItemType.Pants;
     }
 
     public void ShowShoes()
     {
         ShowCategory(Item.ItemType.Shoes);
+        categoryToDisplay = Item.ItemType.Shoes;
     }
 
     public void ShowAccessories()
     {
         ShowCategory(Item.ItemType.Accessories);
+        categoryToDisplay = Item.ItemType.Accessories;
     }
 
     public void ShowChairs()
     {
         ShowCategory(Item.ItemType.Chair);
+        categoryToDisplay = Item.ItemType.Chair;
     }
 
     public void ShowBeds()
     {
         ShowCategory(Item.ItemType.Beds);
+        categoryToDisplay = Item.ItemType.Beds;
     }
 
     public void ShowTables()
     {
         ShowCategory(Item.ItemType.Table);
+        categoryToDisplay = Item.ItemType.Table;
     }
 
     public void ShowShelves()
     {
         ShowCategory(Item.ItemType.Shelf);
+        categoryToDisplay = Item.ItemType.Shelf;
     }
 
     public void ShowDecorations()
     {
         ShowCategory(Item.ItemType.Decorations);
+        categoryToDisplay = Item.ItemType.Decorations;
     }
 
     public void ShowAppliances()
     {
         ShowCategory(Item.ItemType.Appliances);
+        categoryToDisplay = Item.ItemType.Appliances;
     }
 
     public void ShowLighting()
     {
         ShowCategory(Item.ItemType.Lighting);
+        categoryToDisplay = Item.ItemType.Lighting;
     }
 
     public void ShowPets()
     {
         ShowCategory(Item.ItemType.Pets);
+        categoryToDisplay = Item.ItemType.Pets;
     }
 
     public void ShowWallpaper()
     {
         ShowCategory(Item.ItemType.Wallpaper);
+        categoryToDisplay = Item.ItemType.Wallpaper;
     }
 
     public void ShowFlooring()
     {
         ShowCategory(Item.ItemType.Flooring);
+        categoryToDisplay = Item.ItemType.Flooring;
     }
 }

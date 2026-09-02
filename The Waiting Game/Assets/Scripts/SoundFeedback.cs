@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class SoundFeedback : MonoBehaviour
 {
-    [SerializeField] private AudioClip clickSound, placeSound, removeSound, wrongPlacementSound, purchaseSound;
+    [SerializeField] private AudioClip clickSound, placeSound, removeSound, wrongPlacementSound, purchaseSound, rotateSound;
 
     [SerializeField] private AudioSource audioSource;
 
@@ -24,6 +24,9 @@ public class SoundFeedback : MonoBehaviour
                 break;
             case SoundType.Purchase:
                 audioSource.PlayOneShot(purchaseSound);
+                break;
+            case SoundType.Rotate:
+                audioSource.PlayOneShot(rotateSound);
                 break;
             default:
                 break;
@@ -62,5 +65,6 @@ public enum SoundType
     Place,
     Remove,
     WrongPlacement,
-    Purchase
+    Purchase,
+    Rotate
 }

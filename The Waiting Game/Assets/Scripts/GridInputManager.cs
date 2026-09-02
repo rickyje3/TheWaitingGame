@@ -34,11 +34,11 @@ public class GridInputManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Escape) && mainMenu.isShopOpen)
         {
             OnExit?.Invoke();
-            mainMenu.CloseMenu();
+            mainMenu.ShopIsClosed();
             mainMenuImage.enabled = true;
             layoutGroup.gameObject.SetActive(true);
         }
-        if (Input.GetKeyDown(KeyCode.F8))
+        if (Input.GetKeyDown(KeyCode.F12))
         {
             mainMenu.RecenterGame();
             Debug.Log("Recentering");

@@ -5,6 +5,7 @@ using UnityEngine;
 public class ObjectPlacer : MonoBehaviour
 {
     public List<GameObject> placedGameObjects = new();
+    public PreviewSystem previewSystem;
 
     internal void RemoveObjectAt(int gameObjectIndex)
     {
@@ -22,7 +23,7 @@ public class ObjectPlacer : MonoBehaviour
         GameObject obj = Instantiate(
             prefab,
             position,
-            Quaternion.identity
+            previewSystem.PreviewRotation
             );
 
         placedGameObjects.Add(obj);

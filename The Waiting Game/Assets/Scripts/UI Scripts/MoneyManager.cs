@@ -31,12 +31,15 @@ public class MoneyManager : MonoBehaviour
         //Check if working
         if (activityManager.CurrentActivity == DesktopActivityManager.ActivityType.Working && !mainMenu.isShopOpen && !mainMenu.isMenuOpen)
         {
-            money += Time.fixedUnscaledDeltaTime * wageMultiplier; // Increase money based on time spent working
+            money += Time.fixedDeltaTime * wageMultiplier; // Increase money based on time spent working
             activityManager.workTimer += Time.deltaTime;
             UpdateMoneyText();
         }
+    }
 
-        if (Input.anyKeyDown)
+    private void Update()
+    {
+        if (Input.anyKeyDown && !Input.GetKeyDown(KeyCode.Escape) && Time.timeScale == 1)
         {
             money += inputMoneyMultiplier;
             UpdateMoneyText();
@@ -45,7 +48,7 @@ public class MoneyManager : MonoBehaviour
 
     public void UpdateMoneyText()
     {
-        moneyText.text = "$ " + money.ToString("F2"); // update the money text up to 2 decimal places
+        moneyText.text = "$" + money.ToString("F2"); // update the money text up to 2 decimal places
     }
 
     public void SaveCurrency()
