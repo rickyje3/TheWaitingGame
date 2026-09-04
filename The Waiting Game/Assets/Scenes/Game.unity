@@ -34653,7 +34653,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ObjectPlacer
   placedGameObjects: []
-  previewSystem: {fileID: 0}
+  previewSystem: {fileID: 592532979}
 --- !u!1 &2122505612
 GameObject:
   m_ObjectHideFlags: 0
@@ -39620,28 +39620,8 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 2686007274087489078, guid: 027ea6cc1d308564e9af77af831cca8a, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 7016645843575144957}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 027ea6cc1d308564e9af77af831cca8a, type: 3}
---- !u!1 &7016645843575144956 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2686007274087489078, guid: 027ea6cc1d308564e9af77af831cca8a, type: 3}
-  m_PrefabInstance: {fileID: 7016645843575144955}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &7016645843575144957
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7016645843575144956}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 18acfc743498ecd459c6d131fa416a39, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: '::'
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

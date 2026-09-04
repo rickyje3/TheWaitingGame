@@ -86,8 +86,8 @@ public class PreviewSystem : MonoBehaviour
     {
         if (size.x > 0 && size.y > 0)
         {
-            cursorIndicator.transform.localScale = new Vector3(size.x, size.y, size.y);
-            cursorIndicatorRenderer.material.mainTextureScale = size;
+            cursorIndicator.transform.localScale = new Vector3(size.x, 1f, size.y); //something in this function is messing up the preview grid
+            cursorIndicatorRenderer.material.SetVector("_DefaultScale", new Vector2(1, size.y));
         }
     }
 
