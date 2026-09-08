@@ -3,87 +3,126 @@ using UnityEngine;
 public class PlacementState : IBuildingState
 {
     private Item selectedItem;
+
     private readonly GridPlacementSystem placementSystem;
     private readonly PreviewSystem previewSystem;
-    private Grid grid;
     private readonly ObjectPlacer objectPlacer;
     private SoundFeedback soundFeedback;
 
-    public PlacementState(Item selectedItem, Grid grid, PreviewSystem previewSystem, GridPlacementSystem placementSystem, ObjectPlacer objectPlacer, SoundFeedback soundFeedback)
+
+    public PlacementState(
+        Item selectedItem,
+        PreviewSystem previewSystem,
+        GridPlacementSystem placementSystem,
+        ObjectPlacer objectPlacer,
+        SoundFeedback soundFeedback)
     {
         this.selectedItem = selectedItem;
         this.previewSystem = previewSystem;
         this.placementSystem = placementSystem;
-        this.grid = grid;
         this.objectPlacer = objectPlacer;
         this.soundFeedback = soundFeedback;
 
-        selectedItem = placementSystem.selectedItem;
-
-        if (selectedItem != null)
-        {
-            placementSystem.SetActiveGrid(
-            placementSystem.floorGrid,
-            placementSystem.gridVisualizationFloor);
-        }
-
         previewSystem.StartShowingPlacementPreview(
-        placementSystem.selectedItem.Prefab,
-        placementSystem.selectedItem.Size);
+            selectedItem.Prefab,
+            selectedItem.Size);
     }
+
 
     public void EndState()
     {
         previewSystem.StopShowingPreview();
     }
 
-    private bool CheckPlacementValidity(Vector3Int gridPosition, Item selectedItem)
-    {
-        //GridData selectedData = selectedItem.isFloorObject ? floorData : furnitureData;
-        //Debug.Log($"CHECKING {selectedData.GetHashCode()}");
-        //Debug.Log($"Checking {gridPosition}");
 
-        bool valid = placementSystem.GetSelectedData().CanPlaceObjectAt(
+    private bool CheckPlacementValidity(
+        Vector3Int gridPosition,
+        Item selectedItem)
+    {
+        GridData selectedData =
+            placementSystem.GetSelectedData();
+
+        if (selectedData == null)
+        {
+            Debug.Log("Selected data is null in this spot " + gridPosition);
+            return false;
+        }
+
+        return selectedData.CanPlaceObjectAt(
             gridPosition,
             selectedItem.Size);
-
-        //Debug.Log($"Can place: {valid}");
-
-        return valid;
     }
+
 
     public void OnAction(Vector3Int gridPosition)
     {
-        Debug.Log($"OnAction called at {gridPosition} Frame: {Time.frameCount}");
+        Debug.Log(
+            $"OnAction called at {gridPosition} " +
+            $"Frame: {Time.frameCount}");
 
-        bool placementValidity = CheckPlacementValidity(gridPosition, selectedItem);
-
-        if (placementValidity == false)
+        // Make sure we're actually over one of the grids.
+        if (placementSystem.hoveredGrid == null)
         {
-            soundFeedback.PlaySound(SoundType.WrongPlacement);
+            Debug.Log("No grid under mouse.");
             return;
         }
 
-        soundFeedback.PlaySound(SoundType.Place);
 
-        Debug.Log("Prefab is: " + selectedItem.Prefab);
+        bool placementValidity =
+            CheckPlacementValidity(
+                gridPosition,
+                selectedItem);
 
+        if (!placementValidity)
+        {
+            soundFeedback.PlaySound(
+                SoundType.WrongPlacement);
+
+            return;
+        }
+
+
+        soundFeedback.PlaySound(
+            SoundType.Place);
+
+        Debug.Log(
+            "Prefab is: " +
+            selectedItem.Prefab);
+
+
+        // Use whichever grid the mouse is currently over.
         Vector3 placementPosition =
-            placementSystem.activeGrid.GetCellCenterWorld(gridPosition);
+            placementSystem.hoveredGrid
+                .GetCellCenterWorld(gridPosition);
+
+
+        Quaternion rotation =
+            placementSystem.GetHoveredRotation();
 
         int index = objectPlacer.PlaceObject(
             selectedItem.Prefab,
-            placementPosition);
+            placementPosition,
+            rotation);
 
-        GridData selectedData = placementSystem.GetSelectedData();
+
+        // Get the data belonging to the current grid.
+        GridData selectedData =
+            placementSystem.GetSelectedData();
+
+        if (selectedData == null)
+            return;
+
 
         Vector3Int origin = gridPosition;
 
+
+        // Handle even-sized objects.
         if (selectedItem.Size.x % 2 == 0)
             origin.x--;
 
         if (selectedItem.Size.y % 2 == 0)
             origin.y--;
+
 
         selectedData.AddObjectAt(
             origin,
@@ -91,18 +130,39 @@ public class PlacementState : IBuildingState
             selectedItem,
             index);
 
-        Debug.Log($"ADDING {selectedData.GetHashCode()}");
-        Debug.Log("Placing " + selectedItem.ToString());
 
-        previewSystem.UpdatePosition(placementSystem.activeGrid.GetCellCenterWorld(gridPosition), false);
+        Debug.Log(
+            $"ADDING {selectedData.GetHashCode()}");
+
+        Debug.Log(
+            "Placing " +
+            selectedItem.ToString());
+
+
+        previewSystem.UpdatePosition(
+            placementSystem.hoveredGrid.GetCellCenterWorld(gridPosition),
+            false,
+            placementSystem.GetHoveredRotation());
     }
+
 
     public void UpdateState(Vector3Int gridPosition, Vector3 mousePosition)
     {
-        bool placementValidity = CheckPlacementValidity(gridPosition, selectedItem);
+        if (placementSystem.hoveredGrid == null)
+            return;
 
-        Vector3 position = placementSystem.activeGrid.GetCellCenterWorld(gridPosition);
+        bool placementValidity =
+            CheckPlacementValidity(gridPosition, selectedItem);
 
-        previewSystem.UpdatePosition(position, placementValidity);
+        Vector3 position =
+            placementSystem.hoveredGrid.GetCellCenterWorld(gridPosition);
+
+        Quaternion rotation =
+            placementSystem.GetHoveredRotation();
+
+        previewSystem.UpdatePosition(
+            position,
+            placementValidity,
+            rotation);
     }
 }

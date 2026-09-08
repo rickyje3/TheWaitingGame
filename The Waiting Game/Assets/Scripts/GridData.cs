@@ -55,18 +55,15 @@ public class GridData
         return returnValues;
     }
 
-    public bool CanPlaceObjectAt(Vector3Int gridPosition, Vector2Int objectSize)
+    public bool CanPlaceObjectAt(
+        Vector3Int gridPosition,
+        Vector2Int objectSize)
     {
-        List<Vector3Int> positionsToOccupy = CalculatePositions(gridPosition, objectSize);
+        List<Vector3Int> positionsToOccupy =
+            CalculatePositions(gridPosition, objectSize);
 
         foreach (var position in positionsToOccupy)
         {
-            if (position.x < -10 || position.x > -1 ||
-                position.z < -10 || position.z > -1)
-            {
-                return false;
-            }
-
             if (placedObjects.ContainsKey(position))
             {
                 return false;

@@ -113,15 +113,21 @@ public class PreviewSystem : MonoBehaviour
             Destroy(previewObject);
     }
 
-    public void UpdatePosition(Vector3 position, bool validity)
+    public void UpdatePosition(
+        Vector3 position,
+        bool validity,
+        Quaternion rotation)
     {
-        if (previewObject != null)
-        {
-            MovePreview(position);
-            ApplyFeedbackToPreview(validity);
-        }
-
         MoveCursor(position);
+        MovePreview(position);
+
+        if (previewObject != null)
+            previewObject.transform.rotation = rotation;
+
+        if (cursorIndicator != null)
+            cursorIndicator.transform.rotation = rotation;
+
+        ApplyFeedbackToPreview(validity);
         ApplyFeedbackToCursor(validity);
     }
 

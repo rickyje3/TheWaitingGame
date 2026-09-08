@@ -10,16 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 291651427e9f22248b6943dcad6721d3, type: 3}
-  m_Name: 3x3Shelf
+  m_Name: SmallWallShelf
   m_EditorClassIdentifier: Assembly-CSharp::Item
-  itemName: 3x3Shelf
+  itemName: Small Wall Shelf
   icon: {fileID: 0}
-  price: 200
-  isPurchased: 1
-  description: A shelf with 6 smaller slots for display pieces
-  <Size>k__BackingField: {x: 3, y: 3}
-  <Prefab>k__BackingField: {fileID: 6645670022071340812, guid: b2ebe076afc54a947be87c1d6d100411, type: 3}
+  price: 25
+  isPurchased: 0
+  description: A lamp you can attach to your wall
+  <Size>k__BackingField: {x: 2, y: 2}
+  <Prefab>k__BackingField: {fileID: 6645670022071340812, guid: c2e637ae97ed20d469f34a342626f303, type: 3}
   isCosmetic: 0
-  isFloorObject: 1
-  isWallObject: 0
+  isFloorObject: 0
+  isWallObject: 1
   itemType: 6

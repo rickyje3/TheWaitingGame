@@ -1,72 +1,163 @@
-using System;
 using UnityEngine;
 
 public class RemovingState : IBuildingState
 {
     private readonly GridPlacementSystem placementSystem;
     private readonly PreviewSystem previewSystem;
-    private Grid grid;
-    private GridData floorData, furnitureData;
     private readonly ObjectPlacer objectPlacer;
     private SoundFeedback soundFeedback;
 
-    public RemovingState(GridPlacementSystem placementSystem, PreviewSystem previewSystem, Grid grid, GridData floorData, GridData furnitureData, ObjectPlacer objectPlacer, SoundFeedback soundFeedback)
+
+    public RemovingState(
+        GridPlacementSystem placementSystem,
+        PreviewSystem previewSystem,
+        ObjectPlacer objectPlacer,
+        SoundFeedback soundFeedback)
     {
         this.placementSystem = placementSystem;
         this.previewSystem = previewSystem;
-        this.grid = grid;
-        this.floorData = floorData;
-        this.furnitureData = furnitureData;
         this.objectPlacer = objectPlacer;
         this.soundFeedback = soundFeedback;
 
         previewSystem.StartShowingRemovePreview();
     }
 
+
     public void EndState()
     {
         previewSystem.StopShowingPreview();
     }
 
+
     public void OnAction(Vector3Int gridPosition)
     {
+        Grid hoveredGrid =
+            placementSystem.hoveredGrid;
+
+        if (hoveredGrid == null)
+        {
+            Debug.Log("No grid under mouse.");
+            return;
+        }
+
+
+        // Get the data belonging to the grid
+        // we're currently hovering.
+        GridData structureData =
+            placementSystem.GetStructureData(hoveredGrid);
+
+        GridData furnitureData =
+            placementSystem.GetFurnitureData(hoveredGrid);
+
+
+        if (structureData == null ||
+            furnitureData == null)
+        {
+            return;
+        }
+
+
         GridData selectedData = null;
 
-        if (!furnitureData.CanPlaceObjectAt(gridPosition, Vector2Int.one))
+
+        // Check furniture first.
+        if (!furnitureData.CanPlaceObjectAt(
+            gridPosition,
+            Vector2Int.one))
         {
             selectedData = furnitureData;
         }
-        else if (!floorData.CanPlaceObjectAt(gridPosition, Vector2Int.one))
+        // Then check structure.
+        else if (!structureData.CanPlaceObjectAt(
+            gridPosition,
+            Vector2Int.one))
         {
-            selectedData = floorData;
+            selectedData = structureData;
         }
+
 
         if (selectedData == null)
-        {
             return;
-        }
 
-        int gameObjectIndex = selectedData.GetRepresentationIndex(gridPosition);
+
+        int gameObjectIndex =
+            selectedData.GetRepresentationIndex(
+                gridPosition);
+
 
         if (gameObjectIndex == -1)
+            return;
+
+
+        selectedData.RemoveObjectAt(
+            gridPosition);
+
+        objectPlacer.RemoveObjectAt(
+            gameObjectIndex);
+
+        soundFeedback.PlaySound(
+            SoundType.Remove);
+
+
+        Debug.Log(
+            "Removing object at " +
+            gridPosition +
+            " from " +
+            hoveredGrid.name);
+
+
+        previewSystem.UpdatePosition(
+            hoveredGrid.GetCellCenterWorld(gridPosition),
+            false,
+            placementSystem.GetHoveredRotation());
+    }
+
+
+    public void UpdateState(
+        Vector3Int gridPosition,
+        Vector3 mousePosition)
+    {
+        Grid hoveredGrid =
+            placementSystem.hoveredGrid;
+
+        if (hoveredGrid == null)
+            return;
+
+
+        GridData structureData =
+            placementSystem.GetStructureData(
+                hoveredGrid);
+
+        GridData furnitureData =
+            placementSystem.GetFurnitureData(
+                hoveredGrid);
+
+
+        if (structureData == null ||
+            furnitureData == null)
         {
             return;
         }
 
-        selectedData.RemoveObjectAt(gridPosition);
-        objectPlacer.RemoveObjectAt(gameObjectIndex);
 
-        soundFeedback.PlaySound(SoundType.Remove);
+        bool canRemove =
+            !furnitureData.CanPlaceObjectAt(
+                gridPosition,
+                Vector2Int.one)
+            ||
+            !structureData.CanPlaceObjectAt(
+                gridPosition,
+                Vector2Int.one);
 
-        Debug.Log("Removing object at " + gridPosition);
-            
-        previewSystem.UpdatePosition(grid.GetCellCenterWorld(gridPosition), false);
-    }
 
-    public void UpdateState(Vector3Int gridPosition, Vector3 mousePosition)
-    {
-        bool canRemove = !furnitureData.CanPlaceObjectAt(gridPosition, Vector2Int.one) || !floorData.CanPlaceObjectAt(gridPosition, Vector2Int.one);
+        Vector3 position =
+            hoveredGrid.GetCellCenterWorld(
+                gridPosition);
 
-        previewSystem.UpdatePosition(grid.GetCellCenterWorld(gridPosition), canRemove);
+
+        previewSystem.UpdatePosition(
+            position,
+            canRemove,
+            placementSystem.GetHoveredRotation());
     }
 }

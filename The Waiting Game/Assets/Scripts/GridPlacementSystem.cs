@@ -1,199 +1,360 @@
 using System;
-using System.Collections.Generic;
-using Unity.AppUI.Core;
 using UnityEngine;
-using UnityEngine.EventSystems;
-using UnityEngine.UI;
 
 public class GridPlacementSystem : MonoBehaviour
 {
-    [SerializeField] private GameObject mouseIndicator, cellIndicator; 
+    [SerializeField] private GameObject mouseIndicator;
+    [SerializeField] private GameObject cellIndicator;
+
     [SerializeField] private GridInputManager gridInputManager;
+
+    // ---------------------------------------------------------
+    // GRIDS
+    // ---------------------------------------------------------
+
     public Grid floorGrid;
-    public Grid loftGrid;
-    public Collider floorCollider; //grid
-    public Collider loftCollider; // grid
+    public Grid wallGrid;
+    public Grid wall2Grid;
+
+    // ---------------------------------------------------------
+    // COLLIDERS
+    // ---------------------------------------------------------
+
+    public Collider floorCollider;
+    public Collider wallCollider;
+    public Collider wall2Collider;
+
+    // ---------------------------------------------------------
+    // LAYERS
+    // ---------------------------------------------------------
+
     public LayerMask floorLayer;
-    public LayerMask loftLayer;
+    public LayerMask wallLayer;
+    public LayerMask wall2Layer;
+
+    // ---------------------------------------------------------
+    // GRID VISUALIZATIONS
+    // ---------------------------------------------------------
 
     public GameObject gridVisualizationFloor;
-    public GameObject gridVisualizationLoft;
+    public GameObject gridVisualizationWall;
+    public GameObject gridVisualizationWall2;
+
     [SerializeField] private GameAssets gameAssets;
 
+    // ---------------------------------------------------------
+    // ITEM
+    // ---------------------------------------------------------
+
     [HideInInspector] public Item selectedItem;
-    [HideInInspector] public Grid activeGrid;
-    private GameObject activeGridVisualization;
+
+    // The grid the mouse is CURRENTLY hovering over.
+    [HideInInspector] public Grid hoveredGrid;
+
+    // ---------------------------------------------------------
+    // GRID DATA
+    // ---------------------------------------------------------
 
     private GridData floorData;
     private GridData furnitureData;
 
-    private GridData loftFloorData;
-    private GridData loftFurnitureData;
+    private GridData wallData;
+    private GridData wallFurnitureData;
+
+    private GridData wall2Data;
+    private GridData wall2FurnitureData;
+
+    // ---------------------------------------------------------
+    // SYSTEMS
+    // ---------------------------------------------------------
 
     [SerializeField] private PreviewSystem preview;
 
-    private Vector3Int lastDetectedPosition = Vector3Int.zero;
-
-    [SerializeField] private ObjectPlacer objectPlacer;// The part that places the object down
+    [SerializeField] private ObjectPlacer objectPlacer;
 
     [SerializeField] private SoundFeedback soundFeedback;
 
+    private Vector3Int lastDetectedPosition = Vector3Int.zero;
+
+    private Grid lastDetectedGrid;
+
+    private IBuildingState buildingState;
+
     private Vector3 currentPlacementPosition;
+
     public Vector3 CurrentPlacementPosition => currentPlacementPosition;
 
-    IBuildingState buildingState;
 
+    // =========================================================
+    // START
+    // =========================================================
 
     private void Start()
     {
         if (gameAssets == null)
             gameAssets = FindAnyObjectByType<GameAssets>();
 
+        // -----------------------------------------------------
+        // FLOOR
+        // -----------------------------------------------------
+
         floorData = new GridData(
             floorGrid,
             floorCollider,
-            floorLayer
-        );
+            floorLayer);
 
         furnitureData = new GridData(
             floorGrid,
             floorCollider,
-            floorLayer
-        );
+            floorLayer);
 
-        loftFloorData = new GridData(
-            loftGrid,
-            loftCollider,
-            loftLayer
-        );
+        // -----------------------------------------------------
+        // WALL 1
+        // -----------------------------------------------------
 
-        loftFurnitureData = new GridData(
-            loftGrid,
-            loftCollider,
-            loftLayer
-        );
+        wallData = new GridData(
+            wallGrid,
+            wallCollider,
+            wallLayer);
+
+        wallFurnitureData = new GridData(
+            wallGrid,
+            wallCollider,
+            wallLayer);
+
+        // -----------------------------------------------------
+        // WALL 2
+        // -----------------------------------------------------
+
+        wall2Data = new GridData(
+            wall2Grid,
+            wall2Collider,
+            wall2Layer);
+
+        wall2FurnitureData = new GridData(
+            wall2Grid,
+            wall2Collider,
+            wall2Layer);
+
+        // -----------------------------------------------------
+        // INITIAL STATE
+        // -----------------------------------------------------
 
         StopPlacement();
     }
 
 
-    private void PlaceStructure()
+    // =========================================================
+    // GET MOUSE POSITION + GRID
+    // =========================================================
+
+    private bool TryGetHoveredGrid(
+    out Vector3 mousePosition,
+    out Grid grid)
     {
-        Debug.Log("Placing structure");
+        mousePosition = Vector3.zero;
+        grid = null;
 
-        if (buildingState == null)
-            return;
+        Ray ray =
+            Camera.main.ScreenPointToRay(Input.mousePosition);
 
-        // Only placement requires a selected item
-        if (buildingState is PlacementState && selectedItem == null)
+        int combinedMask;
+
+        if (selectedItem != null && selectedItem.isWallObject)
         {
-            Debug.Log("No selected item");
-            return;
+            combinedMask =
+                wallLayer |
+                wall2Layer;
+        }
+        else
+        {
+            combinedMask =
+                floorLayer;
         }
 
-        Vector3 mousePosition = gridInputManager.GetSelectedMousePosition();
-
-        if (mousePosition == Vector3.zero)
-            return;
-
-
-        if (activeGrid == null)
-            return;
-
-        /*if (EventSystem.current.IsPointerOverGameObject())
+        if (!Physics.Raycast(
+            ray,
+            out RaycastHit hit,
+            Mathf.Infinity,
+            combinedMask))
         {
-            StopPlacement();
-            Debug.Log("Clicked on UI, not placing object");
-            return;
-        }*/
-    
+            return false;
+        }
 
-        Vector3Int gridPosition = activeGrid.WorldToCell(mousePosition);
-        Debug.Log($"Mouse: {mousePosition:F2}  Cell: {gridPosition}");
+        mousePosition = hit.point;
 
-        Debug.DrawLine(
-            mousePosition,
-            activeGrid.CellToWorld(gridPosition),
-            Color.red,
-            0.1f);
+        if (hit.collider == floorCollider)
+            grid = floorGrid;
 
-        /*Debug.Log($"Mouse: {mousePosition}");
-        Debug.Log($"Cell: {gridPosition}");
-        Debug.Log($"Center: {activeGrid.GetCellCenterWorld(gridPosition)}");*/
+        else if (hit.collider == wallCollider)
+            grid = wallGrid;
 
-        buildingState.OnAction(gridPosition);
+        else if (hit.collider == wall2Collider)
+            grid = wall2Grid;
 
-
-        //Moved to PlacementState class
-        /*
-        bool placementValidity = CheckPlacementValidity(gridPosition, selectedItem);
-
-        if (placementValidity == false)
-            return;
-
-        Debug.Log("Prefab is: " + selectedItem.Prefab);
-
-
-        int index = objectPlacer.PlaceObject(selectedItem.Prefab, activeGrid.CellToWorld(gridPosition));
-
-        GridData selectedData = selectedItem.isFloorObject ? floorData : furnitureData;
-        selectedData.AddObjectAt(
-            gridPosition,
-            selectedItem.Size,
-            selectedItem,
-            objectPlacer.placedGameObjects.Count - 1);
-
-        Debug.Log($"ADDING {selectedData.GetHashCode()}");
-        Debug.Log("Placing " + selectedItem.ToString());
-
-        preview.UpdatePosition(activeGrid.CellToWorld(gridPosition), false);*/
+        return grid != null;
     }
+
+
+    // =========================================================
+    // GET DATA FOR CURRENT GRID
+    // =========================================================
 
     public GridData GetSelectedData()
     {
-        if (selectedItem == null)
+        if (selectedItem == null || hoveredGrid == null)
             return null;
 
-        bool onFloorGrid = activeGrid == floorGrid;
+        // -----------------------------------------------------
+        // FLOOR
+        // -----------------------------------------------------
 
-        if (onFloorGrid)
+        if (hoveredGrid == floorGrid)
         {
             return selectedItem.isFloorObject
                 ? floorData
                 : furnitureData;
         }
-        else
+
+        // -----------------------------------------------------
+        // WALL 1
+        // -----------------------------------------------------
+
+        if (hoveredGrid == wallGrid)
         {
             return selectedItem.isFloorObject
-                ? loftFloorData
-                : loftFurnitureData;
+                ? wallData
+                : wallFurnitureData;
         }
+
+        // -----------------------------------------------------
+        // WALL 2
+        // -----------------------------------------------------
+
+        if (hoveredGrid == wall2Grid)
+        {
+            return selectedItem.isFloorObject
+                ? wall2Data
+                : wall2FurnitureData;
+        }
+
+        return null;
     }
+
+    public GridData GetStructureData(Grid grid)
+    {
+        if (grid == floorGrid)
+            return floorData;
+
+        if (grid == wallGrid)
+            return wallData;
+
+        if (grid == wall2Grid)
+            return wall2Data;
+
+        return null;
+    }
+
+
+    public GridData GetFurnitureData(Grid grid)
+    {
+        if (grid == floorGrid)
+            return furnitureData;
+
+        if (grid == wallGrid)
+            return wallFurnitureData;
+
+        if (grid == wall2Grid)
+            return wall2FurnitureData;
+
+        return null;
+    }
+
+
+    // =========================================================
+    // PLACE STRUCTURE
+    // =========================================================
+
+    private void PlaceStructure()
+    {
+        Debug.Log("Starting place structure");
+
+        if (buildingState == null)
+            return;
+
+        if (buildingState is PlacementState &&
+            selectedItem == null)
+        {
+            Debug.Log("No selected item");
+            return;
+        }
+
+        if (!TryGetHoveredGrid(
+            out Vector3 mousePosition,
+            out Grid grid))
+        {
+            Debug.Log("Mouse is not over a placement surface");
+            return;
+        }
+
+        // This is now the grid we are actually placing on.
+        hoveredGrid = grid;
+
+        Vector3Int gridPosition =
+            hoveredGrid.WorldToCell(mousePosition);
+
+        Debug.Log(
+            $"Mouse: {mousePosition:F2} " +
+            $"Cell: {gridPosition} " +
+            $"Grid: {hoveredGrid.name}");
+
+        Debug.DrawLine(
+            mousePosition,
+            hoveredGrid.GetCellCenterWorld(gridPosition),
+            Color.red,
+            0.1f);
+
+        buildingState.OnAction(gridPosition);
+    }
+
+
+    // =========================================================
+    // STOP PLACEMENT
+    // =========================================================
 
     public void StopPlacement()
     {
         Debug.Log("Stopping placement");
 
         selectedItem = null;
+        hoveredGrid = null;
 
         gridVisualizationFloor.SetActive(false);
-        gridVisualizationLoft.SetActive(false);
+        gridVisualizationWall.SetActive(false);
+        gridVisualizationWall2.SetActive(false);
 
-        if(buildingState != null)
+        if (buildingState != null)
             buildingState.EndState();
 
-        //preview.StopShowingPreview();
         gridInputManager.OnClicked -= PlaceStructure;
         gridInputManager.OnExit -= StopPlacement;
 
         lastDetectedPosition = Vector3Int.zero;
+        lastDetectedGrid = null;
+
         buildingState = null;
     }
 
+
+    // =========================================================
+    // START PLACEMENT
+    // =========================================================
+
     public void StartPlacement(Item item)
     {
-        //Debug.Log("Started placement of " + item.itemName);
-        Debug.Log("Subscribed to " + gridInputManager.GetEntityId());
+        Debug.Log(
+            "Subscribed to " +
+            gridInputManager.GetEntityId());
 
         StopPlacement();
 
@@ -201,11 +362,17 @@ public class GridPlacementSystem : MonoBehaviour
 
         if (!selectedItem.isCosmetic)
         {
-            buildingState = new PlacementState(selectedItem, activeGrid, preview, this, objectPlacer, soundFeedback);
+            ShowPlacementGrids();
+
+            buildingState = new PlacementState(
+                selectedItem,
+                preview,
+                this,
+                objectPlacer,
+                soundFeedback);
 
             mouseIndicator.SetActive(true);
 
-            // Prevent duplicate subscriptions
             gridInputManager.OnClicked -= PlaceStructure;
             gridInputManager.OnClicked += PlaceStructure;
 
@@ -214,14 +381,26 @@ public class GridPlacementSystem : MonoBehaviour
         }
     }
 
+
+    // =========================================================
+    // START REMOVING
+    // =========================================================
+
     public void StartRemoving()
     {
         StopPlacement();
-        activeGridVisualization.SetActive(true);
-        buildingState = new RemovingState(this, preview, activeGrid, floorData, furnitureData, objectPlacer, soundFeedback);
+
+        gridVisualizationFloor.SetActive(true);
+        gridVisualizationWall.SetActive(true);
+        gridVisualizationWall2.SetActive(true);
+
+        buildingState = new RemovingState(
+            this,
+            preview,
+            objectPlacer,
+            soundFeedback);
 
         Debug.Log("Starting Remove Mode");
-        Debug.Log(buildingState);
 
         gridInputManager.OnClicked -= PlaceStructure;
         gridInputManager.OnClicked += PlaceStructure;
@@ -230,80 +409,117 @@ public class GridPlacementSystem : MonoBehaviour
         gridInputManager.OnExit += StopPlacement;
     }
 
-    // Update is called once per frame
-    void Update()
+
+    // =========================================================
+    // UPDATE
+    // =========================================================
+
+    private void Update()
     {
-        if (buildingState == null || activeGrid == null)
+        if (buildingState == null)
             return;
 
-        Vector3 mousePosition = gridInputManager.GetSelectedMousePosition();
-
-        if (mousePosition == Vector3.zero)
+        if (!TryGetHoveredGrid(out Vector3 mousePosition, out Grid grid))
             return;
 
-        Vector3Int gridPosition = activeGrid.WorldToCell(mousePosition);
+        hoveredGrid = grid;
+
+        Vector3Int gridPosition =
+            hoveredGrid.WorldToCell(mousePosition);
+
+        Vector3 cellCenter =
+            hoveredGrid.GetCellCenterWorld(gridPosition);
+
+        // ---------------------------------------------------------
+        // POSITION
+        // ---------------------------------------------------------
 
         mouseIndicator.transform.position = mousePosition;
 
-        cellIndicator.transform.position = activeGrid.GetCellCenterWorld(gridPosition);
-
-        Vector3 cellCenter = activeGrid.GetCellCenterWorld(gridPosition);
-
-        Debug.DrawLine(
-            mousePosition,
-            cellCenter,
-            Color.yellow
-        );
-
-        Debug.DrawLine(
-            cellCenter + Vector3.up * 0.5f,
-            cellCenter + Vector3.down * 0.5f,
-            Color.blue
-        );
+        cellIndicator.transform.position = cellCenter;
 
 
-        //Debug.Log($"Mouse: {mousePosition}");
-        //Debug.Log($"Grid Cell: {gridPosition}");
+        // ---------------------------------------------------------
+        // ROTATION
+        // ---------------------------------------------------------
 
-        if (lastDetectedPosition != gridPosition)
+        Quaternion hoveredRotation = GetHoveredRotation();
+
+        cellIndicator.transform.rotation = hoveredRotation;
+
+
+        // ---------------------------------------------------------
+        // UPDATE PREVIEW
+        // ---------------------------------------------------------
+
+        if (lastDetectedGrid != hoveredGrid ||
+            lastDetectedPosition != gridPosition)
         {
-            buildingState.UpdateState(gridPosition, mousePosition);
-            /*bool placementValidity = CheckPlacementValidity(gridPosition, selectedItem);
+            buildingState.UpdateState(
+                gridPosition,
+                mousePosition);
 
-            mouseIndicator.transform.position =
-                mousePosition + Vector3.up * 0.5f;
-
-            //cursorIndicator.transform.position = activeGrid.CellToWorld(gridPosition);
-            preview.UpdatePosition(activeGrid.CellToWorld(gridPosition), placementValidity);*/
+            lastDetectedGrid = hoveredGrid;
             lastDetectedPosition = gridPosition;
         }
 
+
+        // ---------------------------------------------------------
+        // RIGHT CLICK
+        // ---------------------------------------------------------
+
         if (Input.GetKeyDown(KeyCode.Mouse1))
-        {
             StopPlacement();
+    }
+
+
+    // =========================================================
+    // GRID VISUALIZATION
+    // =========================================================
+
+    public void ShowFloorGrid()
+    {
+        gridVisualizationFloor.SetActive(true);
+    }
+
+    public void ShowWallGrid()
+    {
+        gridVisualizationWall.SetActive(true);
+    }
+
+    public void ShowWall2Grid()
+    {
+        gridVisualizationWall2.SetActive(true);
+    }
+
+    public void ShowPlacementGrids()
+    {
+        if (selectedItem == null)
+            return;
+
+        if (selectedItem.isWallObject)
+        {
+            gridVisualizationFloor.SetActive(false);
+            gridVisualizationWall.SetActive(true);
+            gridVisualizationWall2.SetActive(true);
+        }
+        else
+        {
+            gridVisualizationFloor.SetActive(true);
+            gridVisualizationWall.SetActive(false);
+            gridVisualizationWall2.SetActive(false);
         }
     }
 
 
-    public void SetActiveGrid(Grid grid, GameObject visualization)
+    public Quaternion GetHoveredRotation()
     {
-        activeGrid = grid;
+        if (hoveredGrid == wallGrid)
+            return Quaternion.Euler(-45f, 45f, -90f);
 
-        gridVisualizationFloor.SetActive(false);
-        gridVisualizationLoft.SetActive(false);
+        if (hoveredGrid == wall2Grid)
+            return Quaternion.Euler(-45f, 130f, -90f);
 
-        activeGridVisualization = visualization;
-        activeGridVisualization.SetActive(true);
-    }
-
-    // Optional manual switch (you can call this from a button or keybind)
-    public void SwitchToLoft()
-    {
-        SetActiveGrid(loftGrid, gridVisualizationLoft);
-    }
-
-    public void SwitchToFloor()
-    {
-        SetActiveGrid(floorGrid, gridVisualizationFloor);
+        return Quaternion.identity;
     }
 }

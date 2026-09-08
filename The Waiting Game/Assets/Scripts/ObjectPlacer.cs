@@ -18,15 +18,16 @@ public class ObjectPlacer : MonoBehaviour
         placedGameObjects[gameObjectIndex] = null;
     }
 
-    public int PlaceObject(GameObject prefab, Vector3 position)
+    public int PlaceObject(
+        GameObject prefab,
+        Vector3 position,
+        Quaternion rotation)
     {
-        GameObject obj = Instantiate(
-            prefab,
-            position,
-            previewSystem.PreviewRotation
-            );
+        GameObject newObject =
+            Instantiate(prefab, position, rotation);
 
-        placedGameObjects.Add(obj);
+        placedGameObjects.Add(newObject);
+
         return placedGameObjects.Count - 1;
     }
 }
