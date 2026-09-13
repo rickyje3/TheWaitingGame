@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 291651427e9f22248b6943dcad6721d3, type: 3}
   m_Name: WallLamp
   m_EditorClassIdentifier: Assembly-CSharp::Item
+  itemID: lamp_wall
   itemName: Wall Lamp
   icon: {fileID: 0}
   price: 75

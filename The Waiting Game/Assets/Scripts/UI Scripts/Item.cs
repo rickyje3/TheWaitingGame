@@ -4,6 +4,10 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Shop/Item")]
 public class Item : ScriptableObject
 {
+    [SerializeField]
+    private string itemID;
+    public string ItemID => itemID; // name to give to item that won't change so it won't break save data if the name changes
+
     public string itemName;
     public Sprite icon;
     public int price;

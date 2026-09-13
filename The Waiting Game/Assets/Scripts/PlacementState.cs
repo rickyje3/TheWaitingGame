@@ -130,6 +130,7 @@ public class PlacementState : IBuildingState
             selectedItem,
             index);
 
+        placementSystem.SaveGame();
 
         Debug.Log(
             $"ADDING {selectedData.GetHashCode()}");

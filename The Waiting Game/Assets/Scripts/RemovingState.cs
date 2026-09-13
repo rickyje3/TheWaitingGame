@@ -95,6 +95,11 @@ public class RemovingState : IBuildingState
         objectPlacer.RemoveObjectAt(
             gameObjectIndex);
 
+
+        // SAVE AFTER SUCCESSFUL REMOVAL
+        placementSystem.SaveGame();
+
+
         soundFeedback.PlaySound(
             SoundType.Remove);
 

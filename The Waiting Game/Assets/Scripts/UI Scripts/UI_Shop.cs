@@ -41,13 +41,13 @@ public class UI_Shop : MonoBehaviour
         if (gridPlacementSystem == null)
             gridPlacementSystem = FindAnyObjectByType<GridPlacementSystem>();
     }
-
+    
     private void Start()
     {
 
         // Open to chairs by default
         // Open to chairs by default
-        ShowCategory(Item.ItemType.Beds);
+        ShowCategory(categoryToDisplay); // Refresh the shop UI to show the purchased state
 
         Debug.Log("Container is: " + container?.name);
     }

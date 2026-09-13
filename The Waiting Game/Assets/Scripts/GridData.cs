@@ -11,11 +11,19 @@ public class GridData
     private LayerMask floorLayer;
 
 
-    public GridData(Grid grid, Collider floorBounds, LayerMask floorLayer)
+    public SavedGridType GridType { get; private set; }
+
+
+    public GridData(
+        Grid grid,
+        Collider floorBounds,
+        LayerMask floorLayer,
+        SavedGridType gridType)
     {
         this.grid = grid;
         this.floorBounds = floorBounds;
         this.floorLayer = floorLayer;
+        this.GridType = gridType;
     }
 
     public void AddObjectAt(Vector3Int gridPosition, Vector2Int objectSize, Item item, int placedObjectIndex)
@@ -29,7 +37,7 @@ public class GridData
         {
             if (placedObjects.ContainsKey(position))
             {
-                throw new Exception("Dictionary already contains this cell position {position}");
+                throw new Exception($"Dictionary already contains this cell position {position}");
             }
 
             Debug.Log($"Occupying {position}");
@@ -99,6 +107,26 @@ public class GridData
         {
             placedObjects.Remove(position);
         }
+    }
+
+    public Vector3 GetWorldPosition(Vector3Int gridPosition)
+    {
+        return grid.GetCellCenterWorld(gridPosition);
+    }
+
+    public IEnumerable<PlacementData> GetPlacedObjects()
+    {
+        HashSet<PlacementData> uniqueObjects =
+            new HashSet<PlacementData>();
+
+
+        foreach (PlacementData data in placedObjects.Values)
+        {
+            uniqueObjects.Add(data);
+        }
+
+
+        return uniqueObjects;
     }
 }
 

@@ -84,6 +84,10 @@ public class GridPlacementSystem : MonoBehaviour
 
     public Vector3 CurrentPlacementPosition => currentPlacementPosition;
 
+    [SerializeField] private SaveManager saveManager;
+
+    private bool isRemoving;
+
 
     // =========================================================
     // START
@@ -101,46 +105,51 @@ public class GridPlacementSystem : MonoBehaviour
         floorData = new GridData(
             floorGrid,
             floorCollider,
-            floorLayer);
+            floorLayer,
+            SavedGridType.Floor);
 
         furnitureData = new GridData(
             floorGrid,
             floorCollider,
-            floorLayer);
+            floorLayer,
+            SavedGridType.Floor);
 
-        // -----------------------------------------------------
-        // WALL 1
-        // -----------------------------------------------------
 
         wallData = new GridData(
             wallGrid,
             wallCollider,
-            wallLayer);
+            wallLayer,
+            SavedGridType.Wall);
 
         wallFurnitureData = new GridData(
             wallGrid,
             wallCollider,
-            wallLayer);
+            wallLayer,
+            SavedGridType.Wall);
 
-        // -----------------------------------------------------
-        // WALL 2
-        // -----------------------------------------------------
 
         wall2Data = new GridData(
             wall2Grid,
             wall2Collider,
-            wall2Layer);
+            wall2Layer,
+            SavedGridType.Wall2);
 
         wall2FurnitureData = new GridData(
             wall2Grid,
             wall2Collider,
-            wall2Layer);
+            wall2Layer,
+            SavedGridType.Wall2);
 
         // -----------------------------------------------------
         // INITIAL STATE
         // -----------------------------------------------------
 
         StopPlacement();
+
+        if (saveManager != null)
+        {
+            saveManager.LoadGame();
+        }
     }
 
 
@@ -160,14 +169,24 @@ public class GridPlacementSystem : MonoBehaviour
 
         int combinedMask;
 
-        if (selectedItem != null && selectedItem.isWallObject)
+        if (isRemoving)
         {
+            // Removal mode can interact with every placement surface.
+            combinedMask =
+                floorLayer |
+                wallLayer |
+                wall2Layer;
+        }
+        else if (selectedItem != null && selectedItem.isWallObject)
+        {
+            // Wall placement can only interact with the two wall grids.
             combinedMask =
                 wallLayer |
                 wall2Layer;
         }
         else
         {
+            // Normal floor placement.
             combinedMask =
                 floorLayer;
         }
@@ -324,6 +343,8 @@ public class GridPlacementSystem : MonoBehaviour
 
     public void StopPlacement()
     {
+        isRemoving = false;
+
         Debug.Log("Stopping placement");
 
         selectedItem = null;
@@ -352,6 +373,8 @@ public class GridPlacementSystem : MonoBehaviour
 
     public void StartPlacement(Item item)
     {
+        isRemoving = false;
+
         Debug.Log(
             "Subscribed to " +
             gridInputManager.GetEntityId());
@@ -389,6 +412,8 @@ public class GridPlacementSystem : MonoBehaviour
     public void StartRemoving()
     {
         StopPlacement();
+
+        isRemoving = true;
 
         gridVisualizationFloor.SetActive(true);
         gridVisualizationWall.SetActive(true);
@@ -518,8 +543,64 @@ public class GridPlacementSystem : MonoBehaviour
             return Quaternion.Euler(-45f, 45f, -90f);
 
         if (hoveredGrid == wall2Grid)
-            return Quaternion.Euler(-45f, 130f, -90f);
+            return Quaternion.Euler(-45f, 135f, -90f);
 
         return Quaternion.identity;
+    }
+
+
+    public Grid GetGrid(SavedGridType gridType)
+    {
+        switch (gridType)
+        {
+            case SavedGridType.Floor:
+                return floorGrid;
+
+            case SavedGridType.Wall:
+                return wallGrid;
+
+            case SavedGridType.Wall2:
+                return wall2Grid;
+        }
+
+        return null;
+    }
+
+
+    public GridData GetGridData(
+        SavedGridType gridType,
+        bool structureData)
+    {
+        switch (gridType)
+        {
+            case SavedGridType.Floor:
+                return structureData
+                    ? floorData
+                    : furnitureData;
+
+            case SavedGridType.Wall:
+                return structureData
+                    ? wallData
+                    : wallFurnitureData;
+
+            case SavedGridType.Wall2:
+                return structureData
+                    ? wall2Data
+                    : wall2FurnitureData;
+        }
+
+        return null;
+    }
+
+    public void SaveGame()
+    {
+        if (saveManager == null)
+        {
+            Debug.LogWarning(
+                "SaveManager is not assigned.");
+            return;
+        }
+
+        saveManager.SaveGame();
     }
 }
