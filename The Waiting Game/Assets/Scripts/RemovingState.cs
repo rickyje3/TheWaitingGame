@@ -29,6 +29,10 @@ public class RemovingState : IBuildingState
     }
 
 
+    // ---------------------------------------------------------
+    // REMOVE OBJECT
+    // ---------------------------------------------------------
+
     public void OnAction(Vector3Int gridPosition)
     {
         Grid hoveredGrid =
@@ -44,10 +48,12 @@ public class RemovingState : IBuildingState
         // Get the data belonging to the grid
         // we're currently hovering.
         GridData structureData =
-            placementSystem.GetStructureData(hoveredGrid);
+            placementSystem.GetStructureData(
+                hoveredGrid);
 
         GridData furnitureData =
-            placementSystem.GetFurnitureData(hoveredGrid);
+            placementSystem.GetFurnitureData(
+                hoveredGrid);
 
 
         if (structureData == null ||
@@ -57,46 +63,96 @@ public class RemovingState : IBuildingState
         }
 
 
-        GridData selectedData = null;
+        // -----------------------------------------------------
+        // Find the object occupying this cell.
+        // -----------------------------------------------------
 
-
-        // Check furniture first.
-        if (!furnitureData.CanPlaceObjectAt(
-            gridPosition,
-            Vector2Int.one))
-        {
-            selectedData = furnitureData;
-        }
-        // Then check structure.
-        else if (!structureData.CanPlaceObjectAt(
-            gridPosition,
-            Vector2Int.one))
-        {
-            selectedData = structureData;
-        }
-
-
-        if (selectedData == null)
-            return;
-
-
-        int gameObjectIndex =
-            selectedData.GetRepresentationIndex(
+        PlacementData placementData =
+            furnitureData.GetPlacementDataAt(
                 gridPosition);
 
 
-        if (gameObjectIndex == -1)
+        GridData selectedData =
+            furnitureData;
+
+
+        // If there is no furniture here, check structure.
+        if (placementData == null)
+        {
+            placementData =
+                structureData.GetPlacementDataAt(
+                    gridPosition);
+
+            selectedData =
+                structureData;
+        }
+
+
+        // Nothing is occupying this cell.
+        if (placementData == null)
             return;
 
 
+        // -----------------------------------------------------
+        // Get the actual placed object.
+        // -----------------------------------------------------
+
+        Item placedItem =
+            placementData.placedItem;
+
+
+        if (placedItem == null)
+        {
+            Debug.LogWarning(
+                "PlacementData has no Item.");
+
+            return;
+        }
+
+
+        // Blockers cannot be removed.
+        if (placedItem.isBlocker)
+        {
+            Debug.Log(
+                "This object is a blocker and cannot be removed.");
+
+            return;
+        }
+
+
+        int gameObjectIndex =
+            placementData.PlacedObjectIndex;
+
+
+        if (gameObjectIndex < 0)
+        {
+            Debug.LogWarning(
+                "PlacementData has an invalid GameObject index.");
+
+            return;
+        }
+
+
+        // -----------------------------------------------------
+        // Remove from GridData.
+        // -----------------------------------------------------
+
         selectedData.RemoveObjectAt(
             gridPosition);
+
+
+        // -----------------------------------------------------
+        // Remove actual GameObject.
+        // -----------------------------------------------------
 
         objectPlacer.RemoveObjectAt(
             gameObjectIndex);
 
 
+        // -----------------------------------------------------
         // SAVE AFTER SUCCESSFUL REMOVAL
+        // -----------------------------------------------------
+
         placementSystem.SaveGame();
 
 
@@ -112,11 +168,16 @@ public class RemovingState : IBuildingState
 
 
         previewSystem.UpdatePosition(
-            hoveredGrid.GetCellCenterWorld(gridPosition),
+            hoveredGrid.GetCellCenterWorld(
+                gridPosition),
             false,
             placementSystem.GetHoveredRotation());
     }
 
+
+    // ---------------------------------------------------------
+    // UPDATE REMOVE PREVIEW
+    // ---------------------------------------------------------
 
     public void UpdateState(
         Vector3Int gridPosition,
@@ -145,14 +206,40 @@ public class RemovingState : IBuildingState
         }
 
 
-        bool canRemove =
-            !furnitureData.CanPlaceObjectAt(
-                gridPosition,
-                Vector2Int.one)
-            ||
-            !structureData.CanPlaceObjectAt(
-                gridPosition,
-                Vector2Int.one);
+        // -----------------------------------------------------
+        // Check whether either type of object occupies
+        // this cell.
+        // -----------------------------------------------------
+
+        PlacementData furnitureDataAtCell =
+            furnitureData.GetPlacementDataAt(
+                gridPosition);
+
+
+        PlacementData structureDataAtCell =
+            structureData.GetPlacementDataAt(
+                gridPosition);
+
+
+        bool canRemove = false;
+
+
+        if (furnitureDataAtCell != null)
+        {
+            if (furnitureDataAtCell.placedItem != null &&
+                !furnitureDataAtCell.placedItem.isBlocker)
+            {
+                canRemove = true;
+            }
+        }
+        else if (structureDataAtCell != null)
+        {
+            if (structureDataAtCell.placedItem != null &&
+                !structureDataAtCell.placedItem.isBlocker)
+            {
+                canRemove = true;
+            }
+        }
 
 
         Vector3 position =

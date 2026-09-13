@@ -266,4 +266,10 @@ public class UI_Shop : MonoBehaviour
         ShowCategory(Item.ItemType.Flooring);
         categoryToDisplay = Item.ItemType.Flooring;
     }
+
+    public void ShowMisc()
+    {
+        ShowCategory(Item.ItemType.Miscellaneous);
+        categoryToDisplay = Item.ItemType.Miscellaneous;
+    }
 }

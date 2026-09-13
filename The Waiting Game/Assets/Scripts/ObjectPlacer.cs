@@ -9,15 +9,24 @@ public class ObjectPlacer : MonoBehaviour
 
     internal void RemoveObjectAt(int gameObjectIndex)
     {
-        if (gameObjectIndex < 0 || gameObjectIndex >= placedGameObjects.Count)
+        if (gameObjectIndex < 0 ||
+            gameObjectIndex >= placedGameObjects.Count)
         {
+            Debug.LogWarning(
+                $"Tried to remove invalid GameObject index: {gameObjectIndex}");
+
             return;
         }
 
-        if (placedGameObjects[gameObjectIndex] != null)
+        if (placedGameObjects[gameObjectIndex] == null)
         {
-            Destroy(placedGameObjects[gameObjectIndex]);
+            Debug.LogWarning(
+                $"GameObject at index {gameObjectIndex} is already null.");
+
+            return;
         }
+
+        Destroy(placedGameObjects[gameObjectIndex]);
 
         placedGameObjects[gameObjectIndex] = null;
     }

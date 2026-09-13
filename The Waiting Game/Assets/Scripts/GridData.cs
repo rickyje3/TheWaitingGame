@@ -128,6 +128,15 @@ public class GridData
 
         return uniqueObjects;
     }
+
+
+    public PlacementData GetPlacementDataAt(Vector3Int gridPosition)
+    {
+        if (!placedObjects.ContainsKey(gridPosition))
+            return null;
+
+        return placedObjects[gridPosition];
+    }
 }
 
 public class PlacementData

@@ -13,6 +13,8 @@ public class Item : ScriptableObject
     public int price;
     public bool isPurchased = false;
 
+    public bool isBlocker; // mark as true if you want this to just block a tile and not make it so objects are placeable
+
     [TextArea] public string description;
 
     [field: SerializeField]
@@ -42,7 +44,8 @@ public class Item : ScriptableObject
         Pets,
         Wallpaper,
         Flooring,
-        Appliances
+        Appliances,
+        Miscellaneous
     }
 
     public ItemType itemType;
