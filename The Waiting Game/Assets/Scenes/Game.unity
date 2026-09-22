@@ -1805,6 +1805,7 @@ MonoBehaviour:
   mainMenu: {fileID: 824549239}
   mainMenuImage: {fileID: 824549237}
   layoutGroup: {fileID: 1258261906}
+  upgradesMenu: {fileID: 0}
   uiRoot: {fileID: 1216016942}
   dragAcrossScreen: {fileID: 997200270}
   scaleSize: {fileID: 1010578262}
@@ -10407,7 +10408,31 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 824549235}
+      - m_Target: {fileID: 1029177298}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 824549237}
+        m_TargetAssemblyTypeName: UnityEngine.UI.Image, UnityEngine.UI
+        m_MethodName: set_enabled
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1258261904}
         m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
         m_MethodName: SetActive
         m_Mode: 6
@@ -12514,7 +12539,7 @@ GameObject:
   - component: {fileID: 490631409}
   - component: {fileID: 490631408}
   m_Layer: 6
-  m_Name: WorkingRateText (1)
+  m_Name: WorkingRateText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -18436,10 +18461,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: '::'
   activityManager: {fileID: 647997290}
   money: 0
-  wageMultiplier: 0
-  inputMoneyMultiplier: 0
+  wageMultiplier: 1
+  inputMoneyMultiplier: 1
+  wageMultMenuText: {fileID: 490631408}
+  inputMultMenuText: {fileID: 1623505654}
+  wageMultMenuCostText: {fileID: 576373595}
+  inputMultMenuCostText: {fileID: 1073955012}
   moneyText: {fileID: 1317940730}
   mainMenu: {fileID: 824549239}
+  soundFeedback: {fileID: 40102546}
 --- !u!1 &656363098
 GameObject:
   m_ObjectHideFlags: 0
@@ -24054,6 +24084,7 @@ MonoBehaviour:
   scaleSize: {fileID: 1010578262}
   isShopOpen: 0
   isMenuOpen: 0
+  isUpgradesOpen: 0
   shop: {fileID: 1473130096}
   windowManager: {fileID: 2039679448}
 --- !u!1 &832575517
@@ -25721,7 +25752,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 983296056}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 647997292}
+        m_TargetAssemblyTypeName: MoneyManager, Assembly-CSharp
+        m_MethodName: UpgradeWageMult
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &983296056
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -26688,7 +26731,7 @@ GameObject:
   - component: {fileID: 1126919748}
   - component: {fileID: 1126919747}
   m_Layer: 6
-  m_Name: RemoveButton (1)
+  m_Name: XButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -26769,6 +26812,30 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 824549237}
+        m_TargetAssemblyTypeName: UnityEngine.UI.Image, UnityEngine.UI
+        m_MethodName: set_enabled
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 1258261904}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
         m_CallState: 2
 --- !u!114 &1126919748
 MonoBehaviour:
@@ -31243,7 +31310,6 @@ MonoBehaviour:
   categoryToDisplay: 10
   gridPlacementSystem: {fileID: 970146179}
   soundFeedback: {fileID: 40102546}
-  fitter: {fileID: 0}
 --- !u!1 &1475357373
 GameObject:
   m_ObjectHideFlags: 0
@@ -32264,7 +32330,7 @@ GameObject:
   - component: {fileID: 1623505655}
   - component: {fileID: 1623505654}
   m_Layer: 6
-  m_Name: WorkingRateText (2)
+  m_Name: MoneyPerInputText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -43143,7 +43209,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2122250041}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 647997292}
+        m_TargetAssemblyTypeName: MoneyManager, Assembly-CSharp
+        m_MethodName: UpgradeInputMult
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &2122250041
 MonoBehaviour:
   m_ObjectHideFlags: 0

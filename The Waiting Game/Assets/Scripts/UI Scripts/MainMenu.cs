@@ -10,6 +10,7 @@ public class MainMenu : MonoBehaviour
     public ScaleSize scaleSize;
     public bool isShopOpen = false;
     public bool isMenuOpen = false;
+    public bool isUpgradesOpen = false;
     public UI_Shop shop;
 
     //private int currentMonitor = 0;

@@ -18,6 +18,8 @@ public class GridInputManager : MonoBehaviour
     public Image mainMenuImage;
     public LayoutGroup layoutGroup;
 
+    public GameObject upgradesMenu;
+
     public GameObject uiRoot;
 
     public DragAcrossScreen dragAcrossScreen;
@@ -35,6 +37,12 @@ public class GridInputManager : MonoBehaviour
         {
             OnExit?.Invoke();
             mainMenu.ShopIsClosed();
+            mainMenuImage.enabled = true;
+            layoutGroup.gameObject.SetActive(true);
+        }
+        if (Input.GetKeyDown(KeyCode.Escape) && mainMenu.isUpgradesOpen)
+        {
+            upgradesMenu.SetActive(false);
             mainMenuImage.enabled = true;
             layoutGroup.gameObject.SetActive(true);
         }

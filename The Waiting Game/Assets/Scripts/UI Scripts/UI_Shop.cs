@@ -29,8 +29,6 @@ public class UI_Shop : MonoBehaviour
 
     [SerializeField] private SoundFeedback soundFeedback;
 
-    [SerializeField] private ContentSizeFitter fitter;
-
 
     private void Awake()
     {
