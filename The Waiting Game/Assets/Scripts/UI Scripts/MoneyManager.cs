@@ -5,8 +5,8 @@ public class MoneyManager : MonoBehaviour
 {
     public DesktopActivityManager activityManager;
     /*[HideInInspector]*/ public float money;
-    private float wageMultiplier; // Multiplier that determines player wage
-    private float inputMoneyMultiplier;
+    public float wageMultiplier; // Multiplier that determines player wage
+    public float inputMoneyMultiplier; // Multiplier that determines money per input
     public TextMeshProUGUI moneyText;
     public MainMenu mainMenu;
 
@@ -49,6 +49,18 @@ public class MoneyManager : MonoBehaviour
     public void UpdateMoneyText()
     {
         moneyText.text = "$" + money.ToString("F2"); // update the money text up to 2 decimal places
+    }
+
+    public void UpgradeWageMult()
+    {
+        float newWage = wageMultiplier * 1.05f; // Increase wage multiplier by 5%
+        SaveCurrency();
+    }
+
+    public void UpgradeInputMult()
+    {
+        float newInputMult = inputMoneyMultiplier * 1.05f; // Increase input money multiplier by 5%
+        SaveCurrency();
     }
 
     public void SaveCurrency()

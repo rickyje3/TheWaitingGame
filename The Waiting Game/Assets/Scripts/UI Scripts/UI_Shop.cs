@@ -5,7 +5,7 @@ using UnityEngine.EventSystems;
 
 public class UI_Shop : MonoBehaviour
 {
-    [SerializeField] private Transform container;
+    public Transform container;
     public Transform shopItemTemplate;
 
     public MoneyManager moneyManager;
@@ -28,6 +28,8 @@ public class UI_Shop : MonoBehaviour
     [SerializeField] private GridPlacementSystem gridPlacementSystem;
 
     [SerializeField] private SoundFeedback soundFeedback;
+
+    [SerializeField] private ContentSizeFitter fitter;
 
 
     private void Awake()
@@ -171,9 +173,17 @@ public class UI_Shop : MonoBehaviour
     }
 
 
+    public void RefreshUIScroll()
+    {
+        Canvas.ForceUpdateCanvases();
+        //fitter.SetLayoutVertical();
+        Debug.Log("refreshing ui scroll wheel");
+    }
+
     public void ShowSelectedItemGroup()
     {
         ShowCategory(categoryToDisplay);
+        RefreshUIScroll();
     }
 
 
@@ -181,95 +191,112 @@ public class UI_Shop : MonoBehaviour
     {
         ShowCategory(Item.ItemType.Hat);
         categoryToDisplay = Item.ItemType.Hat;
+        RefreshUIScroll();
     }
 
     public void ShowShirts()
     {
         ShowCategory(Item.ItemType.Shirt);
         categoryToDisplay = Item.ItemType.Shirt;
+        RefreshUIScroll();
     }
 
     public void ShowPants()
     {
         ShowCategory(Item.ItemType.Pants);
         categoryToDisplay = Item.ItemType.Pants;
+        RefreshUIScroll();
     }
 
     public void ShowShoes()
     {
         ShowCategory(Item.ItemType.Shoes);
         categoryToDisplay = Item.ItemType.Shoes;
+        RefreshUIScroll();
     }
 
     public void ShowAccessories()
     {
         ShowCategory(Item.ItemType.Accessories);
         categoryToDisplay = Item.ItemType.Accessories;
+        RefreshUIScroll();
     }
 
     public void ShowChairs()
     {
         ShowCategory(Item.ItemType.Chair);
         categoryToDisplay = Item.ItemType.Chair;
+        RefreshUIScroll();
     }
 
     public void ShowBeds()
     {
         ShowCategory(Item.ItemType.Beds);
         categoryToDisplay = Item.ItemType.Beds;
+        RefreshUIScroll();
     }
 
     public void ShowTables()
     {
         ShowCategory(Item.ItemType.Table);
         categoryToDisplay = Item.ItemType.Table;
+        RefreshUIScroll();
     }
 
     public void ShowShelves()
     {
         ShowCategory(Item.ItemType.Shelf);
         categoryToDisplay = Item.ItemType.Shelf;
+        RefreshUIScroll();
     }
 
     public void ShowDecorations()
     {
         ShowCategory(Item.ItemType.Decorations);
         categoryToDisplay = Item.ItemType.Decorations;
+        RefreshUIScroll();
     }
 
     public void ShowAppliances()
     {
         ShowCategory(Item.ItemType.Appliances);
         categoryToDisplay = Item.ItemType.Appliances;
+        RefreshUIScroll();
     }
 
     public void ShowLighting()
     {
         ShowCategory(Item.ItemType.Lighting);
         categoryToDisplay = Item.ItemType.Lighting;
+        RefreshUIScroll();
     }
 
     public void ShowPets()
     {
         ShowCategory(Item.ItemType.Pets);
         categoryToDisplay = Item.ItemType.Pets;
+        RefreshUIScroll();
     }
 
     public void ShowWallpaper()
     {
         ShowCategory(Item.ItemType.Wallpaper);
         categoryToDisplay = Item.ItemType.Wallpaper;
+        RefreshUIScroll();
     }
 
     public void ShowFlooring()
     {
         ShowCategory(Item.ItemType.Flooring);
         categoryToDisplay = Item.ItemType.Flooring;
+        categoryToDisplay = Item.ItemType.Flooring;
+        RefreshUIScroll();
     }
 
     public void ShowMisc()
     {
         ShowCategory(Item.ItemType.Miscellaneous);
         categoryToDisplay = Item.ItemType.Miscellaneous;
+        RefreshUIScroll();
     }
 }
