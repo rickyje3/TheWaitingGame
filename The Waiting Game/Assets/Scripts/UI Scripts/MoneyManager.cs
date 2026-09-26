@@ -5,8 +5,8 @@ public class MoneyManager : MonoBehaviour
 {
     public DesktopActivityManager activityManager;
     /*[HideInInspector]*/ public float money;
-    public float wageMultiplier = 1; // Multiplier that determines player wage
-    public float inputMoneyMultiplier = 1; // Multiplier that determines money per input
+    public float wageMultiplier; // Multiplier that determines player wage
+    public float inputMoneyMultiplier; // Multiplier that determines money per input
 
     private float wageMultCost;
     private float inputMoneyMultCost;
@@ -30,8 +30,8 @@ public class MoneyManager : MonoBehaviour
 
 
         money = PlayerPrefs.GetFloat("Money", 0f); // Load saved money or start at 0 if not found
-        wageMultiplier = PlayerPrefs.GetFloat("WageMultiplier", 1f); // Load saved wage multiplier or start at 1 if not found
-        inputMoneyMultiplier = PlayerPrefs.GetFloat("InputMoneyMultiplier", 1f); // Load saved wage multiplier or start at 1 if not found
+        wageMultiplier = PlayerPrefs.GetFloat("WageMultiplier", .1f); // Load saved wage multiplier or start at 1 if not found
+        inputMoneyMultiplier = PlayerPrefs.GetFloat("InputMoneyMultiplier", .1f); // Load saved wage multiplier or start at 1 if not found
 
         wageMultCost = PlayerPrefs.GetFloat("WageMultCost", 10f);
         inputMoneyMultCost = PlayerPrefs.GetFloat("InputMoneyMultCost", 10f);
@@ -71,7 +71,7 @@ public class MoneyManager : MonoBehaviour
 
     public void UpdateWageMultText()
     {
-        wageMultMenuText.text = "$" + wageMultiplier.ToString("F2") + "/Second"; // update the wage multiplier text up to 2 decimal places
+        wageMultMenuText.text = "$" + (wageMultiplier * 60).ToString("F2") + "/Minute"; // update the wage multiplier text up to 2 decimal places
         wageMultMenuCostText.text = "$" + wageMultCost.ToString("F2"); // update the wage multiplier cost text up to 2 decimal places
     }
 
@@ -95,7 +95,7 @@ public class MoneyManager : MonoBehaviour
             soundFeedback.PlaySound(SoundType.Purchase);
             UpdateMoneyText();
 
-            float newWageMult = wageMultiplier * 1.10f; // Increase wage multiplier by 10%
+            float newWageMult = wageMultiplier * 1.1f; // Increase wage multiplier by 10%
             wageMultiplier = newWageMult;
 
             float newWageMultCost = wageMultCost * 1.15f; // Increase cost by 15%
@@ -119,10 +119,10 @@ public class MoneyManager : MonoBehaviour
             soundFeedback.PlaySound(SoundType.Purchase);
             UpdateMoneyText();
 
-            float newInputMult = inputMoneyMultiplier * 1.02f; // Increase input money multiplier by 2%
+            float newInputMult = inputMoneyMultiplier * 1.1f; // Increase input money multiplier by 10%
             inputMoneyMultiplier = newInputMult;
 
-            float newInputMultCost = inputMoneyMultCost * 1.15f; // Increase cost by 15%
+            float newInputMultCost = inputMoneyMultCost * 1.12f; // Increase cost by 12%
             inputMoneyMultCost = newInputMultCost;
             SaveCurrency();
             UpdateInputWageText();

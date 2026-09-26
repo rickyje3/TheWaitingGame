@@ -34,6 +34,17 @@ public class MainMenu : MonoBehaviour
         shop.gameObject.SetActive(false);
     }
 
+    public void UpgradesIsOpen()
+    {
+        isUpgradesOpen = true;
+        isMenuOpen = false;
+    }
+
+    public void UpgradesIsClosed()
+    {
+        isUpgradesOpen = false;
+    }
+
     public void OpenMenu()
     {
         windowManager.CenterWindowOnCurrentMonitor();

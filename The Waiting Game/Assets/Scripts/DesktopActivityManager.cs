@@ -204,9 +204,9 @@ public class DesktopActivityManager : MonoBehaviour
 
     if (Input.GetKeyDown(KeyCode.Escape))
     {
-        if (mainMenu.gameObject.activeSelf && !shop.gameObject.activeSelf)
+        if (mainMenu.gameObject.activeSelf)
             mainMenu.CloseMenu();
-        else if (!mainMenu.gameObject.activeSelf)
+        else if (!mainMenu.gameObject.activeSelf && !shop.gameObject.activeSelf && !mainMenu.isUpgradesOpen)
             mainMenu.OpenMenu();
         }
     }

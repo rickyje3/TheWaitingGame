@@ -28,6 +28,7 @@ public class GridInputManager : MonoBehaviour
 
     private void Update()
     { 
+        //If you're adding to this bs again make sure to check desktop activity manager to add new menu to if statement for using escape to close
         if (Input.GetMouseButtonDown(0))
         {
             OnClicked?.Invoke();
@@ -35,16 +36,21 @@ public class GridInputManager : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.Escape) && mainMenu.isShopOpen)
         {
-            OnExit?.Invoke();
+            OnExit?.Invoke(); // Invoke the OnExit event to notify subscribers that the shop menu is being closed
             mainMenu.ShopIsClosed();
             mainMenuImage.enabled = true;
             layoutGroup.gameObject.SetActive(true);
         }
         if (Input.GetKeyDown(KeyCode.Escape) && mainMenu.isUpgradesOpen)
         {
+            OnExit?.Invoke();
+            mainMenu.UpgradesIsClosed();
+            mainMenu.CloseMenu();
             upgradesMenu.SetActive(false);
             mainMenuImage.enabled = true;
             layoutGroup.gameObject.SetActive(true);
+ 
+            Debug.Log("Closing Upgrades Menu");
         }
         if (Input.GetKeyDown(KeyCode.F12))
         {
