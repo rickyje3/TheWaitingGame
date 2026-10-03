@@ -13,6 +13,8 @@ public class MainMenu : MonoBehaviour
     public bool isUpgradesOpen = false;
     public bool isDailiesOpen = false;
     public UI_Shop shop;
+    public GameObject dailies;
+    public GameObject upgradesMenu;
 
     //private int currentMonitor = 0;
 
@@ -39,22 +41,26 @@ public class MainMenu : MonoBehaviour
     {
         isUpgradesOpen = true;
         isMenuOpen = false;
+        upgradesMenu.SetActive(true);
     }
 
     public void UpgradesIsClosed()
     {
         isUpgradesOpen = false;
+        upgradesMenu.SetActive(false);
     }
 
     public void DailiesIsOpen()
     {
         isDailiesOpen = true;
         isMenuOpen = false;
+        dailies.SetActive(true);
     }
 
     public void DailiesIsClosed()
     {
         isDailiesOpen = false;
+        dailies.SetActive(false);
     }
 
     public void OpenMenu()

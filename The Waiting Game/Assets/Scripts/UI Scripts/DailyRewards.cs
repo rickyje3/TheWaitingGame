@@ -56,6 +56,11 @@ public class DailyRewards : MonoBehaviour
                     dailiesArray[i].isClaimed = true; // Mark the day as claimed
                     dailiesArray[i].checkmark.enabled = true; // Show checkmark for claimed days
                     dailiesArray[i].dailyImage.color = Color.gray; // Change color of claimed days to gray
+
+                    if (i == 6) // If all days have been claimed, reset the lastClaimTime to allow claiming again
+                    {
+                        lastClaimTime = DateTime.MinValue; // Reset lastClaimTime if all days have been claimed
+                    }
                 }
                 else
                 {
