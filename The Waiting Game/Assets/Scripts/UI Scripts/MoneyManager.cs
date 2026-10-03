@@ -107,8 +107,6 @@ public class MoneyManager : MonoBehaviour
 
     public void UpgradeInputMult()
     {
-         UpdateMoneyText();
-
          float newInputMult = inputMoneyMultiplier * 1.1f; // Increase input money multiplier by 10%
          inputMoneyMultiplier = newInputMult;
 
@@ -124,7 +122,7 @@ public class MoneyManager : MonoBehaviour
         PlayerPrefs.SetFloat("Money", money);
         Debug.Log("Currency saved: " + money);
         PlayerPrefs.SetFloat("WageMultiplier", wageMultiplier);
-        PlayerPrefs.SetFloat("InputMultiplier", inputMoneyMultiplier);
+        PlayerPrefs.SetFloat("InputMoneyMultiplier", inputMoneyMultiplier);
         PlayerPrefs.SetFloat("WageMultCost", wageMultCost);
         //PlayerPrefs.SetFloat("InputMoneyMultCost", inputMoneyMultCost);
         PlayerPrefs.Save();

@@ -30,7 +30,7 @@ public class DesktopActivityManager : MonoBehaviour
 
     public MoneyManager moneyManager;
 
-    private int totalIntervalsPassed = 0; // Tracks the total number of 30 minute working intervals passed
+    private int totalIntervalsPassed; // Tracks the total number of working intervals passed
     public int intervalMinutes = 10; // The interval duration in minutes
     private int nextIntervalTime;
 
@@ -123,9 +123,6 @@ public class DesktopActivityManager : MonoBehaviour
     public Dictionary<ActivityType, ActivityTrend> Trends =
         new Dictionary<ActivityType, ActivityTrend>();
 
-    // Timer for how often detection happens
-    float checkTimer;
-
     // Tracks how long the current activity
     // has been active
     float activityTimer;
@@ -151,15 +148,13 @@ public class DesktopActivityManager : MonoBehaviour
 
     void Start()
     {
-        // Create trend data for every activity type
+        /*// Create trend data for every activity type
         foreach (ActivityType type in Enum.GetValues(typeof(ActivityType)))
         {
             Trends[type] = new ActivityTrend();
-        }
+        }*/
 
         LoadPlayTime();
-
-        nextIntervalTime = intervalMinutes * 60;
 
         // Start background activity loop instead of using checkTimer
         StartCoroutine(ActivityLoop());
@@ -274,9 +269,18 @@ public class DesktopActivityManager : MonoBehaviour
         workTimer = PlayerPrefs.GetInt("WorkTime", 0);
         totalIntervalsPassed = PlayerPrefs.GetInt("IntervalCount", 0);
 
-        // Start the next interval from the loaded work time.
+        // Find the next interval AFTER the saved work time.
+        int intervalLength = intervalMinutes * 60;
+
         nextIntervalTime =
-            (int)workTimer + (intervalMinutes * 60);
+            ((Mathf.FloorToInt(workTimer) / intervalLength) + 1)
+            * intervalLength;
+
+        UnityEngine.Debug.Log(
+            $"Loaded WorkTime: {workTimer}s | " +
+            $"Intervals Passed: {totalIntervalsPassed} | " +
+            $"Next Interval: {nextIntervalTime}s"
+        );
     }
 
     private void IncrementAndSave()
