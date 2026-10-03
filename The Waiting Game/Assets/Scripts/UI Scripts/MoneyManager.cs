@@ -9,7 +9,7 @@ public class MoneyManager : MonoBehaviour
     public float inputMoneyMultiplier; // Multiplier that determines money per input
 
     private float wageMultCost;
-    private float inputMoneyMultCost;
+    //private float inputMoneyMultCost;
 
     public TextMeshProUGUI wageMultMenuText;
     public TextMeshProUGUI inputMultMenuText;
@@ -34,7 +34,7 @@ public class MoneyManager : MonoBehaviour
         inputMoneyMultiplier = PlayerPrefs.GetFloat("InputMoneyMultiplier", .1f); // Load saved wage multiplier or start at 1 if not found
 
         wageMultCost = PlayerPrefs.GetFloat("WageMultCost", 10f);
-        inputMoneyMultCost = PlayerPrefs.GetFloat("InputMoneyMultCost", 10f);
+        //inputMoneyMultCost = PlayerPrefs.GetFloat("InputMoneyMultCost", 10f);
 
         Debug.Log("Loaded money: " + money);
         Debug.Log("Loaded wage mult: " + wageMultiplier);
@@ -78,7 +78,7 @@ public class MoneyManager : MonoBehaviour
     public void UpdateInputWageText()
     {
         inputMultMenuText.text = "$" + inputMoneyMultiplier.ToString("F2"); // update the wage multiplier text up to 2 decimal places
-        inputMultMenuCostText.text = "$" + inputMoneyMultCost.ToString("F2"); // update the wage multiplier cost text up to 2 decimal places
+        //inputMultMenuCostText.text = "$" + inputMoneyMultCost.ToString("F2"); // update the wage multiplier cost text up to 2 decimal places
     }
 
     public void UpgradeWageMult()
@@ -107,26 +107,15 @@ public class MoneyManager : MonoBehaviour
 
     public void UpgradeInputMult()
     {
-        if(money < inputMoneyMultCost)
-        {
-            Debug.Log("Not enough money to upgrade input money multiplier.");
-            soundFeedback.PlaySound(SoundType.WrongPlacement);
-            return;
-        }
-        else
-        {
-            money -= inputMoneyMultCost; // Deduct the cost from the player's money
-            soundFeedback.PlaySound(SoundType.Purchase);
-            UpdateMoneyText();
+         UpdateMoneyText();
 
-            float newInputMult = inputMoneyMultiplier * 1.1f; // Increase input money multiplier by 10%
-            inputMoneyMultiplier = newInputMult;
+         float newInputMult = inputMoneyMultiplier * 1.1f; // Increase input money multiplier by 10%
+         inputMoneyMultiplier = newInputMult;
 
-            float newInputMultCost = inputMoneyMultCost * 1.12f; // Increase cost by 12%
-            inputMoneyMultCost = newInputMultCost;
-            SaveCurrency();
-            UpdateInputWageText();
-        }
+         //float newInputMultCost = inputMoneyMultCost * 1.12f; // Increase cost by 12%
+         //inputMoneyMultCost = newInputMultCost;
+         SaveCurrency();
+         UpdateInputWageText();       
     }
 
 
@@ -137,7 +126,7 @@ public class MoneyManager : MonoBehaviour
         PlayerPrefs.SetFloat("WageMultiplier", wageMultiplier);
         PlayerPrefs.SetFloat("InputMultiplier", inputMoneyMultiplier);
         PlayerPrefs.SetFloat("WageMultCost", wageMultCost);
-        PlayerPrefs.SetFloat("InputMoneyMultCost", inputMoneyMultCost);
+        //PlayerPrefs.SetFloat("InputMoneyMultCost", inputMoneyMultCost);
         PlayerPrefs.Save();
     }
 }

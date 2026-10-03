@@ -9,6 +9,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.ProBuilder.Shapes;
 using UnityEngine.UI;
+using static UnityEditor.Experimental.AssetDatabaseExperimental.AssetDatabaseCounters;
 
 public class DesktopActivityManager : MonoBehaviour
 {
@@ -26,6 +27,13 @@ public class DesktopActivityManager : MonoBehaviour
 
     // Timer for updating UI once per second
     private float uiTimer;
+
+    public MoneyManager moneyManager;
+
+    private int totalIntervalsPassed = 0; // Tracks the total number of 30 minute working intervals passed
+    public int intervalMinutes = 10; // The interval duration in minutes
+    private int nextIntervalTime;
+
 
     // -----------------------------
     // WINDOWS API IMPORTS
@@ -151,6 +159,8 @@ public class DesktopActivityManager : MonoBehaviour
 
         LoadPlayTime();
 
+        nextIntervalTime = intervalMinutes * 60;
+
         // Start background activity loop instead of using checkTimer
         StartCoroutine(ActivityLoop());
     }
@@ -227,20 +237,34 @@ public class DesktopActivityManager : MonoBehaviour
 
     public void checkWorkTime()
     {
-        //Convert workTimer to an int but let it update as a float
         int totalSeconds = Mathf.FloorToInt(workTimer);
 
         int seconds = totalSeconds % 60;
         int minutes = (totalSeconds / 60) % 60;
         int hours = totalSeconds / 3600;
 
-        workTimeText.text = "Work Time: " + hours + " hours " + minutes + " minutes " + seconds + " seconds ";
+        workTimeText.text =
+            "Work Time: " +
+            hours + " hours " +
+            minutes + " minutes " +
+            seconds + " seconds ";
+
+        // Check if we've reached the next interval
+        if (workTimer >= nextIntervalTime)
+        {
+            IncrementAndSave();
+
+            // Set the next interval
+            nextIntervalTime += intervalMinutes * 60;
+        }
     }
 
     public void SavePlayTime()
     {
         PlayerPrefs.SetInt("PlayTime", Mathf.FloorToInt(playTimer));
         PlayerPrefs.SetInt("WorkTime", Mathf.FloorToInt(workTimer));
+        PlayerPrefs.SetInt("IntervalCount", totalIntervalsPassed);
+
         PlayerPrefs.Save();
     }
 
@@ -248,6 +272,36 @@ public class DesktopActivityManager : MonoBehaviour
     {
         playTimer = PlayerPrefs.GetInt("PlayTime", 0);
         workTimer = PlayerPrefs.GetInt("WorkTime", 0);
+        totalIntervalsPassed = PlayerPrefs.GetInt("IntervalCount", 0);
+
+        // Start the next interval from the loaded work time.
+        nextIntervalTime =
+            (int)workTimer + (intervalMinutes * 60);
+    }
+
+    private void IncrementAndSave()
+    {
+        totalIntervalsPassed++;
+
+        PlayerPrefs.SetInt(
+            "IntervalCount",
+            totalIntervalsPassed);
+
+        PlayerPrefs.SetInt(
+            "PlayTime",
+            Mathf.FloorToInt(playTimer));
+
+        PlayerPrefs.SetInt(
+            "WorkTime",
+            Mathf.FloorToInt(workTimer));
+
+        PlayerPrefs.Save();
+
+        UnityEngine.Debug.Log(
+            $"Interval triggered! " +
+            $"Total count: {totalIntervalsPassed}");
+
+        moneyManager.UpgradeInputMult();
     }
 
 
@@ -268,9 +322,9 @@ public class DesktopActivityManager : MonoBehaviour
 
         string windowTitle = windowTitleBuffer.ToString().ToLowerInvariant();
 
-        #if UNITY_EDITOR
+       /* #if UNITY_EDITOR
             UnityEngine.Debug.Log(windowTitle);
-        #endif
+        #endif*/
 
         if (pid == 0)
             return ActivityType.Unknown;
