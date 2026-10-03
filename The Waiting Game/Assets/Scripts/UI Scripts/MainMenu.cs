@@ -11,6 +11,7 @@ public class MainMenu : MonoBehaviour
     public bool isShopOpen = false;
     public bool isMenuOpen = false;
     public bool isUpgradesOpen = false;
+    public bool isDailiesOpen = false;
     public UI_Shop shop;
 
     //private int currentMonitor = 0;
@@ -43,6 +44,17 @@ public class MainMenu : MonoBehaviour
     public void UpgradesIsClosed()
     {
         isUpgradesOpen = false;
+    }
+
+    public void DailiesIsOpen()
+    {
+        isDailiesOpen = true;
+        isMenuOpen = false;
+    }
+
+    public void DailiesIsClosed()
+    {
+        isDailiesOpen = false;
     }
 
     public void OpenMenu()

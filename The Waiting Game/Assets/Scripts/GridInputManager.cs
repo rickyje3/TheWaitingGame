@@ -20,6 +20,8 @@ public class GridInputManager : MonoBehaviour
 
     public GameObject upgradesMenu;
 
+    public GameObject dailiesMenu;
+
     public GameObject uiRoot;
 
     public DragAcrossScreen dragAcrossScreen;
@@ -51,6 +53,17 @@ public class GridInputManager : MonoBehaviour
             layoutGroup.gameObject.SetActive(true);
  
             Debug.Log("Closing Upgrades Menu");
+        }
+        if (Input.GetKeyDown(KeyCode.Escape) && mainMenu.isDailiesOpen)
+        {
+            OnExit?.Invoke();
+            dailiesMenu.SetActive(false);
+            mainMenuImage.enabled = true;
+            layoutGroup.gameObject.SetActive(true);
+            mainMenu.DailiesIsClosed();
+            mainMenu.CloseMenu();
+
+            Debug.Log("Closing Dailies Menu");
         }
         if (Input.GetKeyDown(KeyCode.F12))
         {
