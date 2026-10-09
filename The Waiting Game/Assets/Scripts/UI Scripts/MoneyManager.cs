@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using UnityEngine;
 
@@ -21,6 +22,29 @@ public class MoneyManager : MonoBehaviour
     public MainMenu mainMenu;
 
     public SoundFeedback soundFeedback;
+
+
+    [Header("Temporary Multiplier Buff")]
+    public float temporaryMultiplier = 1f;
+
+    private long buffExpirationUnix; // Unix timestamp for when the temporary multiplier buff expires
+
+    private const string BuffMultiplierKey = "DailyBuffMultiplier";
+    private const string BuffExpirationKey = "DailyBuffExpiration";
+
+    public bool IsTemporaryBuffActive => // Check if the temporary multiplier buff is active
+        temporaryMultiplier > 1f &&
+        DateTimeOffset.UtcNow.ToUnixTimeSeconds() < buffExpirationUnix;
+
+    public float EffectiveWageMultiplier => // Calculate the effective wage multiplier, considering any active temporary multiplier buff
+        wageMultiplier * (IsTemporaryBuffActive ? temporaryMultiplier : 1f);
+
+    public float EffectiveInputMoneyMultiplier => // Calculate the effective input money multiplier, considering any active temporary multiplier buff
+        inputMoneyMultiplier * (IsTemporaryBuffActive ? temporaryMultiplier : 1f);
+
+    public float ActiveBuffMultiplier =>
+        IsTemporaryBuffActive ? temporaryMultiplier : 1f;
+
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -49,7 +73,7 @@ public class MoneyManager : MonoBehaviour
         //Check if working
         if (activityManager.CurrentActivity == DesktopActivityManager.ActivityType.Working && !mainMenu.isShopOpen && !mainMenu.isMenuOpen)
         {
-            money += Time.fixedDeltaTime * wageMultiplier; // Increase money based on time spent working
+            money += Time.fixedDeltaTime * EffectiveWageMultiplier; // Increase money based on time spent working
             activityManager.workTimer += Time.deltaTime;
             UpdateMoneyText();
         }
@@ -59,7 +83,22 @@ public class MoneyManager : MonoBehaviour
     {
         if (Input.anyKeyDown && !Input.GetKeyDown(KeyCode.Escape) && Time.timeScale == 1)
         {
-            money += inputMoneyMultiplier;
+            money += EffectiveInputMoneyMultiplier;
+            UpdateMoneyText();
+        }
+
+        // Expire the buff even if the game has been running for a while.
+        if (temporaryMultiplier > 1f &&
+            DateTimeOffset.UtcNow.ToUnixTimeSeconds() >= buffExpirationUnix)
+        {
+            ClearTemporaryBuff();
+        }
+
+        if (Input.anyKeyDown &&
+            !Input.GetKeyDown(KeyCode.Escape) &&
+            Time.timeScale == 1)
+        {
+            money += EffectiveInputMoneyMultiplier;
             UpdateMoneyText();
         }
     }
@@ -126,5 +165,82 @@ public class MoneyManager : MonoBehaviour
         PlayerPrefs.SetFloat("WageMultCost", wageMultCost);
         //PlayerPrefs.SetFloat("InputMoneyMultCost", inputMoneyMultCost);
         PlayerPrefs.Save();
+    }
+
+
+
+    public void ActivateTemporaryBuff(float multiplier, float durationMinutes)
+    {
+        // Start or replace the current temporary buff.
+        temporaryMultiplier = multiplier;
+
+        buffExpirationUnix = DateTimeOffset.UtcNow
+            .AddMinutes(durationMinutes)
+            .ToUnixTimeSeconds();
+
+        PlayerPrefs.SetFloat(BuffMultiplierKey, temporaryMultiplier);
+        PlayerPrefs.SetString(
+            BuffExpirationKey,
+            buffExpirationUnix.ToString()
+        );
+
+        PlayerPrefs.Save();
+
+        UpdateWageMultText();
+        UpdateInputWageText();
+
+        Debug.Log(
+            $"Temporary x{multiplier} buff activated for " +
+            $"{durationMinutes} minutes."
+        );
+    }
+
+    private void LoadTemporaryBuff()
+    {
+        temporaryMultiplier = PlayerPrefs.GetFloat(BuffMultiplierKey, 1f); // Load the multiplier from PlayerPrefs, defaulting to 1 if not found
+
+        string savedExpiration = PlayerPrefs.GetString( // Load the expiration time from PlayerPrefs, defaulting to "0" if not found
+            BuffExpirationKey, "0"
+        );
+
+        if (!long.TryParse(savedExpiration, out buffExpirationUnix)) // If parsing fails, default to 0 (no buff).
+            buffExpirationUnix = 0;
+
+        // If the buff expired while the game was closed, clear it.
+        if (DateTimeOffset.UtcNow.ToUnixTimeSeconds() >= buffExpirationUnix) // If the buff has expired
+        {
+            ClearTemporaryBuff();
+        }
+    }
+
+    private void ClearTemporaryBuff()
+    {
+        temporaryMultiplier = 1f;
+        buffExpirationUnix = 0;
+
+        PlayerPrefs.DeleteKey(BuffMultiplierKey);
+        PlayerPrefs.DeleteKey(BuffExpirationKey);
+        PlayerPrefs.Save();
+
+        UpdateWageMultText();
+        UpdateInputWageText();
+
+        Debug.Log("Temporary multiplier buff expired.");
+    }
+
+    public float RemainingBuffMinutes
+    {
+        get
+        {
+            if (!IsTemporaryBuffActive)
+                return 0f;
+
+            long now = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+
+            return Mathf.Max(
+                0f,
+                (buffExpirationUnix - now) / 60f
+            );
+        }
     }
 }
