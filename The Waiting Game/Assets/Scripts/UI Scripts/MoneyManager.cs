@@ -84,7 +84,7 @@ public class MoneyManager : MonoBehaviour
         if (Input.anyKeyDown && !Input.GetKeyDown(KeyCode.Escape) && Time.timeScale == 1)
         {
             money += EffectiveInputMoneyMultiplier;
-            UpdateMoneyText();
+            UpdateMoneyText(); 
         }
 
         // Expire the buff even if the game has been running for a while.
@@ -93,15 +93,8 @@ public class MoneyManager : MonoBehaviour
         {
             ClearTemporaryBuff();
         }
-
-        if (Input.anyKeyDown &&
-            !Input.GetKeyDown(KeyCode.Escape) &&
-            Time.timeScale == 1)
-        {
-            money += EffectiveInputMoneyMultiplier;
-            UpdateMoneyText();
-        }
     }
+
 
     public void UpdateMoneyText()
     {

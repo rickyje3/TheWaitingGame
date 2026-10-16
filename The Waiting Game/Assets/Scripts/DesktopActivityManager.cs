@@ -66,18 +66,6 @@ public class DesktopActivityManager : MonoBehaviour
     [DllImport("user32.dll")]
     static extern bool GetLastInputInfo(ref LASTINPUTINFO plii);
 
-    float GetIdleTime()
-    {
-        LASTINPUTINFO info = new LASTINPUTINFO();
-        info.cbSize = (uint)Marshal.SizeOf(info);
-
-        if (!GetLastInputInfo(ref info))
-            return 0f;
-
-        uint idleTicks = (uint)Environment.TickCount - info.dwTime;
-        return idleTicks / 1000f;
-    }
-
 
     // ACTIVITY TYPES
     public enum ActivityType
@@ -136,6 +124,8 @@ public class DesktopActivityManager : MonoBehaviour
     [HideInInspector] public float workTimer; // Checks amount of time spent working
     public TextMeshProUGUI workTimeText; // Displays work time
 
+    public float timeToIdle = 10.0f;  // 10 seconds
+
 
     // -----------------------------
     // START
@@ -154,17 +144,33 @@ public class DesktopActivityManager : MonoBehaviour
             Trends[type] = new ActivityTrend();
         }*/
 
+        CurrentActivity = ActivityType.Unknown;
+
+        if (activityDebugText != null)
+            activityDebugText.text = CurrentActivity.ToString();
+
         LoadPlayTime();
 
         // Start background activity loop instead of using checkTimer
         StartCoroutine(ActivityLoop());
     }
 
+
     IEnumerator ActivityLoop()
     {
         while (true)
         {
-            ActivityType newActivity = DetectActivity();
+            ActivityType newActivity;
+
+            // Check system-wide input, including input outside the game.
+            if (GetSystemIdleSeconds() >= timeToIdle)
+            {
+                newActivity = ActivityType.Idle;
+            }
+            else
+            {
+                newActivity = DetectActivity();
+            }
 
             if (newActivity != CurrentActivity)
             {
@@ -173,46 +179,52 @@ public class DesktopActivityManager : MonoBehaviour
                 activityTimer = 0f;
                 CurrentActivity = newActivity;
 
-            #if UNITY_EDITOR
-                UnityEngine.Debug.Log("New Activity: " + CurrentActivity);
-            #endif
-
                 if (activityDebugText != null)
+                {
                     activityDebugText.text = CurrentActivity.ToString();
+                }
+
+                UnityEngine.Debug.Log("New Activity: " + CurrentActivity);
             }
 
-            yield return new WaitForSeconds(5f);
+            // Check twice per second instead of every five seconds.
+            yield return new WaitForSecondsRealtime(0.5f);
         }
     }
 
-    // -----------------------------
-    // UPDATE LOOP
-    // -----------------------------
 
-    void Update()
+
+
+
+        // -----------------------------
+        // UPDATE LOOP
+        // -----------------------------
+
+        void Update()
     {
         // Increase timers every frame
         // Only keep timers that truly need frame updates
-    activityTimer += Time.deltaTime;
-    playTimer += Time.deltaTime;
+        activityTimer += Time.deltaTime;
+        playTimer += Time.deltaTime;
 
-    // ===== REVISION 5 =====
-    // Update UI only once per second
-    uiTimer += Time.deltaTime;
-    if (uiTimer >= 1f)
-    {
-        uiTimer = 0f;
+        // ===== REVISION 5 =====
+        // Update UI only once per second
+        uiTimer += Time.deltaTime;
 
-        checkPlayTime();
-        checkWorkTime();
-    }
+        if (uiTimer >= 1f)
+        {
+          uiTimer = 0f;
 
-    if (Input.GetKeyDown(KeyCode.Escape))
-    {
-        if (mainMenu.gameObject.activeSelf)
-            mainMenu.CloseMenu();
-        else if (!mainMenu.isShopOpen && !mainMenu.isUpgradesOpen && !mainMenu.isDailiesOpen)
-            mainMenu.OpenMenu();
+           checkPlayTime();
+           checkWorkTime();
+        }
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if (mainMenu.gameObject.activeSelf)
+                mainMenu.CloseMenu();
+            else if (!mainMenu.isShopOpen && !mainMenu.isUpgradesOpen && !mainMenu.isDailiesOpen)
+                mainMenu.OpenMenu();
         }
     }
 
@@ -282,6 +294,26 @@ public class DesktopActivityManager : MonoBehaviour
             $"Next Interval: {nextIntervalTime}s"
         );
     }
+
+
+
+    private float GetSystemIdleSeconds()
+    {
+        LASTINPUTINFO inputInfo = new LASTINPUTINFO();
+
+        inputInfo.cbSize = (uint)Marshal.SizeOf(typeof(LASTINPUTINFO));
+
+        if (!GetLastInputInfo(ref inputInfo))
+            return 0f;
+
+        // Both values represent milliseconds since Windows started.
+        // Unsigned subtraction also handles the tick counter wrapping.
+        uint elapsedMilliseconds =
+            unchecked((uint)Environment.TickCount - inputInfo.dwTime);
+
+        return elapsedMilliseconds / 1000f;
+    }
+
 
     private void IncrementAndSave()
     {
@@ -358,14 +390,14 @@ public class DesktopActivityManager : MonoBehaviour
             }
         }
 
-        // ===== REVISION 8 =====
         // Ignore our own game
         if (processName.Contains(gameProcessName))
-            return CurrentActivity;
+            return ActivityType.Gaming;
 
         #if UNITY_EDITOR
             UnityEngine.Debug.Log("Detected Process: " + processName);
         #endif
+
 
         // Use helper instead of giant OR chains
         if (ContainsAny(processName,
