@@ -20213,6 +20213,7 @@ MonoBehaviour:
   activityDebugText: {fileID: 599319886}
   moneyManager: {fileID: 647997292}
   intervalMinutes: 1
+  inputRewardCooldown: 0.25
   CurrentActivity: 5
   mainMenu: {fileID: 824549239}
   shop: {fileID: 1473130096}
@@ -20220,6 +20221,7 @@ MonoBehaviour:
   playTimeText: {fileID: 560794468}
   workTimer: 0
   workTimeText: {fileID: 14453978}
+  timeToIdle: 10
 --- !u!114 &647997291
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20257,6 +20259,7 @@ MonoBehaviour:
   mainMenu: {fileID: 824549239}
   soundFeedback: {fileID: 40102546}
   temporaryMultiplier: 1
+  inputRewardCooldown: 0.1
 --- !u!1 &656363098
 GameObject:
   m_ObjectHideFlags: 0

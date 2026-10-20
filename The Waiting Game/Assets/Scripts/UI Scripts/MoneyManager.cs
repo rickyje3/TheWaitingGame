@@ -45,6 +45,11 @@ public class MoneyManager : MonoBehaviour
     public float ActiveBuffMultiplier =>
         IsTemporaryBuffActive ? temporaryMultiplier : 1f;
 
+    [Header("Input Reward Tracking")]
+    public float inputRewardCooldown = 0.25f;
+
+    private float nextInputRewardTime;
+
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -81,13 +86,17 @@ public class MoneyManager : MonoBehaviour
 
     private void Update()
     {
-        if (Input.anyKeyDown && !Input.GetKeyDown(KeyCode.Escape) && Time.timeScale == 1)
+        // Check for a new system-wide keyboard or mouse input.
+        if (activityManager != null &&
+            activityManager.TryConsumeSystemInput() &&
+            Time.timeScale == 1f)
         {
+            // Award money for the detected input.
             money += EffectiveInputMoneyMultiplier;
-            UpdateMoneyText(); 
+            UpdateMoneyText();
         }
 
-        // Expire the buff even if the game has been running for a while.
+        // Check whether the temporary multiplier buff has expired.
         if (temporaryMultiplier > 1f &&
             DateTimeOffset.UtcNow.ToUnixTimeSeconds() >= buffExpirationUnix)
         {

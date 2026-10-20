@@ -34,6 +34,11 @@ public class DesktopActivityManager : MonoBehaviour
     public int intervalMinutes = 10; // The interval duration in minutes
     private int nextIntervalTime;
 
+    [Header("Input Reward Tracking")]
+    public float inputRewardCooldown = 0.1f;
+
+    private float nextInputRewardTime;
+
 
     // -----------------------------
     // WINDOWS API IMPORTS
@@ -65,6 +70,17 @@ public class DesktopActivityManager : MonoBehaviour
 
     [DllImport("user32.dll")]
     static extern bool GetLastInputInfo(ref LASTINPUTINFO plii);
+
+    [DllImport("user32.dll")]
+    private static extern short GetAsyncKeyState(int vKey);
+
+
+    // Checking input offscreen
+
+    private uint lastProcessedInputTick;
+    private bool hasProcessedInitialInput;
+    private bool pendingSystemInput;
+    public bool HasNewSystemInput { get; private set; }
 
 
     // ACTIVITY TYPES
@@ -127,6 +143,8 @@ public class DesktopActivityManager : MonoBehaviour
     public float timeToIdle = 10.0f;  // 10 seconds
 
 
+
+
     // -----------------------------
     // START
     // -----------------------------
@@ -138,6 +156,8 @@ public class DesktopActivityManager : MonoBehaviour
 
     void Start()
     {
+        Application.runInBackground = true;
+
         /*// Create trend data for every activity type
         foreach (ActivityType type in Enum.GetValues(typeof(ActivityType)))
         {
@@ -156,19 +176,21 @@ public class DesktopActivityManager : MonoBehaviour
     }
 
 
+
     IEnumerator ActivityLoop()
     {
         while (true)
         {
             ActivityType newActivity;
 
-            // Check system-wide input, including input outside the game.
+            // Windows detects input from anywhere on the computer.
             if (GetSystemIdleSeconds() >= timeToIdle)
             {
                 newActivity = ActivityType.Idle;
             }
             else
             {
+                // Classify the currently focused application.
                 newActivity = DetectActivity();
             }
 
@@ -187,8 +209,8 @@ public class DesktopActivityManager : MonoBehaviour
                 UnityEngine.Debug.Log("New Activity: " + CurrentActivity);
             }
 
-            // Check twice per second instead of every five seconds.
-            yield return new WaitForSecondsRealtime(0.5f);
+            // Wait another 2 seconds before checking again
+            yield return new WaitForSecondsRealtime(2f);
         }
     }
 
@@ -196,11 +218,12 @@ public class DesktopActivityManager : MonoBehaviour
 
 
 
-        // -----------------------------
-        // UPDATE LOOP
-        // -----------------------------
 
-        void Update()
+    // -----------------------------
+    // UPDATE LOOP
+    // -----------------------------
+
+    void Update()
     {
         // Increase timers every frame
         // Only keep timers that truly need frame updates
@@ -226,6 +249,8 @@ public class DesktopActivityManager : MonoBehaviour
             else if (!mainMenu.isShopOpen && !mainMenu.isUpgradesOpen && !mainMenu.isDailiesOpen)
                 mainMenu.OpenMenu();
         }
+
+        CheckForSystemInput();
     }
 
     public void checkPlayTime()
@@ -315,6 +340,66 @@ public class DesktopActivityManager : MonoBehaviour
     }
 
 
+
+    private void CheckForSystemInput()
+    {
+        // Check keyboard presses, excluding mouse-button virtual keys.
+        // The low bit detects a new press rather than a held key.
+        for (int key = 0x08; key <= 0xFE; key++)
+        {
+            // Exclude mouse buttons from the keyboard loop.
+            if (key == 0x01 || key == 0x02 ||
+                key == 0x04 || key == 0x05 ||
+                key == 0x06)
+            {
+                continue;
+            }
+
+            // Exclude Escape from earning money.
+            if (key == 0x1B)
+                continue;
+
+            if ((GetAsyncKeyState(key) & 1) != 0)
+            {
+                pendingSystemInput = true;
+                break;
+            }
+        }
+
+        // Check mouse buttons separately.
+        int[] mouseButtons = { 0x01, 0x02, 0x04, 0x05, 0x06 };
+
+        foreach (int button in mouseButtons)
+        {
+            if ((GetAsyncKeyState(button) & 1) != 0)
+            {
+                pendingSystemInput = true;
+                break;
+            }
+        }
+
+        HasNewSystemInput = pendingSystemInput;
+    }
+
+
+    public bool TryConsumeSystemInput()
+    {
+        if (!pendingSystemInput)
+            return false;
+
+        // Consume the detected input so it cannot be reused.
+        pendingSystemInput = false;
+
+        // Prevent rapid repeated rewards from continuous input.
+        if (Time.unscaledTime < nextInputRewardTime)
+            return false;
+
+        nextInputRewardTime = Time.unscaledTime + inputRewardCooldown;
+
+        return true;
+    }
+
+
     private void IncrementAndSave()
     {
         totalIntervalsPassed++;
@@ -392,7 +477,7 @@ public class DesktopActivityManager : MonoBehaviour
 
         // Ignore our own game
         if (processName.Contains(gameProcessName))
-            return ActivityType.Gaming;
+            return CurrentActivity;
 
         #if UNITY_EDITOR
             UnityEngine.Debug.Log("Detected Process: " + processName);
