@@ -88,6 +88,9 @@ public class GridPlacementSystem : MonoBehaviour
 
     private bool isRemoving;
 
+    private int previewRotationSteps = 0;
+    private int lastDetectedRotationSteps = -1;
+
 
     // =========================================================
     // START
@@ -336,6 +339,26 @@ public class GridPlacementSystem : MonoBehaviour
         buildingState.OnAction(gridPosition);
     }
 
+    public void RotateSelectedItem(int direction)
+    {
+        previewRotationSteps = (previewRotationSteps + direction + 4) % 4;
+    }
+
+    public void ResetItemRotation()
+    {
+        previewRotationSteps = 0;
+    }
+
+    public Quaternion GetPlacementRotation()
+    {
+        Quaternion gridRotation = GetHoveredRotation();
+
+        // Rotate the item in 90-degree increments relative to its grid.
+        Quaternion itemRotation =
+            Quaternion.Euler(0f, previewRotationSteps * 90f, 0f);
+
+        return gridRotation * itemRotation;
+    }
 
     // =========================================================
     // STOP PLACEMENT
@@ -382,6 +405,8 @@ public class GridPlacementSystem : MonoBehaviour
         StopPlacement();
 
         selectedItem = item;
+
+        ResetItemRotation();
 
         if (!selectedItem.isCosmetic)
         {
@@ -478,14 +503,14 @@ public class GridPlacementSystem : MonoBehaviour
         // ---------------------------------------------------------
 
         if (lastDetectedGrid != hoveredGrid ||
-            lastDetectedPosition != gridPosition)
+            lastDetectedPosition != gridPosition ||
+            lastDetectedRotationSteps != previewRotationSteps)
         {
-            buildingState.UpdateState(
-                gridPosition,
-                mousePosition);
+            buildingState.UpdateState(gridPosition, mousePosition);
 
             lastDetectedGrid = hoveredGrid;
             lastDetectedPosition = gridPosition;
+            lastDetectedRotationSteps = previewRotationSteps;
         }
 
 

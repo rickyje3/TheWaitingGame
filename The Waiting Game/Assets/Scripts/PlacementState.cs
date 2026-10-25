@@ -97,7 +97,7 @@ public class PlacementState : IBuildingState
 
 
         Quaternion rotation =
-            placementSystem.GetHoveredRotation();
+            placementSystem.GetPlacementRotation();
 
         int index = objectPlacer.PlaceObject(
             selectedItem.Prefab,
@@ -143,7 +143,7 @@ public class PlacementState : IBuildingState
         previewSystem.UpdatePosition(
             placementSystem.hoveredGrid.GetCellCenterWorld(gridPosition),
             false,
-            placementSystem.GetHoveredRotation());
+            placementSystem.GetPlacementRotation());
     }
 
 
@@ -159,7 +159,7 @@ public class PlacementState : IBuildingState
             placementSystem.hoveredGrid.GetCellCenterWorld(gridPosition);
 
         Quaternion rotation =
-            placementSystem.GetHoveredRotation();
+            placementSystem.GetPlacementRotation();
 
         previewSystem.UpdatePosition(
             position,

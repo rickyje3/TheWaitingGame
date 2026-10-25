@@ -19435,6 +19435,7 @@ MonoBehaviour:
   previewObject: {fileID: 0}
   previewMaterialPrefab: {fileID: 2100000, guid: 97b7bbb6d84c145449f576390b097f8a, type: 2}
   soundFeedback: {fileID: 40102546}
+  placementSystem: {fileID: 970146179}
 --- !u!1 &599319884
 GameObject:
   m_ObjectHideFlags: 0

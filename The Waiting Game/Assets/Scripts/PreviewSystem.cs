@@ -15,6 +15,9 @@ public class PreviewSystem : MonoBehaviour
 
     public SoundFeedback soundFeedback;
 
+    [SerializeField] private GridPlacementSystem placementSystem;
+
+
 
     private void Start()
     {
@@ -29,35 +32,55 @@ public class PreviewSystem : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             StopShowingPreview();
+            return;
         }
-        else if (Input.GetKeyDown(KeyCode.Q))
+
+        if (previewObject == null || placementSystem == null)
+            return;
+
+        // Q rotates counterclockwise.
+        if (Input.GetKeyDown(KeyCode.Q))
         {
             RotatePreviewObjectCounterClockwise();
         }
-        else if (Input.GetKeyDown(KeyCode.E))
+
+        // E rotates clockwise.
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            RotatePreviewObjectClockwise();
+        }
+
+        // Mouse wheel up rotates counterclockwise; down rotates clockwise.
+        float scroll = Input.mouseScrollDelta.y;
+
+        if (scroll > 0f)
+        {
+            RotatePreviewObjectCounterClockwise();
+        }
+        else if (scroll < 0f)
         {
             RotatePreviewObjectClockwise();
         }
     }
 
-
     public void RotatePreviewObjectCounterClockwise()
     {
-        if (previewObject != null)
-        {
-            previewObject.transform.Rotate(0, -90, 0);
-            soundFeedback.PlaySound(SoundType.Rotate);
-        }
-    }
+        if (previewObject == null || placementSystem == null)
+            return;
 
+        placementSystem.RotateSelectedItem(-1);
+
+        soundFeedback?.PlaySound(SoundType.Rotate);
+    }
 
     public void RotatePreviewObjectClockwise()
     {
-        if (previewObject != null)
-        {
-            previewObject.transform.Rotate(0, 90, 0);
-            soundFeedback.PlaySound(SoundType.Rotate);
-        }
+        if (previewObject == null || placementSystem == null)
+            return;
+
+        placementSystem.RotateSelectedItem(1);
+
+        soundFeedback?.PlaySound(SoundType.Rotate);
     }
 
 

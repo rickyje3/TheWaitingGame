@@ -16,10 +16,11 @@ MonoBehaviour:
   itemName: Wooden Chair
   icon: {fileID: 0}
   price: 125
-  isPurchased: 0
+  isPurchased: 1
+  isBlocker: 0
   description: A nice stable wooden dining chair
   <Size>k__BackingField: {x: 1, y: 1}
-  <Prefab>k__BackingField: {fileID: 6645670022071340812, guid: b2ebe076afc54a947be87c1d6d100411, type: 3}
+  <Prefab>k__BackingField: {fileID: 6144014855269718339, guid: af28b71d1dd37f04183e38be9302cfd1, type: 3}
   isCosmetic: 0
   isFloorObject: 1
   isWallObject: 0

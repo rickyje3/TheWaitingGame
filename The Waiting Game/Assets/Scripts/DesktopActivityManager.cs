@@ -477,7 +477,7 @@ public class DesktopActivityManager : MonoBehaviour
 
         // Ignore our own game
         if (processName.Contains(gameProcessName))
-            return CurrentActivity;
+            return ActivityType.Gaming;
 
         #if UNITY_EDITOR
             UnityEngine.Debug.Log("Detected Process: " + processName);
