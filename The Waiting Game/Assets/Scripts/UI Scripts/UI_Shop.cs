@@ -32,16 +32,20 @@ public class UI_Shop : MonoBehaviour
 
     private void Awake()
     {
-        //container = transform.Find("Container");
-        if(shopItemTemplate == null) shopItemTemplate = container.Find("ShopItemTemplate");
+        if (shopItemTemplate == null)
+            shopItemTemplate = container.Find("ShopItemTemplate");
 
-        if(moneyManager == null)
+        // Keep the original template from appearing or receiving pointer events.
+        if (shopItemTemplate != null)
+            shopItemTemplate.gameObject.SetActive(false);
+
+        if (moneyManager == null)
             moneyManager = FindAnyObjectByType<MoneyManager>();
 
         if (gridPlacementSystem == null)
             gridPlacementSystem = FindAnyObjectByType<GridPlacementSystem>();
     }
-    
+
     private void Start()
     {
 
@@ -54,7 +58,7 @@ public class UI_Shop : MonoBehaviour
 
     public void ShowCategory(Item.ItemType itemType)
     {
-        // Remove old buttons
+        // Remove old buttons.
         foreach (Transform child in container)
         {
             if (child == shopItemTemplate)
@@ -67,6 +71,16 @@ public class UI_Shop : MonoBehaviour
 
         foreach (Item item in GameAssets.instance.shopItems)
         {
+            // Skip invalid entries.
+            if (item == null)
+            {
+                Debug.LogError("A NULL item was found in GameAssets.shopItems!");
+                continue;
+            }
+
+            // Load saved purchase state before generating UI.
+            item.isPurchased = PlayerPrefs.GetInt(item.itemName, 0) == 1;
+
             if (item.itemType == itemType)
             {
                 CreateItemButton(item, positionIndex);
@@ -104,70 +118,81 @@ public class UI_Shop : MonoBehaviour
 
     public void DisplayItemInfo(Item item)
     {
-        itemNameText.text = item.itemName;
-        priceText.text = "$" + item.price;
-        descriptionText.text = item.description;
-        itemImage.sprite = item.icon;
+        if (item == null)
+        {
+            Debug.LogError("DisplayItemInfo received a NULL Item!");
+            return;
+        }
+
+        if (itemNameText == null)
+            Debug.LogError("itemNameText is not assigned!");
+
+        if (priceText == null)
+            Debug.LogError("priceText is not assigned!");
+
+        if (descriptionText == null)
+            Debug.LogError("descriptionText is not assigned!");
+
+        if (itemImage == null)
+            Debug.LogError("itemImage is not assigned!");
+
+        if (itemNameText != null)
+            itemNameText.text = item.itemName;
+
+        if (priceText != null)
+            priceText.text = "$" + item.price;
+
+        if (descriptionText != null)
+            descriptionText.text = item.description;
+
+        if (itemImage != null)
+            itemImage.sprite = item.icon;
     }
 
-    private void CreateItemButton(Item item,  /*Sprite itemSprite, string itemName, int itemPrice*/ int positionIndex)
+    private void CreateItemButton(Item item, int positionIndex)
     {
+        if (item == null)
+            return;
+
         Transform shopItemTransform =
-                Instantiate(shopItemTemplate, container);
+            Instantiate(shopItemTemplate, container);
 
-        shopItemTransform.gameObject.SetActive(true);
+        RectTransform shopItemRectTransform =
+            shopItemTransform.GetComponent<RectTransform>();
 
-        RectTransform shopItemRectTransform = shopItemTransform.GetComponent<RectTransform>();
-
-        // Calculate row and column
         int column = positionIndex % itemsPerRow;
         int row = positionIndex / itemsPerRow;
 
-        // Position item in grid
         shopItemRectTransform.anchoredPosition =
-          new Vector2(
-                column * itemWidth,
-                -row * itemHeight
-          );
+            new Vector2(column * itemWidth, -row * itemHeight);
 
         ShopItemUI shopItemUI =
-            shopItemTransform.GetComponentInChildren<ShopItemUI>();
+            shopItemTransform.GetComponentInChildren<ShopItemUI>(true);
 
+        if (shopItemUI == null)
+        {
+            Debug.LogError("ShopItemUI component missing!");
+            return;
+        }
+
+        // Assign references BEFORE activating.
         shopItemUI.item = item;
         shopItemUI.shop = this;
 
-        shopItemTransform
-            .Find("itemImage")
-            .GetComponent<Image>()
-            .sprite = item.icon;
+        shopItemTransform.Find("itemImage")
+            .GetComponent<Image>().sprite = item.icon;
 
-        Image purchasedIcon =
-        shopItemTransform
-            .Find("PurchasedIcon")
-            .GetComponent<Image>();
-
-        purchasedIcon.enabled = item.isPurchased;
-
+        shopItemTransform.Find("PurchasedIcon")
+            .GetComponent<Image>().enabled = item.isPurchased;
 
         Button buyButton =
-            shopItemTransform
-                .Find("BuyButton")
-                .GetComponent<Button>();
+            shopItemTransform.Find("BuyButton").GetComponent<Button>();
 
         buyButton.onClick.RemoveAllListeners();
         buyButton.onClick.AddListener(() => Purchase(item));
-    
 
-        /*shopItemTransform = Instantiate(shopItemTemplate, container);
-        RectTransform shopItemRectTransform = shopItemTransform.GetComponent<RectTransform>();
-
-        float shopItemHeight = 120f;
-
-        shopItemRectTransform.anchoredPosition = new Vector2(0, -shopItemHeight * positionIndex);
-
-        shopItemTransform.Find("itemName").GetComponent<TextMeshProUGUI>().SetText(itemName); // finds the name in the parent object then sets the value
-        shopItemTransform.Find("priceText").GetComponent<TextMeshProUGUI>().SetText(itemPrice.ToString());
-        shopItemTransform.Find("itemImage").GetComponent<Image>().sprite = itemSprite;*/
+        // Activate only after everything is assigned.
+        shopItemTransform.gameObject.SetActive(true);
     }
 
 

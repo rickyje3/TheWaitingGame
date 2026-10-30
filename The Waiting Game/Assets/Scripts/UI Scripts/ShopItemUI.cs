@@ -8,7 +8,20 @@ public class ShopItemUI : MonoBehaviour, IPointerEnterHandler
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        shop.DisplayItemInfo(item);
+        if (item == null)
+        {
+            Debug.LogError("ShopItemUI: Item is NULL on " + gameObject.name);
+            return;
+        }
+
+        if (shop == null)
+        {
+            Debug.LogError("ShopItemUI: Shop reference is NULL on " + gameObject.name);
+            return;
+        }
+
         Debug.Log("Pointer entered item: " + item.itemName);
+
+        shop.DisplayItemInfo(item);
     }
 }
