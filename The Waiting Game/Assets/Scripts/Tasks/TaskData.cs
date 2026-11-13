@@ -9,7 +9,7 @@ namespace Tasks
     /// This will be used to pass data to different functions.
     /// </summary>
     [Serializable]
-    public struct TaskData
+    public struct TaskData : IHasUniqueID
     {
         /// <summary>
         /// A unique ID to identify the task.
@@ -34,5 +34,6 @@ namespace Tasks
         // /// This is the date by which the task should be completed.
         // /// </summary>
         // [SerializeField] public DateTime dueDate;
+        public GUID UniqueID => uniqueID;
     }
 }
