@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "com.annulusgames.alchemy": "https://github.com/annulusgames/Alchemy.git?path=/Alchemy/Assets/Alchemy",
     "com.kirurobo.uniwinc": "https://github.com/kirurobo/UniWindowController.git#upm",
     "com.unity.2d.sprite": "1.0.0",
     "com.unity.ai.navigation": "2.0.11",

@@ -1,5 +1,12 @@
 {
   "dependencies": {
+    "com.annulusgames.alchemy": {
+      "version": "https://github.com/annulusgames/Alchemy.git?path=/Alchemy/Assets/Alchemy",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "0643efa783fc22e1d1338cc9030602fa756ba426"
+    },
     "com.kirurobo.uniwinc": {
       "version": "https://github.com/kirurobo/UniWindowController.git#upm",
       "depth": 0,
