@@ -19,4 +19,11 @@ public struct Optional<TItemType>
     public static Optional<TItemType> Some(TItemType value) => new(true, value);
 
     public static Optional<TItemType> None => new(false, default);
+
+    /// <summary>
+    /// Implicitly converts a value of type TItemType to an Optional.
+    /// </summary>
+    /// <param name="value"></param>
+    /// <returns></returns>
+    public static implicit operator Optional<TItemType>(TItemType value) => Some(value);
 }

@@ -35,5 +35,16 @@ namespace Tasks
         // /// </summary>
         // [SerializeField] public DateTime dueDate;
         public GUID UniqueID => uniqueID;
+
+        /// <summary>
+        /// Creates a new instance of the TaskData struct.
+        /// </summary>
+        /// <param name="uniqueID">The unique ID for the task.</param>
+        public TaskData(GUID uniqueID)
+        {
+            this.uniqueID = uniqueID;
+            this.title = string.Empty;
+            this.description = string.Empty;
+        }
     }
 }
