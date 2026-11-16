@@ -1,4 +1,5 @@
 using System;
+using Alchemy.Inspector;
 using UnityEngine;
 
 namespace Tasks
@@ -8,7 +9,7 @@ namespace Tasks
     /// This struct can be used to store information about a task, such as its name, description, and any other relevant data.
     /// This will be used to pass data to different functions.
     /// </summary>
-    [Serializable]
+    [Serializable, HorizontalGroup]
     public struct TaskData : IHasUniqueID
     {
         /// <summary>
@@ -25,7 +26,7 @@ namespace Tasks
 
         /// <summary>
         /// The description of the task (optional).
-        /// This is a more detailed explanation of what the task entails, including any objectives or requirements/
+        /// This is a more detailed explanation of what the task entails, including any objectives or requirements.
         /// </summary>
         [SerializeField] public string description;
 
