@@ -1,4 +1,5 @@
 using System;
+using Alchemy.Serialization;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -21,6 +22,11 @@ namespace Tasks.TaskUI
         [SerializeField] private TMP_Text titleText;
 
         /// <summary>
+        /// An optional field that holds a reference to the TaskDataStorage that this UI element belongs to.
+        /// </summary>
+        private Optional<ITaskDataStorage> _taskDataStorage;
+
+        /// <summary>
         /// An optional field that holds the TaskData associated with this UI element.
         /// </summary>
         private Optional<TaskData> _taskData;
@@ -36,15 +42,25 @@ namespace Tasks.TaskUI
         private void OnCompletionButtonClicked()
         {
             // TODO: Handle the completion button click event.
+            if (!_taskDataStorage.Unwrap(out var taskDataStorage) || !_taskData.Unwrap(out var taskData))
+            {
+                Debug.LogError("Failed to unwrap task list or task data!");
+                return;
+            }
+
+            // Remove the task from the list and storage when the completion button is clicked.
+            taskDataStorage.RemoveItem(taskData.UniqueID);
+            Destroy(gameObject);
         }
 
-        public void SetTaskData(TaskData taskData)
+        public void SetTaskData(ITaskDataStorage taskDataStorage, TaskData taskData)
         {
+            // Set the optional fields to hold references to the provided TaskList and TaskData.
+            _taskDataStorage = Optional.Some(taskDataStorage);
             _taskData = Optional.Some(taskData);
 
             // Store the provided TaskData in the optional field.
             titleText.text = taskData.title;
         }
-
     }
 }

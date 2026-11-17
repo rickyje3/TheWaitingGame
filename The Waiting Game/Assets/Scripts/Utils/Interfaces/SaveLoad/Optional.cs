@@ -11,16 +11,27 @@ using UnityEngine;
 [Serializable]
 public struct Optional<TItemType>
 {
-    [field: SerializeField]
-    public bool HasValue { get; private set; }
+    [field: SerializeField] public bool HasValue { get; private set; }
 
-    [field: SerializeField]
-    public TItemType Value { get; private set; }
+    [field: SerializeField] public TItemType Value { get; private set; }
 
     private Optional(bool hasValue, TItemType value)
     {
         HasValue = hasValue;
         Value = value;
+    }
+
+    /// <summary>
+    /// Unwraps the optional value, returning true if the value is present and assigning it to the out parameter.
+    /// If the value is not present, returns false and assigns the default value of TItemType to the out parameter.
+    /// This method provides a safe way to access the value of the optional without throwing an exception if the value is not present.
+    /// </summary>
+    /// <param name="value">The optional value, if present.</param>
+    /// <returns>True if the value is present, false otherwise.</returns>
+    public bool Unwrap(out TItemType value)
+    {
+        value = Value;
+        return HasValue;
     }
 
     /// <summary>
