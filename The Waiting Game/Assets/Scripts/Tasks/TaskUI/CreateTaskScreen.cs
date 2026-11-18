@@ -1,7 +1,6 @@
 using System;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Tasks.TaskUI
 {
@@ -10,8 +9,6 @@ namespace Tasks.TaskUI
         [SerializeField] private GameObject owningGameObject;
         [SerializeField] private TMP_InputField titleText;
         [SerializeField] private TMP_InputField descriptionText;
-        [SerializeField] private Button backButton;
-        [SerializeField] private Button confirmButton;
 
         private Optional<GUID> _uniqueID;
         private Optional<ITaskDataStorage> _taskDataStorage;
@@ -22,12 +19,8 @@ namespace Tasks.TaskUI
             // Initialize the optional unique ID to None when the component is first created.
             _uniqueID = Optional<GUID>.None;
 
-            // Initialize the optional TaskDataStorage to None when the component is first created.
-            _taskDataStorage = Optional<ITaskDataStorage>.None;
-
-            // Initialize the callbacks
-            backButton.onClick.AddListener(OnBackButtonClicked);
-            confirmButton.onClick.AddListener(OnConfirmButtonClicked);
+            // // Initialize the optional TaskDataStorage to None when the component is first created.
+            // _taskDataStorage = Optional<ITaskDataStorage>.None;
         }
 
         private void Start()
@@ -67,14 +60,14 @@ namespace Tasks.TaskUI
         /// Sets the unique ID for the task.
         /// </summary>
         /// <param name="guid">The GUID to use, or an empty Optional to generate a new one.</param>
-        public void SetGuid(Optional<GUID> guid)
+        private void SetGuid(Optional<GUID> guid)
         {
             // If we pass in a valid GUID, use it; otherwise, generate a new one.
             _uniqueID = guid.MatchValueOrNone(GUID.Generate);
         }
 
 
-        private void OnConfirmButtonClicked()
+        public void OnConfirmButtonClicked()
         {
             // If the task storage service is none, we cannot save the task data, so we log an error and return early.
             if (!_taskDataStorage.Unwrap(out var taskDataStorage))
@@ -108,7 +101,7 @@ namespace Tasks.TaskUI
             CloseScreen();
         }
 
-        private void OnBackButtonClicked()
+        public void OnBackButtonClicked()
         {
             // Close the screen when the back button is clicked.
             CloseScreen();
@@ -139,6 +132,9 @@ namespace Tasks.TaskUI
             titleText.text = string.Empty;
             descriptionText.text = string.Empty;
             SetGuid(Optional<GUID>.None);
+
+            // Show the game object to display the create task screen.
+            gameObject.SetActive(true);
         }
     }
 }

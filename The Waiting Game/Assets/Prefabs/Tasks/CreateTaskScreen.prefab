@@ -131,8 +131,6 @@ MonoBehaviour:
   owningGameObject: {fileID: 1847818446923280572}
   titleText: {fileID: 5366798087545401448}
   descriptionText: {fileID: 679809473717657203}
-  backButton: {fileID: 6375242329888957744}
-  confirmButton: {fileID: 2572201368940158781}
 --- !u!1 &2055782959835093357
 GameObject:
   m_ObjectHideFlags: 0
@@ -843,7 +841,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
   m_AnchoredPosition: {x: -64, y: 32}
-  m_SizeDelta: {x: 256, y: 128}
+  m_SizeDelta: {x: 256, y: 64}
   m_Pivot: {x: 1, y: 0}
 --- !u!222 &7064130447922014408
 CanvasRenderer:
@@ -926,7 +924,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 3594576288808745674}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 6841683509304197361}
+        m_TargetAssemblyTypeName: Tasks.TaskUI.CreateTaskScreen, Assembly-CSharp
+        m_MethodName: OnBackButtonClicked
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &6810718124109449721
 GameObject:
   m_ObjectHideFlags: 0
@@ -1355,7 +1365,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
   m_AnchoredPosition: {x: 64, y: 32}
-  m_SizeDelta: {x: 256, y: 128}
+  m_SizeDelta: {x: 256, y: 64}
   m_Pivot: {x: 0, y: 0}
 --- !u!222 &7832465197629779003
 CanvasRenderer:
@@ -1438,7 +1448,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 7845421045920343866}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 6841683509304197361}
+        m_TargetAssemblyTypeName: Tasks.TaskUI.CreateTaskScreen, Assembly-CSharp
+        m_MethodName: OnConfirmButtonClicked
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &8812800828513562473
 GameObject:
   m_ObjectHideFlags: 0

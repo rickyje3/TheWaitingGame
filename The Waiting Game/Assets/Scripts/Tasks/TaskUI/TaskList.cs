@@ -25,9 +25,25 @@ namespace Tasks.TaskUI
         /// </summary>
         [SerializeReference] private ITaskDataStorage taskDataStorage;
 
+        /// <summary>
+        /// The CreateTaskScreen component that will be used to create new tasks.
+        /// This is NOT an optional field, as the TaskList requires a valid CreateTaskScreen to function correctly.
+        /// </summary>
+        [SerializeField] private CreateTaskScreen createTaskScreen;
+
+        private void Awake()
+        {
+            // TODO: Remove
+            CreateTestTasks();
+        }
+
         private void Start()
         {
-            CreateTestTasks();
+
+        }
+
+        private void OnEnable()
+        {
             PopulateTaskList();
         }
 
@@ -38,28 +54,22 @@ namespace Tasks.TaskUI
             foreach (var id in taskIDs)
                 taskDataStorage.RemoveItem(id);
 
-            // Then, create 10 new test tasks and store them in the task data storage.
-            for (var i = 0; i < 10; i++)
+            // Then, create 3 new test tasks and store them in the task data storage.
+            for (var i = 0; i < 3; i++)
             {
                 var taskData = new TaskData(GUID.Generate())
                 {
-                    title = $"Task {i + 1}",
+                    title = $"Automatically Generated Task {i + 1}",
                     description = $"This is the description for Task {i + 1}."
                 };
 
                 taskDataStorage.SaveItem(taskData);
             }
         }
-        /// <summary>
-        /// TODO: REMOVE
-        /// </summary>
-        [Button, DisableInEditMode]
-        private void CreateNewTasksAndRefreshList()
-        {
-            CreateTestTasks();
-            PopulateTaskList();
-        }
 
+        /// <summary>
+        /// A function to populate the task list UI with TaskListItem elements based on the stored task data.
+        /// </summary>
         [Button, DisableInEditMode]
         private void PopulateTaskList()
         {
@@ -94,6 +104,21 @@ namespace Tasks.TaskUI
             // Destroy all existing TaskListItem UI elements in the container.
             foreach (var child in children)
                 Destroy(child.gameObject);
+        }
+
+        public void OpenTaskCreationScreen()
+        {
+            // Close this game object
+            gameObject.SetActive(false);
+
+            // Open the task creation screen and pass in the current TaskDataStorage for saving new tasks.
+            createTaskScreen.OpenCreateTaskScreen(gameObject, taskDataStorage);
+        }
+
+        public void BackButtonClicked()
+        {
+            // Close the task creation screen and return to the previous screen.
+            gameObject.SetActive(false);
         }
     }
 }
