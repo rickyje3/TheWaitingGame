@@ -53,6 +53,15 @@ public struct Optional<TItemType>
         return none();
     }
 
+
+    /// <summary>
+    /// A match function that returns the value if present,
+    /// or invokes the 'none' function to provide a default value if not present.
+    /// </summary>
+    /// <param name="none"></param>
+    /// <returns></returns>
+    public TItemType MatchValueOrNone(Func<TItemType> none) => Match(some: value => value, none: none);
+
     public static Optional<TItemType> Some(TItemType value) => new(true, value);
 
     public static Optional<TItemType> None => new(false, default);
