@@ -2,7 +2,7 @@
 - Project name: The Waiting Game
 - Unity version: Unity 6000.4.0f1
 - Active game object:
-  - Name: Viewport
+  - Name: Ui Root (Child anything scalable to this)
   - Tag: Untagged
   - Layer: UIWindow
 <!-- UNITY CODE ASSIST INSTRUCTIONS END -->
