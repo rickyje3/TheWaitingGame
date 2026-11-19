@@ -33,38 +33,15 @@ namespace Tasks.TaskUI
 
         private void Awake()
         {
-            // TODO: Remove
-            CreateTestTasks();
         }
 
         private void Start()
         {
-
         }
 
         private void OnEnable()
         {
             PopulateTaskList();
-        }
-
-        private void CreateTestTasks()
-        {
-            // Clear the existing task data in the storage before creating new test tasks.
-            var taskIDs = taskDataStorage.GetAllStoredItemIDs();
-            foreach (var id in taskIDs)
-                taskDataStorage.RemoveItem(id);
-
-            // Then, create 3 new test tasks and store them in the task data storage.
-            for (var i = 0; i < 3; i++)
-            {
-                var taskData = new TaskData(GUID.Generate())
-                {
-                    title = $"Automatically Generated Task {i + 1}",
-                    description = $"This is the description for Task {i + 1}."
-                };
-
-                taskDataStorage.SaveItem(taskData);
-            }
         }
 
         /// <summary>
