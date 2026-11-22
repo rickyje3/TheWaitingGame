@@ -2,16 +2,32 @@ using System;
 using Alchemy.Inspector;
 using UnityEngine;
 using Utilities.Monads;
+using Utilities.SaveLoad;
 
 namespace Tasks.ActiveTask
 {
+    /// <summary>
+    /// A class that represents the data for an active task.
+    /// Each active task is associated with a specific user and has a unique ID.
+    /// However, this is a single player game, so the user ID is not used for anything.
+    /// </summary>
     [Serializable]
-    public class ActiveTaskData
+    public class ActiveTaskData : IHasUniqueID
     {
+        /// <summary>
+        /// The ID of the user associated with the currently active task.
+        /// </summary>
+        [SerializeField, ReadOnly] private GUID userID;
+
         /// <summary>
         /// The ID of the currently active task.
         /// </summary>
-        [SerializeField, ReadOnly] private Optional<Guid> uniqueID;
+        [SerializeField, ReadOnly] private Optional<GUID> taskID;
+
+        /// <summary>
+        /// The ID of the user associated with the currently active task.
+        /// </summary>
+        public GUID UniqueID => userID;
 
         /// <summary>
         /// The amount of time spent working while the currently active task is active.
@@ -20,23 +36,34 @@ namespace Tasks.ActiveTask
         /// <note>This may or may not do anything at all</note>
         public float WorkingTime { get; private set; }
 
-        public ActiveTaskData()
+        public event Action<ActiveTaskData> onActiveTaskChanged;
+
+        /// <summary>
+        /// Creates a new instance of the ActiveTaskData class with the specified user ID.
+        /// </summary>
+        /// <param name="userId"></param>
+        public ActiveTaskData(GUID userId)
         {
+            this.userID = userId;
             RemoveActiveTask();
         }
 
-        public ActiveTaskData(Guid id)
+        public ActiveTaskData(GUID userId, GUID taskId)
         {
-            SetActiveTask(id);
+            this.userID = userId;
+            SetActiveTask(taskId);
         }
 
         /// <summary>
         /// Sets the currently active task to the task with the specified ID.
         /// </summary>
-        /// <param name="id"></param>
-        public void SetActiveTask(Guid id)
+        /// <param name="taskId"></param>
+        public void SetActiveTask(GUID taskId)
         {
-            uniqueID = id;
+            taskID = taskId;
+
+            // Invoke the onActiveTaskChanged event to notify any listeners that the active task has changed.
+            onActiveTaskChanged?.Invoke(this);
         }
 
         /// <summary>
@@ -44,9 +71,11 @@ namespace Tasks.ActiveTask
         /// </summary>
         public void RemoveActiveTask()
         {
-            uniqueID = Optional<Guid>.None;
-        }
+            taskID = Optional<GUID>.None;
 
+            // Invoke the onActiveTaskChanged event to notify any listeners that the active task has changed.
+            onActiveTaskChanged?.Invoke(this);
+        }
 
         public float SetWorkingTime(float newWorkingTime)
         {

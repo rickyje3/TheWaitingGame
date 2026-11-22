@@ -9,7 +9,7 @@ namespace Tasks.Creation
     [Serializable]
     public struct TaskDataArray : IEnumerable<TaskData.TaskData>
     {
-        [SerializeField] public TaskData.TaskData[] taskDataArray;
+        [SerializeField] private TaskData.TaskData[] taskDataArray;
 
         public TaskDataArray(IEnumerable<TaskData.TaskData> taskDataList)
         {

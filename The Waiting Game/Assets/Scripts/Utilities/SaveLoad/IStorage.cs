@@ -4,6 +4,12 @@ using Utilities.Monads;
 
 namespace Utilities.SaveLoad
 {
+    /// <summary>
+    /// An interface to define a generic storage system for items that have unique IDs.
+    /// This interface provides methods to load, save, remove, and retrieve items from storage.
+    /// Ideally, the implementation of this interface stores MULTIPLE items in one storage item.
+    /// </summary>
+    /// <typeparam name="TItemType"></typeparam>
     public interface IStorage<TItemType> where TItemType : IHasUniqueID
     {
         /// <summary>
