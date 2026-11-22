@@ -21,7 +21,7 @@ namespace Utilities.SaveLoad
         /// The backing dictionary that stores the data.
         /// This is here to avoid constantly reading and writing to the JSON file, which can be inefficient.
         /// </summary>
-        [AlchemySerializeField, NonSerialized, ReadOnly]
+        // [AlchemySerializeField, NonSerialized, ReadOnly]
         private Dictionary<GUID, TItemType> _dataDictionary = new();
 
         /// <summary>
