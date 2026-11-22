@@ -1,0 +1,12 @@
+using UnityEngine;
+
+namespace Utilities
+{
+    public class Utils
+    {
+        public static T[] GetAllInstances<T>() where T : ScriptableObject
+        {
+            return Resources.LoadAll<T>("ScriptableObjects");
+        }
+    }
+}
