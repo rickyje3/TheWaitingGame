@@ -1,4 +1,3 @@
-using Tasks.Storage;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -23,7 +22,7 @@ namespace Tasks.TaskUI
         /// <summary>
         /// An optional field that holds a reference to the TaskDataStorage that this UI element belongs to.
         /// </summary>
-        private Optional<ITaskDataStorage> _taskDataStorage;
+        private Optional<IStorage<TaskData.TaskData>> _taskDataStorage;
 
         /// <summary>
         /// An optional field that holds the TaskData associated with this UI element.
@@ -52,7 +51,7 @@ namespace Tasks.TaskUI
             Destroy(gameObject);
         }
 
-        public void SetTaskData(ITaskDataStorage taskDataStorage, TaskData.TaskData taskData)
+        public void SetTaskData(IStorage<TaskData.TaskData> taskDataStorage, TaskData.TaskData taskData)
         {
             // Set the optional fields to hold references to the provided TaskList and TaskData.
             _taskDataStorage = Optional.Some(taskDataStorage);

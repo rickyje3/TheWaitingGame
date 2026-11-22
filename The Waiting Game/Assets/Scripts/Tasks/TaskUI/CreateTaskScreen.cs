@@ -1,5 +1,4 @@
 using Tasks.Creation;
-using Tasks.Storage;
 using TMPro;
 using UnityEngine;
 
@@ -12,7 +11,7 @@ namespace Tasks.TaskUI
         [SerializeField] private TMP_InputField descriptionText;
 
         private Optional<GUID> _uniqueID;
-        private Optional<ITaskDataStorage> _taskDataStorage;
+        private Optional<IStorage<TaskData.TaskData>> _taskDataStorage;
         private Optional<GameObject> _previousScreen;
 
         private void Awake()
@@ -21,7 +20,7 @@ namespace Tasks.TaskUI
             _uniqueID = Optional<GUID>.None;
 
             // // Initialize the optional TaskDataStorage to None when the component is first created.
-            // _taskDataStorage = Optional<ITaskDataStorage>.None;
+            // _taskDataStorage = Optional<IStorage<TaskData.TaskData>>.None;
         }
 
         private void Start()
@@ -121,7 +120,7 @@ namespace Tasks.TaskUI
                 previousScreen.SetActive(true);
         }
 
-        public void OpenCreateTaskScreen(GameObject previousScreen, ITaskDataStorage taskDataStorage)
+        public void OpenCreateTaskScreen(GameObject previousScreen, IStorage<TaskData.TaskData> taskDataStorage)
         {
             // Set the task data storage for this screen.
             _taskDataStorage = Optional.Some(taskDataStorage);

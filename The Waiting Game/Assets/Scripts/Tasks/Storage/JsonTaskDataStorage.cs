@@ -15,7 +15,7 @@ namespace Tasks.Storage
     /// and it is deserialized from JSON when the application starts or when the data is explicitly loaded.
     /// </summary>
     [Serializable, AlchemySerialize]
-    public partial class JsonTaskDataStorage : ITaskDataStorage
+    public partial class JsonTaskDataStorage : IStorage<TaskData.TaskData>
     {
         /// <summary>
         /// The file name where the task data will be stored in JSON format.

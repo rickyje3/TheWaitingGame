@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Tasks.ActiveTask
 {
     [Serializable]
-    public class ActiveTaskInformation
+    public class ActiveTaskData
     {
         /// <summary>
         /// The ID of the currently active task.
@@ -19,12 +19,12 @@ namespace Tasks.ActiveTask
         /// <note>This may or may not do anything at all</note>
         public float WorkingTime { get; private set; }
 
-        public ActiveTaskInformation()
+        public ActiveTaskData()
         {
             RemoveActiveTask();
         }
 
-        public ActiveTaskInformation(Guid id)
+        public ActiveTaskData(Guid id)
         {
             SetActiveTask(id);
         }

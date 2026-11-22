@@ -11,7 +11,7 @@ namespace Tasks.Storage
     /// ensuring that all instances share the same data.
     /// </summary>
     [Serializable, AlchemySerialize]
-    public partial class MonoBehaviorTaskDataStorage : ITaskDataStorage
+    public partial class MonoBehaviorTaskDataStorage : IStorage<TaskData.TaskData>
     {
         /// <summary>
         /// The TaskDataManager that holds the actual data storage implementation.
