@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -6,7 +7,7 @@ using UnityEngine;
 namespace Tasks.Creation
 {
     [Serializable]
-    public struct TaskDataArray
+    public struct TaskDataArray : IEnumerable<TaskData.TaskData>
     {
         [SerializeField] public TaskData.TaskData[] taskDataArray;
 
@@ -15,5 +16,19 @@ namespace Tasks.Creation
             // Copy the task data from the list to the array.
             taskDataArray = taskDataList.ToArray();
         }
+
+        #region IEnumerable Implementation
+
+        public IEnumerator<TaskData.TaskData> GetEnumerator()
+        {
+            return ((IEnumerable<TaskData.TaskData>)taskDataArray).GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return ((IEnumerable<TaskData.TaskData>)taskDataArray).GetEnumerator();
+        }
+
+        #endregion
     }
 }
