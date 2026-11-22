@@ -17,6 +17,7 @@ MonoBehaviour:
   icon: {fileID: 0}
   price: 125
   isPurchased: 0
+  isBlocker: 0
   description: A shelf with 4 smaller slots for display pieces
   <Size>k__BackingField: {x: 1, y: 1}
   <Prefab>k__BackingField: {fileID: 6645670022071340812, guid: b2ebe076afc54a947be87c1d6d100411, type: 3}
