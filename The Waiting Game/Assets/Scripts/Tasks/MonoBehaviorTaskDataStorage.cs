@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Alchemy.Serialization;
 using UnityEngine;
 
 namespace Tasks
@@ -9,13 +10,15 @@ namespace Tasks
     /// This allows multiple instances of the data storage to point to the same underlying data storage,
     /// ensuring that all instances share the same data.
     /// </summary>
-    [Serializable]
-    public class MonoBehaviorTaskDataStorage : ITaskDataStorage
+    [Serializable, AlchemySerialize]
+    public partial class MonoBehaviorTaskDataStorage : ITaskDataStorage
     {
         /// <summary>
         /// The TaskDataManager that holds the actual data storage implementation.
         /// </summary>
         [SerializeField] private TaskDataManager taskDataManager;
+
+        #region ITaskDataStorage Implementation
 
         public Optional<TaskData> LoadItem(GUID uniqueID)
         {
@@ -41,5 +44,7 @@ namespace Tasks
         {
             return taskDataManager.TaskDataStorage.GetAllStoredItems();
         }
+
+        #endregion
     }
 }
