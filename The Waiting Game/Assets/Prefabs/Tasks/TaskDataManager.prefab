@@ -46,6 +46,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Tasks.TaskDataManager
   taskDataStorage:
     rid: 6607738827282579703
+  activeTaskDataStorage:
+    rid: 6607738827282579704
   __alchemySerializationData_Tasks_TaskDataManager:
     _activeTaskData:
       isCreated: 1
@@ -57,9 +59,22 @@ MonoBehaviour:
     - rid: 6607738827282579703
       type: {class: JsonTaskDataStorage, ns: Tasks.Storage, asm: Assembly-CSharp}
       data:
-        storageFileName: TaskDataStorage.json
-        __alchemySerializationData_Tasks_Storage_JsonTaskDataStorage:
-          taskDataDictionary:
+        storageFileName: Tasks/TaskDataStorage.json
+        __alchemySerializationData_Utilities_SaveLoad_JsonStorage2:
+          _dataDictionary:
             isCreated: 1
             data: '[]'
+          unityObjectReferences: []
+        __alchemySerializationData_Tasks_Storage_JsonTaskDataStorage:
+          unityObjectReferences: []
+    - rid: 6607738827282579704
+      type: {class: ActiveTaskDataJsonStorage, ns: Tasks.ActiveTask, asm: Assembly-CSharp}
+      data:
+        storageFileName: Tasks/ActiveTaskData.json
+        __alchemySerializationData_Utilities_SaveLoad_JsonStorage2:
+          _dataDictionary:
+            isCreated: 1
+            data: '[]'
+          unityObjectReferences: []
+        __alchemySerializationData_Tasks_ActiveTask_ActiveTaskDataJsonStorage:
           unityObjectReferences: []

@@ -12,6 +12,6 @@ namespace Tasks.Creation
         /// Implementations *should* have their own ways of setting the data within the TaskData struct.
         /// </summary>
         /// <returns>An Optional containing the created TaskData if successful; otherwise, an empty Optional.</returns>
-        public Optional<TaskData.TaskData> CreateTaskData();
+        public Optional<TaskData> CreateTaskData();
     }
 }

@@ -13,14 +13,14 @@ namespace Tasks
         /// <param name="factory"></param>
         /// <param name="storage"></param>
         /// <returns></returns>
-        public static Optional<TaskData.TaskData> CreateAndStoreTaskData(
-            ITaskDataFactory factory, IStorage<TaskData.TaskData> storage
+        public static Optional<TaskData> CreateAndStoreTaskData(
+            ITaskDataFactory factory, IStorage<TaskData> storage
         )
         {
             var taskData = factory.CreateTaskData();
 
             if (!taskData.HasValue)
-                return Optional<TaskData.TaskData>.None;
+                return Optional<TaskData>.None;
 
             storage.SaveItem(taskData.Value);
             return taskData;

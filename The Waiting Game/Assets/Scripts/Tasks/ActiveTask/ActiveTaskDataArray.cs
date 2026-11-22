@@ -19,12 +19,12 @@ namespace Tasks.ActiveTask
 
         public IEnumerator<ActiveTaskData> GetEnumerator()
         {
-            return (IEnumerator<ActiveTaskData>)taskDataArray.GetEnumerator();
+            return ((IEnumerable<ActiveTaskData>)taskDataArray).GetEnumerator();
         }
 
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
         {
-            return taskDataArray.GetEnumerator();
+            return ((IEnumerable<ActiveTaskData>)taskDataArray).GetEnumerator();
         }
 
         #endregion

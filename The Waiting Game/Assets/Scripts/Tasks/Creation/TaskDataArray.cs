@@ -7,11 +7,11 @@ using UnityEngine;
 namespace Tasks.Creation
 {
     [Serializable]
-    public struct TaskDataArray : IEnumerable<TaskData.TaskData>
+    public struct TaskDataArray : IEnumerable<TaskData>
     {
-        [SerializeField] private TaskData.TaskData[] taskDataArray;
+        [SerializeField] private TaskData[] taskDataArray;
 
-        public TaskDataArray(IEnumerable<TaskData.TaskData> taskDataList)
+        public TaskDataArray(IEnumerable<TaskData> taskDataList)
         {
             // Copy the task data from the list to the array.
             taskDataArray = taskDataList.ToArray();
@@ -19,14 +19,14 @@ namespace Tasks.Creation
 
         #region IEnumerable Implementation
 
-        public IEnumerator<TaskData.TaskData> GetEnumerator()
+        public IEnumerator<TaskData> GetEnumerator()
         {
-            return ((IEnumerable<TaskData.TaskData>)taskDataArray).GetEnumerator();
+            return ((IEnumerable<TaskData>)taskDataArray).GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return ((IEnumerable<TaskData.TaskData>)taskDataArray).GetEnumerator();
+            return ((IEnumerable<TaskData>)taskDataArray).GetEnumerator();
         }
 
         #endregion

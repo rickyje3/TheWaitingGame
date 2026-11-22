@@ -13,7 +13,7 @@ namespace Tasks.TaskUI
         [SerializeField] private TMP_InputField descriptionText;
 
         private Optional<GUID> _uniqueID;
-        private Optional<IStorage<TaskData.TaskData>> _taskDataStorage;
+        private Optional<IStorage<TaskData>> _taskDataStorage;
         private Optional<GameObject> _previousScreen;
 
         private void Awake()
@@ -35,7 +35,7 @@ namespace Tasks.TaskUI
         /// Creates a new TaskData instance with the provided title and description.
         /// </summary>
         /// <returns>The created TaskData wrapped in an Optional.</returns>
-        public Optional<TaskData.TaskData> CreateTaskData()
+        public Optional<TaskData> CreateTaskData()
         {
             // Ensure that the unique ID is not empty before creating the TaskData.
             if (!_uniqueID.Unwrap(out var guid))
@@ -48,7 +48,7 @@ namespace Tasks.TaskUI
             }
 
             // Create a new TaskData instance with the provided title and description.
-            var taskData = new TaskData.TaskData(guid)
+            var taskData = new TaskData(guid)
             {
                 title = titleText.text,
                 description = descriptionText.text
@@ -122,7 +122,7 @@ namespace Tasks.TaskUI
                 previousScreen.SetActive(true);
         }
 
-        public void OpenCreateTaskScreen(GameObject previousScreen, IStorage<TaskData.TaskData> taskDataStorage)
+        public void OpenCreateTaskScreen(GameObject previousScreen, IStorage<TaskData> taskDataStorage)
         {
             // Set the task data storage for this screen.
             _taskDataStorage = Optional.Some(taskDataStorage);

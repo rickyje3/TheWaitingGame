@@ -13,10 +13,10 @@ namespace Tasks.Storage
     /// The dictionary is serialized to JSON when the application is closed or when the data is explicitly saved,
     /// and it is deserialized from JSON when the application starts or when the data is explicitly loaded.
     /// </summary>
-    [Serializable, AlchemySerialize]
-    public partial class JsonTaskDataStorage : JsonStorage<TaskData.TaskData, TaskDataArray>
+    [Serializable]
+    public class JsonTaskDataStorage : JsonStorage<TaskData, TaskDataArray>
     {
-        protected override TaskDataArray CreateItemArray(IEnumerable<TaskData.TaskData> items)
+        protected override TaskDataArray CreateItemArray(IEnumerable<TaskData> items)
         {
             return new TaskDataArray(items);
         }

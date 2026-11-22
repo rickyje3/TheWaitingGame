@@ -24,17 +24,17 @@ namespace Tasks.TaskUI
         /// <summary>
         /// An optional field that holds a reference to the TaskDataStorage that this UI element belongs to.
         /// </summary>
-        private Optional<IStorage<TaskData.TaskData>> _taskDataStorage;
+        private Optional<IStorage<TaskData>> _taskDataStorage;
 
         /// <summary>
         /// An optional field that holds the TaskData associated with this UI element.
         /// </summary>
-        private Optional<TaskData.TaskData> _taskData;
+        private Optional<TaskData> _taskData;
 
         private void Awake()
         {
             // Initialize the optional TaskData to None when the component is first created.
-            _taskData = Optional<TaskData.TaskData>.None;
+            _taskData = Optional<TaskData>.None;
 
             completionButton.onClick.AddListener(OnCompletionButtonClicked);
         }
@@ -53,7 +53,7 @@ namespace Tasks.TaskUI
             Destroy(gameObject);
         }
 
-        public void SetTaskData(IStorage<TaskData.TaskData> taskDataStorage, TaskData.TaskData taskData)
+        public void SetTaskData(IStorage<TaskData> taskDataStorage, TaskData taskData)
         {
             // Set the optional fields to hold references to the provided TaskList and TaskData.
             _taskDataStorage = Optional.Some(taskDataStorage);

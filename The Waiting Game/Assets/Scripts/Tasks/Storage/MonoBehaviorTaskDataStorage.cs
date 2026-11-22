@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Alchemy.Serialization;
 using UnityEngine;
 using Utilities.Monads;
 using Utilities.SaveLoad;
@@ -12,8 +11,8 @@ namespace Tasks.Storage
     /// This allows multiple instances of the data storage to point to the same underlying data storage,
     /// ensuring that all instances share the same data.
     /// </summary>
-    [Serializable, AlchemySerialize]
-    public partial class MonoBehaviorTaskDataStorage : IStorage<TaskData.TaskData>
+    [Serializable]
+    public class MonoBehaviorTaskDataStorage : IStorage<TaskData>
     {
         /// <summary>
         /// The TaskDataManager that holds the actual data storage implementation.
@@ -22,17 +21,17 @@ namespace Tasks.Storage
 
         #region ITaskDataStorage Implementation
 
-        public Optional<TaskData.TaskData> LoadItem(GUID uniqueID)
+        public Optional<TaskData> LoadItem(GUID uniqueID)
         {
             return taskDataManager.TaskDataStorage.LoadItem(uniqueID);
         }
 
-        public bool SaveItem(TaskData.TaskData item)
+        public bool SaveItem(TaskData item)
         {
             return taskDataManager.TaskDataStorage.SaveItem(item);
         }
 
-        public Optional<TaskData.TaskData> RemoveItem(GUID uniqueID)
+        public Optional<TaskData> RemoveItem(GUID uniqueID)
         {
             return taskDataManager.TaskDataStorage.RemoveItem(uniqueID);
         }
@@ -42,7 +41,7 @@ namespace Tasks.Storage
             return taskDataManager.TaskDataStorage.GetAllStoredItemIDs();
         }
 
-        public List<TaskData.TaskData> GetAllStoredItems()
+        public List<TaskData> GetAllStoredItems()
         {
             return taskDataManager.TaskDataStorage.GetAllStoredItems();
         }

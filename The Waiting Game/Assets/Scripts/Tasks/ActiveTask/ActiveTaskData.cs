@@ -17,12 +17,12 @@ namespace Tasks.ActiveTask
         /// <summary>
         /// The ID of the user associated with the currently active task.
         /// </summary>
-        [SerializeField, ReadOnly] private GUID userID;
+        [SerializeField] private GUID userID;
 
         /// <summary>
         /// The ID of the currently active task.
         /// </summary>
-        [SerializeField, ReadOnly] private Optional<GUID> taskID;
+        [SerializeField] private Optional<GUID> taskID;
 
         /// <summary>
         /// The ID of the user associated with the currently active task.
@@ -36,7 +36,15 @@ namespace Tasks.ActiveTask
         /// <note>This may or may not do anything at all</note>
         public float WorkingTime { get; private set; }
 
-        public event Action<ActiveTaskData> onActiveTaskChanged;
+        public event Action<ActiveTaskData> OnActiveTaskChanged;
+
+        /// <summary>
+        /// Creates a new instance of the ActiveTaskData class.
+        /// </summary>
+        public ActiveTaskData()
+        {
+
+        }
 
         /// <summary>
         /// Creates a new instance of the ActiveTaskData class with the specified user ID.
@@ -45,36 +53,39 @@ namespace Tasks.ActiveTask
         public ActiveTaskData(GUID userId)
         {
             this.userID = userId;
-            RemoveActiveTask();
+            RemoveActiveTask(false);
         }
 
         public ActiveTaskData(GUID userId, GUID taskId)
         {
             this.userID = userId;
-            SetActiveTask(taskId);
+            SetActiveTask(taskId, false);
         }
 
         /// <summary>
         /// Sets the currently active task to the task with the specified ID.
         /// </summary>
         /// <param name="taskId"></param>
-        public void SetActiveTask(GUID taskId)
+        /// <param name="bSendEvent">If true, the OnActiveTaskChanged event will be invoked.</param>
+        public void SetActiveTask(GUID taskId, bool bSendEvent)
         {
             taskID = taskId;
 
-            // Invoke the onActiveTaskChanged event to notify any listeners that the active task has changed.
-            onActiveTaskChanged?.Invoke(this);
+            // Invoke the OnActiveTaskChanged event to notify any listeners that the active task has changed.
+            if (bSendEvent)
+                OnActiveTaskChanged?.Invoke(this);
         }
 
         /// <summary>
         /// Removes the currently active task, setting the active task ID to None.
         /// </summary>
-        public void RemoveActiveTask()
+        public void RemoveActiveTask(bool bSendEvent)
         {
             taskID = Optional<GUID>.None;
 
-            // Invoke the onActiveTaskChanged event to notify any listeners that the active task has changed.
-            onActiveTaskChanged?.Invoke(this);
+            // Invoke the OnActiveTaskChanged event to notify any listeners that the active task has changed.
+            if (bSendEvent)
+                OnActiveTaskChanged?.Invoke(this);
         }
 
         public float SetWorkingTime(float newWorkingTime)

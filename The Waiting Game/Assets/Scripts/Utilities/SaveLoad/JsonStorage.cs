@@ -36,7 +36,7 @@ namespace Utilities.SaveLoad
         /// </summary>
         private bool _needsToLoad = true;
 
-        private string StorageFilePath => System.IO.Path.Combine(Application.persistentDataPath, storageFileName);
+        private string StorageFilePath => System.IO.Path.Join(Application.persistentDataPath, storageFileName);
 
         #region IStorage Implementation
 
@@ -158,10 +158,22 @@ namespace Utilities.SaveLoad
             if (!_isDirty)
                 return true;
 
-            string fullFilePath = StorageFilePath;
+            // If the file name is empty, log an error and return false to indicate that the save operation failed.
+            if (string.IsNullOrEmpty(storageFileName.Trim()))
+            {
+                Debug.LogError("Storage file name is empty. Cannot save data.");
+                return false;
+            }
+
+            var fullFilePath = StorageFilePath;
 
             // Log the saving process for debugging purposes.
             Debug.Log($"Saving data to JSON file: {fullFilePath}");
+
+            // Ensure the directory (and all the parent directories) exists before attempting to save the file.
+            var directoryPath = System.IO.Path.GetDirectoryName(fullFilePath);
+            if (!System.IO.Directory.Exists(directoryPath) && !string.IsNullOrEmpty(directoryPath))
+                System.IO.Directory.CreateDirectory(directoryPath);
 
             // Create a list to store the JSON strings of each data.
             var dataList = CreateItemArray(_dataDictionary.Values);

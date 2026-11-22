@@ -21,7 +21,7 @@ namespace Tasks.TaskUI
         /// The data storage that holds the task data to be displayed in the list.
         /// This is NOT an optional field, as the TaskList requires a valid data storage to function correctly.
         /// </summary>
-        [SerializeReference] private IStorage<TaskData.TaskData> taskDataStorage;
+        [SerializeReference] private IStorage<TaskData> taskDataStorage;
 
         /// <summary>
         /// The CreateTaskScreen component that will be used to create new tasks.
