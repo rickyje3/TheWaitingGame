@@ -247,6 +247,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 7082682444397106684, guid: 0545dcf5c7ddaf74380d00caa0855f3b, type: 3}
   m_PrefabInstance: {fileID: 3523696767905931318}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &8009389727531090833 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6900005075911893927, guid: 0545dcf5c7ddaf74380d00caa0855f3b, type: 3}
+  m_PrefabInstance: {fileID: 3523696767905931318}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a842a2dd952846efb2343cbcad522465, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Tasks.TaskDataManager
 --- !u!1001 &3945898076774637975
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -257,7 +268,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 75254184060378647, guid: 0d7a1c0bc8fc35644afd1eaf0a138300, type: 3}
       propertyPath: m_Size
-      value: 1
+      value: 0.9999932
       objectReference: {fileID: 0}
     - target: {fileID: 4024460627254555702, guid: 0d7a1c0bc8fc35644afd1eaf0a138300, type: 3}
       propertyPath: m_AnchorMax.y
@@ -269,7 +280,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4335263444630786104, guid: 0d7a1c0bc8fc35644afd1eaf0a138300, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0.00015114718
+      value: 0.00010702552
       objectReference: {fileID: 0}
     - target: {fileID: 4398670854703195374, guid: 0d7a1c0bc8fc35644afd1eaf0a138300, type: 3}
       propertyPath: m_Name
@@ -391,6 +402,10 @@ PrefabInstance:
       propertyPath: createTaskScreen
       value: 
       objectReference: {fileID: 887664011836700115}
+    - target: {fileID: 8249098818600971987, guid: 0d7a1c0bc8fc35644afd1eaf0a138300, type: 3}
+      propertyPath: managedReferences[6607738827282579527].taskDataManager
+      value: 
+      objectReference: {fileID: 8009389727531090833}
     - target: {fileID: 8684691752374089339, guid: 0d7a1c0bc8fc35644afd1eaf0a138300, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
