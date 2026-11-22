@@ -22,7 +22,7 @@ namespace Tasks
         public void Awake()
         {
             // Initialize the active task information to None when the component is first created.
-            _activeTaskInformation = new ActiveTaskInformation(Guid.Empty);
+            _activeTaskInformation = new ActiveTaskInformation();
         }
 
         public void SetActiveTask(Guid uniqueID, Optional<float> setWorkingTime)
