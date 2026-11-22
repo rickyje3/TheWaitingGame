@@ -2,7 +2,7 @@ using System;
 using Alchemy.Inspector;
 using UnityEngine;
 
-namespace Tasks
+namespace Tasks.ActiveTask
 {
     [Serializable]
     public class ActiveTaskInformation

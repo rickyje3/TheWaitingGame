@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Alchemy.Serialization;
 using UnityEngine;
 
-namespace Tasks
+namespace Tasks.Storage
 {
     /// <summary>
     /// A task data storage that uses a MonoBehaviour to hold the actual data storage implementation.
@@ -20,17 +20,17 @@ namespace Tasks
 
         #region ITaskDataStorage Implementation
 
-        public Optional<TaskData> LoadItem(GUID uniqueID)
+        public Optional<TaskData.TaskData> LoadItem(GUID uniqueID)
         {
             return taskDataManager.TaskDataStorage.LoadItem(uniqueID);
         }
 
-        public bool SaveItem(TaskData item)
+        public bool SaveItem(TaskData.TaskData item)
         {
             return taskDataManager.TaskDataStorage.SaveItem(item);
         }
 
-        public Optional<TaskData> RemoveItem(GUID uniqueID)
+        public Optional<TaskData.TaskData> RemoveItem(GUID uniqueID)
         {
             return taskDataManager.TaskDataStorage.RemoveItem(uniqueID);
         }
@@ -40,7 +40,7 @@ namespace Tasks
             return taskDataManager.TaskDataStorage.GetAllStoredItemIDs();
         }
 
-        public List<TaskData> GetAllStoredItems()
+        public List<TaskData.TaskData> GetAllStoredItems()
         {
             return taskDataManager.TaskDataStorage.GetAllStoredItems();
         }

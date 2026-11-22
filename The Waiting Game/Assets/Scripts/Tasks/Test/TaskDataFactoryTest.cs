@@ -1,4 +1,5 @@
 using System;
+using Tasks.Creation;
 using UnityEngine;
 
 namespace Tasks.Test
@@ -15,12 +16,12 @@ namespace Tasks.Test
 
         #region ITaskDataFactory Implementation
 
-        public Optional<TaskData> CreateTaskData()
+        public Optional<TaskData.TaskData> CreateTaskData()
         {
             // Create a unique ID for the new task data.
             var uniqueID = GenerateUniqueID();
 
-            var taskData = new TaskData(uniqueID)
+            var taskData = new TaskData.TaskData(uniqueID)
             {
                 title = taskTitle,
                 description = taskDescription,

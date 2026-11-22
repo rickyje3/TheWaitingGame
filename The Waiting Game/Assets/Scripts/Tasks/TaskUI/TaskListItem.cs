@@ -1,5 +1,4 @@
-using System;
-using Alchemy.Serialization;
+using Tasks.Storage;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -29,12 +28,12 @@ namespace Tasks.TaskUI
         /// <summary>
         /// An optional field that holds the TaskData associated with this UI element.
         /// </summary>
-        private Optional<TaskData> _taskData;
+        private Optional<TaskData.TaskData> _taskData;
 
         private void Awake()
         {
             // Initialize the optional TaskData to None when the component is first created.
-            _taskData = Optional<TaskData>.None;
+            _taskData = Optional<TaskData.TaskData>.None;
 
             completionButton.onClick.AddListener(OnCompletionButtonClicked);
         }
@@ -53,7 +52,7 @@ namespace Tasks.TaskUI
             Destroy(gameObject);
         }
 
-        public void SetTaskData(ITaskDataStorage taskDataStorage, TaskData taskData)
+        public void SetTaskData(ITaskDataStorage taskDataStorage, TaskData.TaskData taskData)
         {
             // Set the optional fields to hold references to the provided TaskList and TaskData.
             _taskDataStorage = Optional.Some(taskDataStorage);

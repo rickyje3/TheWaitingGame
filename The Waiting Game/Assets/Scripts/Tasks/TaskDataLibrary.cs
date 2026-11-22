@@ -1,3 +1,6 @@
+using Tasks.Creation;
+using Tasks.Storage;
+
 namespace Tasks
 {
     public static class TaskDataLibrary
@@ -8,12 +11,12 @@ namespace Tasks
         /// <param name="factory"></param>
         /// <param name="storage"></param>
         /// <returns></returns>
-        public static Optional<TaskData> CreateAndStoreTaskData(ITaskDataFactory factory, ITaskDataStorage storage)
+        public static Optional<TaskData.TaskData> CreateAndStoreTaskData(ITaskDataFactory factory, ITaskDataStorage storage)
         {
             var taskData = factory.CreateTaskData();
 
             if (!taskData.HasValue)
-                return Optional<TaskData>.None;
+                return Optional<TaskData.TaskData>.None;
 
             storage.SaveItem(taskData.Value);
             return taskData;

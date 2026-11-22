@@ -1,4 +1,5 @@
-using System;
+using Tasks.Creation;
+using Tasks.Storage;
 using TMPro;
 using UnityEngine;
 
@@ -33,7 +34,7 @@ namespace Tasks.TaskUI
         /// Creates a new TaskData instance with the provided title and description.
         /// </summary>
         /// <returns>The created TaskData wrapped in an Optional.</returns>
-        public Optional<TaskData> CreateTaskData()
+        public Optional<TaskData.TaskData> CreateTaskData()
         {
             // Ensure that the unique ID is not empty before creating the TaskData.
             if (!_uniqueID.Unwrap(out var guid))
@@ -46,7 +47,7 @@ namespace Tasks.TaskUI
             }
 
             // Create a new TaskData instance with the provided title and description.
-            var taskData = new TaskData(guid)
+            var taskData = new TaskData.TaskData(guid)
             {
                 title = titleText.text,
                 description = descriptionText.text

@@ -2,9 +2,10 @@ using System;
 using System.Collections.Generic;
 using Alchemy.Inspector;
 using Alchemy.Serialization;
+using Tasks.Creation;
 using UnityEngine;
 
-namespace Tasks
+namespace Tasks.Storage
 {
     /// <summary>
     /// An actual implementation of the ITaskDataStorage interface that uses JSON serialization to store task data.
@@ -26,7 +27,7 @@ namespace Tasks
         /// This is here to avoid constantly reading and writing to the JSON file, which can be inefficient.
         /// </summary>
         [AlchemySerializeField, NonSerialized, ReadOnly]
-        private Dictionary<GUID, TaskData> taskDataDictionary = new();
+        private Dictionary<GUID, TaskData.TaskData> taskDataDictionary = new();
 
         /// <summary>
         /// A flag that indicates whether the task data has been modified since the last save.
@@ -50,7 +51,7 @@ namespace Tasks
         /// <param name="uniqueID"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public Optional<TaskData> LoadItem(GUID uniqueID)
+        public Optional<TaskData.TaskData> LoadItem(GUID uniqueID)
         {
             // If the data needs to be loaded from the JSON file, do so before attempting to load the item.
             if (_needsToLoad)
@@ -61,10 +62,10 @@ namespace Tasks
                 return taskData;
 
             // If the item does not exist, return an empty Optional.
-            return Optional<TaskData>.None;
+            return Optional<TaskData.TaskData>.None;
         }
 
-        public bool SaveItem(TaskData item)
+        public bool SaveItem(TaskData.TaskData item)
         {
             // If the data needs to be loaded from the JSON file, do so before attempting to save the item.
             if (_needsToLoad)
@@ -83,7 +84,7 @@ namespace Tasks
             return true;
         }
 
-        public Optional<TaskData> RemoveItem(GUID uniqueID)
+        public Optional<TaskData.TaskData> RemoveItem(GUID uniqueID)
         {
             // If the data needs to be loaded from the JSON file, do so before attempting to remove the item.
             if (_needsToLoad)
@@ -102,7 +103,7 @@ namespace Tasks
             }
 
             // If the item does not exist, return an empty Optional.
-            return Optional<TaskData>.None;
+            return Optional<TaskData.TaskData>.None;
         }
 
         public List<GUID> GetAllStoredItemIDs()
@@ -115,14 +116,14 @@ namespace Tasks
             return new List<GUID>(taskDataDictionary.Keys);
         }
 
-        public List<TaskData> GetAllStoredItems()
+        public List<TaskData.TaskData> GetAllStoredItems()
         {
             // If the data needs to be loaded from the JSON file, do so before attempting to get the stored items.
             if (_needsToLoad)
                 LoadDataFromBackEnd();
 
             // Return a list of all the stored items.
-            return new List<TaskData>(taskDataDictionary.Values);
+            return new List<TaskData.TaskData>(taskDataDictionary.Values);
         }
 
         #endregion
@@ -137,7 +138,7 @@ namespace Tasks
 
             // Check if the JSON file exists. If it does not, create an empty dictionary and return true.
             if (!System.IO.File.Exists(fullFilePath))
-                taskDataDictionary = new Dictionary<GUID, TaskData>();
+                taskDataDictionary = new Dictionary<GUID, TaskData.TaskData>();
 
             // Otherwise, read the JSON file and deserialize it into the dictionary.
             else

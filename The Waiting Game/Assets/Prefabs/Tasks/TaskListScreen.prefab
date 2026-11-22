@@ -591,15 +591,17 @@ MonoBehaviour:
   taskListItemPrefab: {fileID: 8520104066688297928, guid: 73c1511114aaa294ca7a624949402eeb, type: 3}
   taskListContainer: {fileID: 4335263444630786104}
   taskDataStorage:
-    rid: 6607738827282579527
+    rid: 6607738827282579701
   createTaskScreen: {fileID: 0}
   references:
     version: 2
     RefIds:
-    - rid: 6607738827282579527
-      type: {class: MonoBehaviorTaskDataStorage, ns: Tasks, asm: Assembly-CSharp}
+    - rid: 6607738827282579701
+      type: {class: MonoBehaviorTaskDataStorage, ns: Tasks.Storage, asm: Assembly-CSharp}
       data:
         taskDataManager: {fileID: 0}
+        __alchemySerializationData_Tasks_Storage_MonoBehaviorTaskDataStorage:
+          unityObjectReferences: []
 --- !u!1 &4967583520077752416
 GameObject:
   m_ObjectHideFlags: 0
@@ -633,7 +635,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0.000067160436}
+  m_AnchoredPosition: {x: 0, y: 0.0001587004}
   m_SizeDelta: {x: 0, y: 300}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &5644524724789546504
@@ -1053,7 +1055,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 8684691752374089339}
   m_Direction: 2
   m_Value: 0
-  m_Size: 1
+  m_Size: 0.99999815
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:

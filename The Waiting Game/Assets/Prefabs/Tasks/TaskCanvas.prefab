@@ -268,7 +268,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 75254184060378647, guid: 0d7a1c0bc8fc35644afd1eaf0a138300, type: 3}
       propertyPath: m_Size
-      value: 0.9999932
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4024460627254555702, guid: 0d7a1c0bc8fc35644afd1eaf0a138300, type: 3}
       propertyPath: m_AnchorMax.y
@@ -280,7 +280,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4335263444630786104, guid: 0d7a1c0bc8fc35644afd1eaf0a138300, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0.00010702552
+      value: 0.00046841888
       objectReference: {fileID: 0}
     - target: {fileID: 4398670854703195374, guid: 0d7a1c0bc8fc35644afd1eaf0a138300, type: 3}
       propertyPath: m_Name
@@ -404,6 +404,10 @@ PrefabInstance:
       objectReference: {fileID: 887664011836700115}
     - target: {fileID: 8249098818600971987, guid: 0d7a1c0bc8fc35644afd1eaf0a138300, type: 3}
       propertyPath: managedReferences[6607738827282579527].taskDataManager
+      value: 
+      objectReference: {fileID: 8009389727531090833}
+    - target: {fileID: 8249098818600971987, guid: 0d7a1c0bc8fc35644afd1eaf0a138300, type: 3}
+      propertyPath: managedReferences[6607738827282579701].taskDataManager
       value: 
       objectReference: {fileID: 8009389727531090833}
     - target: {fileID: 8684691752374089339, guid: 0d7a1c0bc8fc35644afd1eaf0a138300, type: 3}

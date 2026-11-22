@@ -2,7 +2,7 @@ using System;
 using Alchemy.Inspector;
 using UnityEngine;
 
-namespace Tasks
+namespace Tasks.TaskData
 {
     /// <summary>
     /// A struct that represents the data for a task.
