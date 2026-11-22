@@ -96,6 +96,61 @@ public class DesktopActivityManager : MonoBehaviour
         Unknown
     }
 
+
+    public enum DetectionTarget
+    {
+        Application,
+        Website
+    }
+
+    [System.Serializable]
+    public class TrackedActivityItem
+    {
+        public string keyword;
+        public bool enabled = true;
+    }
+
+    [System.Serializable]
+    public class ActivityRule
+    {
+        public ActivityType activityType;
+
+        public List<TrackedActivityItem> applications =
+            new List<TrackedActivityItem>();
+
+        public List<TrackedActivityItem> websites =
+            new List<TrackedActivityItem>();
+    }
+
+    [System.Serializable]
+    private class ActivityRuleSaveData
+    {
+        public List<ActivityRule> rules =
+            new List<ActivityRule>();
+    }
+
+    [Header("Activity Detection Rules")]
+
+    [Tooltip("Default activity categories and their built-in entries.")]
+    public List<ActivityRule> defaultActivityRules =
+    new List<ActivityRule>();
+
+    [Tooltip("Additional entries configured by the player.")]
+    public List<ActivityRule> customActivityRules =
+        new List<ActivityRule>();
+
+    private const string ActivityRulesKey = "CustomActivityRules";
+
+    // Browsers whose window titles can be checked for websites.
+    private readonly string[] browserProcesses =
+    {
+    "chrome",
+    "firefox",
+    "msedge",
+    "brave",
+    "opera"
+    };
+
     // -----------------------------
     // TREND DATA
     // -----------------------------
@@ -171,6 +226,8 @@ public class DesktopActivityManager : MonoBehaviour
 
         LoadPlayTime();
 
+        LoadCustomActivityRules();
+
         // Start background activity loop instead of using checkTimer
         StartCoroutine(ActivityLoop());
     }
@@ -244,10 +301,33 @@ public class DesktopActivityManager : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            if (mainMenu.gameObject.activeSelf)
-                mainMenu.CloseMenu();
-            else if (!mainMenu.isShopOpen && !mainMenu.isUpgradesOpen && !mainMenu.isDailiesOpen)
-                mainMenu.OpenMenu();
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                if (mainMenu.isActivityOpen)
+                {
+                    mainMenu.ActivityIsClosed();
+                }
+                else if (mainMenu.isShopOpen)
+                {
+                    mainMenu.ShopIsClosed();
+                }
+                else if (mainMenu.isUpgradesOpen)
+                {
+                    mainMenu.UpgradesIsClosed();
+                }
+                else if (mainMenu.isDailiesOpen)
+                {
+                    mainMenu.DailiesIsClosed();
+                }
+                else if(mainMenu.isMenuOpen)
+                {
+                    mainMenu.CloseMenu();
+                }
+                else if (!mainMenu.isMenuOpen)
+                {
+                    mainMenu.OpenMenu();
+                }
+            }
         }
 
         CheckForSystemInput();
@@ -437,23 +517,24 @@ public class DesktopActivityManager : MonoBehaviour
 
         GetWindowThreadProcessId(hwnd, out uint pid);
 
-        // Reuse StringBuilder
-        windowTitleBuffer.Clear();
-        GetWindowText(hwnd, windowTitleBuffer, windowTitleBuffer.Capacity);
-
-        string windowTitle = windowTitleBuffer.ToString().ToLowerInvariant();
-
-       /* #if UNITY_EDITOR
-            UnityEngine.Debug.Log(windowTitle);
-        #endif*/
-
         if (pid == 0)
             return ActivityType.Unknown;
 
+        // Get window title.
+        windowTitleBuffer.Clear();
+
+        GetWindowText(
+            hwnd,
+            windowTitleBuffer,
+            windowTitleBuffer.Capacity
+        );
+
+        string windowTitle =
+            windowTitleBuffer.ToString().ToLowerInvariant();
+
         string processName;
 
-        // ===== REVISION 7 =====
-        // Cache process lookup if foreground app didn't change
+        // Reuse cached process name.
         if (pid == lastPID)
         {
             processName = lastProcessName;
@@ -462,9 +543,12 @@ public class DesktopActivityManager : MonoBehaviour
         {
             try
             {
-                Process process = Process.GetProcessById((int)pid);
-
-                processName = process.ProcessName.ToLowerInvariant();
+                using (Process process =
+                    Process.GetProcessById((int)pid))
+                {
+                    processName =
+                        process.ProcessName.ToLowerInvariant();
+                }
 
                 lastPID = pid;
                 lastProcessName = processName;
@@ -475,63 +559,313 @@ public class DesktopActivityManager : MonoBehaviour
             }
         }
 
-        // Ignore our own game
+        // Ignore our own game.
         if (processName.Contains(gameProcessName))
             return ActivityType.Gaming;
 
-        #if UNITY_EDITOR
-            UnityEngine.Debug.Log("Detected Process: " + processName);
-        #endif
+        // Determine whether the foreground application is a browser.
+        bool isBrowser = ContainsAny(
+            processName,
+            browserProcesses
+        );
 
+        // Check custom rules first.
+        ActivityType? matchedActivity =
+            CheckActivityRules(
+                customActivityRules,
+                processName,
+                windowTitle,
+                isBrowser
+            );
 
-        // Use helper instead of giant OR chains
-        if (ContainsAny(processName,
-            "unity",
-            "code",
-            "visual studio",
-            "github",
-            "photoshop",
-            "unreal",
-            "maya",
-            "adobe",
-            "word",
-            "excel",
-            "powerpoint",
-            "zoom",
-            "teams",
-            "blender"))
-        {
-            return ActivityType.Working;
-        }
+        if (matchedActivity.HasValue)
+            return matchedActivity.Value;
 
-        if (ContainsAny(processName,
-            "steam",
-            "roblox",
-            "minecraft"))
-        {
-            return ActivityType.Gaming;
-        }
+        // Then check built-in rules.
+        matchedActivity =
+            CheckActivityRules(
+                defaultActivityRules,
+                processName,
+                windowTitle,
+                isBrowser
+            );
 
-        if (ContainsAny(processName,
-            "spotify",
-            "applemusic",
-            "pandora"))
-        {
-            return ActivityType.Jamming;
-        }
+        if (matchedActivity.HasValue)
+            return matchedActivity.Value;
 
-        if (ContainsAny(processName,
-            "chrome",
-            "firefox",
-            "edge",
-            "brave",
-            "opera"))
-        {
-            return DetectBrowserActivity(windowTitle);
-        }
+        // Unrecognized browser websites default to Browsing.
+        if (isBrowser)
+            return ActivityType.Browsing;
 
         return ActivityType.Unknown;
     }
+
+    private ActivityType? CheckActivityRules(
+    List<ActivityRule> rules,
+    string processName,
+    string windowTitle,
+    bool isBrowser)
+    {
+        foreach (ActivityRule rule in rules)
+        {
+            if (rule == null)
+                continue;
+
+            // Check application entries.
+            foreach (TrackedActivityItem item in rule.applications)
+            {
+                if (item == null || !item.enabled)
+                    continue;
+
+                if (string.IsNullOrWhiteSpace(item.keyword))
+                    continue;
+
+                if (processName.Contains(
+                    item.keyword.Trim().ToLowerInvariant()))
+                {
+                    return rule.activityType;
+                }
+            }
+
+            // Check website entries.
+            if (isBrowser)
+            {
+                foreach (TrackedActivityItem item in rule.websites)
+                {
+                    if (item == null || !item.enabled)
+                        continue;
+
+                    if (string.IsNullOrWhiteSpace(item.keyword))
+                        continue;
+
+                    if (windowTitle.Contains(
+                        item.keyword.Trim().ToLowerInvariant()))
+                    {
+                        return rule.activityType;
+                    }
+                }
+            }
+        }
+
+        return null;
+    }
+
+
+    public bool AddCustomActivityItem(
+        string keyword,
+        ActivityType activityType,
+        DetectionTarget target)
+    {
+        if (string.IsNullOrWhiteSpace(keyword))
+            return false;
+
+        keyword = keyword.Trim();
+
+        ActivityRule sourceRule = null;
+        TrackedActivityItem existingItem = null;
+
+        // Search for an existing custom entry.
+        foreach (ActivityRule rule in customActivityRules)
+        {
+            List<TrackedActivityItem> items =
+                target == DetectionTarget.Application
+                ? rule.applications
+                : rule.websites;
+
+            existingItem = items.Find(item =>
+                item != null &&
+                string.Equals(
+                    item.keyword,
+                    keyword,
+                    StringComparison.OrdinalIgnoreCase));
+
+            if (existingItem != null)
+            {
+                sourceRule = rule;
+                break;
+            }
+        }
+
+        // Don't add an identical entry twice.
+        if (sourceRule != null &&
+            sourceRule.activityType == activityType)
+        {
+            return false;
+        }
+
+        // Remove an existing entry if its category is changing.
+        if (sourceRule != null)
+        {
+            if (target == DetectionTarget.Application)
+                sourceRule.applications.Remove(existingItem);
+            else
+                sourceRule.websites.Remove(existingItem);
+        }
+
+        // Find or create the destination category.
+        ActivityRule destination = customActivityRules.Find(
+            rule => rule.activityType == activityType);
+
+        if (destination == null)
+        {
+            destination = new ActivityRule
+            {
+                activityType = activityType
+            };
+
+            customActivityRules.Add(destination);
+        }
+
+        // Create the new entry.
+        TrackedActivityItem newItem = new TrackedActivityItem
+        {
+            keyword = keyword,
+            enabled = true
+        };
+
+        if (target == DetectionTarget.Application)
+            destination.applications.Add(newItem);
+        else
+            destination.websites.Add(newItem);
+
+        SaveCustomActivityRules();
+
+        return true;
+    }
+
+    public void RemoveCustomActivityItem(
+        ActivityType activityType,
+        DetectionTarget target,
+        int index)
+    {
+        ActivityRule rule = customActivityRules.Find(
+            r => r.activityType == activityType);
+
+        if (rule == null)
+            return;
+
+        List<TrackedActivityItem> items =
+            target == DetectionTarget.Application
+            ? rule.applications
+            : rule.websites;
+
+        if (index < 0 || index >= items.Count)
+            return;
+
+        items.RemoveAt(index);
+
+        // Remove empty custom categories.
+        if (rule.applications.Count == 0 &&
+            rule.websites.Count == 0)
+        {
+            customActivityRules.Remove(rule);
+        }
+
+        SaveCustomActivityRules();
+    }
+
+    public void SetCustomActivityItemEnabled(
+        ActivityType activityType,
+        DetectionTarget target,
+        int index,
+        bool enabled)
+    {
+        ActivityRule rule = customActivityRules.Find(
+            r => r.activityType == activityType);
+
+        if (rule == null)
+            return;
+
+        List<TrackedActivityItem> items =
+            target == DetectionTarget.Application
+            ? rule.applications
+            : rule.websites;
+
+        if (index < 0 || index >= items.Count)
+            return;
+
+        items[index].enabled = enabled;
+
+        SaveCustomActivityRules();
+    }
+
+
+    private bool ContainsKeyword(
+        ActivityRule rule,
+        string keyword,
+        DetectionTarget target)
+    {
+        List<TrackedActivityItem> items =
+            target == DetectionTarget.Application
+            ? rule.applications
+            : rule.websites;
+
+        return items.Exists(item =>
+            item != null &&
+            string.Equals(
+                item.keyword,
+                keyword,
+                StringComparison.OrdinalIgnoreCase));
+    }
+
+    private void AddItemToRule(
+    ActivityRule rule,
+    string keyword,
+    DetectionTarget target)
+    {
+        TrackedActivityItem item = new TrackedActivityItem
+        {
+            keyword = keyword,
+            enabled = true
+        };
+
+        if (target == DetectionTarget.Application)
+            rule.applications.Add(item);
+        else
+            rule.websites.Add(item);
+    }
+
+
+    public void SaveCustomActivityRules()
+    {
+        ActivityRuleSaveData data = new ActivityRuleSaveData
+        {
+            rules = customActivityRules
+        };
+
+        PlayerPrefs.SetString(
+            ActivityRulesKey,
+            JsonUtility.ToJson(data));
+
+        PlayerPrefs.Save();
+    }
+
+
+    public void LoadCustomActivityRules()
+    {
+        if (!PlayerPrefs.HasKey(ActivityRulesKey))
+            return;
+
+        ActivityRuleSaveData data =
+            JsonUtility.FromJson<ActivityRuleSaveData>(
+                PlayerPrefs.GetString(ActivityRulesKey));
+
+        if (data != null && data.rules != null)
+            customActivityRules = data.rules;
+    }
+
+
+    public void RemoveCustomActivityRule(int index)
+    {
+        if (index < 0 || index >= customActivityRules.Count)
+            return;
+
+        customActivityRules.RemoveAt(index);
+
+        SaveCustomActivityRules();
+    }
+
+
 
     // ===== REVISION 9 =====
     bool ContainsAny(string value, params string[] keywords)

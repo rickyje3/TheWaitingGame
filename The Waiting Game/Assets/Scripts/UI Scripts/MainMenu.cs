@@ -16,6 +16,14 @@ public class MainMenu : MonoBehaviour
     public GameObject dailies;
     public GameObject upgradesMenu;
 
+    [Header("Activity Tracking")]
+
+    public GameObject mainMenuPanel;
+    public GameObject addActivityPanel;
+    public ActivityTrackingUI activityTrackingUI;
+
+    public bool isActivityOpen = false;
+
     //private int currentMonitor = 0;
 
     [SerializeField] private DesktopWindowManager windowManager;
@@ -23,6 +31,11 @@ public class MainMenu : MonoBehaviour
     public void ResetTimeScale()
     {
         Time.timeScale = 1f;
+    }
+
+    public void StopTime()
+    {
+        Time.timeScale = 0f;
     }
 
     public void ShopIsOpen()
@@ -138,6 +151,28 @@ public class MainMenu : MonoBehaviour
 
         #endif
     }
+
+
+    public void ActivityIsOpen()
+    {
+        isActivityOpen = true;
+        isMenuOpen = false;
+
+        mainMenuPanel.SetActive(false);
+        addActivityPanel.SetActive(true);
+
+        activityTrackingUI.RefreshActivityList();
+    }
+
+    public void ActivityIsClosed()
+    {
+        isActivityOpen = false;
+        isMenuOpen = true;
+
+        addActivityPanel.SetActive(false);
+        mainMenuPanel.SetActive(true);
+    }
+
 
     public void QuitGame()
     {
