@@ -1,3 +1,4 @@
+using System;
 using Alchemy.Inspector;
 using UnityEngine;
 using Utilities.SaveLoad;
@@ -29,15 +30,17 @@ namespace Tasks.TaskUI
         /// </summary>
         [SerializeField] private CreateTaskScreen createTaskScreen;
 
-        private void Awake()
+        /// <summary>
+        /// A reference to the TaskDataManager that manages the task data for this list.
+        /// </summary>
+        [SerializeField] private TaskDataManager taskDataManager;
+
+        private void OnEnable()
         {
+
         }
 
         private void Start()
-        {
-        }
-
-        private void OnEnable()
         {
             PopulateTaskList();
         }
@@ -67,7 +70,7 @@ namespace Tasks.TaskUI
                 var taskListItem = Instantiate(taskListItemPrefab, taskListContainer);
 
                 // Set the TaskData for the newly created TaskListItem.
-                taskListItem.SetTaskData(taskDataStorage, taskData);
+                taskListItem.SetTaskData(taskDataManager, taskDataStorage, taskData);
             }
         }
 

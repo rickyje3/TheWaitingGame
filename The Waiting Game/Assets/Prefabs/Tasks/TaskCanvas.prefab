@@ -268,7 +268,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 75254184060378647, guid: 0d7a1c0bc8fc35644afd1eaf0a138300, type: 3}
       propertyPath: m_Size
-      value: 1
+      value: 0.9999094
       objectReference: {fileID: 0}
     - target: {fileID: 4024460627254555702, guid: 0d7a1c0bc8fc35644afd1eaf0a138300, type: 3}
       propertyPath: m_AnchorMax.y
@@ -280,7 +280,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4335263444630786104, guid: 0d7a1c0bc8fc35644afd1eaf0a138300, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0.00046841888
+      value: -0.000039707036
       objectReference: {fileID: 0}
     - target: {fileID: 4398670854703195374, guid: 0d7a1c0bc8fc35644afd1eaf0a138300, type: 3}
       propertyPath: m_Name
@@ -398,6 +398,10 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8249098818600971987, guid: 0d7a1c0bc8fc35644afd1eaf0a138300, type: 3}
+      propertyPath: taskDataManager
+      value: 
+      objectReference: {fileID: 8009389727531090833}
     - target: {fileID: 8249098818600971987, guid: 0d7a1c0bc8fc35644afd1eaf0a138300, type: 3}
       propertyPath: createTaskScreen
       value: 

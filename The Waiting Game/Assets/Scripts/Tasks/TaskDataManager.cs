@@ -40,6 +40,14 @@ namespace Tasks
             activeTaskData.OnActiveTaskChanged += SaveActiveTaskData;
         }
 
+        private void OnEnable()
+        {
+        }
+
+        private void OnDisable()
+        {
+        }
+
         private void Start()
         {
             // As a test, save the active task data to storage when the component starts.

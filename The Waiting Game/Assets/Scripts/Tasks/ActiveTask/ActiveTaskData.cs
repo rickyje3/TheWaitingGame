@@ -24,6 +24,11 @@ namespace Tasks.ActiveTask
         [SerializeField] private Optional<GUID> taskID;
 
         /// <summary>
+        /// The ID of the currently active task.
+        /// </summary>
+        public Optional<GUID> TaskID => taskID;
+
+        /// <summary>
         /// The ID of the user associated with the currently active task.
         /// </summary>
         public GUID UniqueID => userID;
